@@ -1,0 +1,14 @@
+# System files
+.DS_Store
+.env
+*.log
+__pycache__/
+
+# Python venv
+venv/
+
+# Node.js
+frontend/node_modules
+
+# arquivos temp
+app/temp

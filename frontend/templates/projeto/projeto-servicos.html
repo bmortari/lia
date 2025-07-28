@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <title>Serviços do Projeto</title>
+    <style>
+        :root {
+          --background-color: #F0F0F0;
+        }
+
+        body {
+          background-color: var(--background-color);
+          margin: 0;
+          padding: 0;
+        }
+
+        .background-waves {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 300px; /* Ajuste a largura conforme necessário */
+            height: 100vh;
+            background-image: url('/static/assets/img/abstract.jpg'); /* Substitua pelo caminho da sua imagem */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+        
+        .content-wrapper {
+            margin-left: 300px; /* Mantém a margem para não sobrepor a imagem */
+            min-height: 100vh;
+            padding-top: 140px; /* Espaço para o header fixo com mais margem */
+            position: relative;
+            z-index: 30; /* Fica acima do abstract e do header */
+        }
+
+        .btn-custom {
+            background-color: #0097B2;
+        }
+
+        .btn-custom-dev {
+            background-color:rgb(105, 105, 105);
+        }
+
+        .btn-custom:hover {
+            background-color: #007d96;
+        }
+
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+        }
+
+        .icon-custom {
+            color: #0097B2;
+        }
+
+        .icon-custom-dev {
+            color: rgb(105, 105, 105);
+        }
+
+        .header-container {
+            background-color: var(--background-color); /* Mesma cor do fundo */
+            border-radius: 12px; /* Bordas mais arredondadas em todos os 4 cantos */
+            outline: 3px solid var(--background-color);
+            margin-bottom: 2.5rem;
+            position: fixed;
+            top: 20px;
+            left: 320px; /* Ajustado para ficar após a imagem (300px + 20px de margem) */
+            right: 20px; /* Margem direita */
+            max-width: calc(100% - 340px); /* Largura ajustada para não sobrepor a imagem */
+            z-index: 60; /* Z-index maior que o abstract para ficar por cima */
+            padding: 24px;
+        }
+
+        .profile-icon {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .profile-icon:hover {
+            opacity: 0.8;
+        }
+
+        /* Media query para dispositivos móveis */
+        @media (max-width: 768px) {
+            .background-waves {
+                display: none; /* Esconde a imagem em telas pequenas */
+            }
+            
+            .content-wrapper {
+                margin-left: 0; /* Remove margem em telas pequenas */
+            }
+            
+            .header-container {
+                left: 20px; /* Reposiciona o header em telas pequenas */
+                max-width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Elemento para a imagem de fundo -->
+    <div class="background-waves"></div>
+    
+    <main class="content-wrapper">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <!-- Container retangular branco no topo -->
+        <div class="header-container">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <img id="logo-lia" title="Retornar ao início" src="/static/assets/img/logo_lia.png" alt="LIA Logo" class="h-16 w-auto mr-4 cursor-pointer">
+                </div>
+                <div class="text-center flex-1">
+                    <h1 class="text-3xl font-bold text-gray-900">{{ projeto.nome }}</h1>
+                    <p class="text-xl text-gray-600 mt-1">Serviços disponíveis</p>
+                </div>
+                <div class="profile-icon">
+                    <img src="/static/assets/img/icone_perfil.png" alt="Perfil" class="w-full h-full object-cover rounded-full">
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 justify-center">
+            
+            <!-- D.F.D. Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">  
+                    <div class="flex justify-center icon-custom text-6xl mb-3">
+                        <i class="uil uil-file-search-alt"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">D.F.D.</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Documento de Formalização da Demanda.</p>
+                    <button id="gera_dfd" class="w-full text-white btn-custom focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Gerar</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesquisa preço Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex justify-center icon-custom text-6xl mb-3">
+                        <i class="uil uil-bill"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Pesquisa de Preços</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um documento de pesquisa de preços.</p>
+                    <button id="gera_pdp" class="w-full text-white btn-custom focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Gerar</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- E.T.P. Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+                        <i class="uil uil-analysis"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">E. T. P.</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Estudo Técnico Preliminar.</p>
+                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- T.R. Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+                        <i class="uil uil-map"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Mapa de Riscos</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um mapa de riscos.</p>
+                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parecer Jurídico Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+                        <i class="uil uil-file-contract-dollar"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">T. R.</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Termo de Referência.</p>
+                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edital Card -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+                        <i class="uil uil-megaphone"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Edital</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um documento de Edital.</p>
+                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    <div class="flex gap-2">
+                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
+                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="/static/js/projeto/projeto-servicos.js" defer></script>
+</body>
+</html>

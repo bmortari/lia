@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa de Preço - TRE-AC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+        /* Custom styling for search results */
+        .search-result-item {
+            transition: all 0.3s ease;
+        }
+        .search-result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        /* Spinning animation for loading */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin-icon {
+            display: inline-block;
+            animation: spin 1.5s linear infinite;
+        }
+        .btn-custom {
+            background-color: #0097B2;
+        }
+
+        .btn-custom:hover {
+            background-color: #007d96;
+        }
+
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+        }
+        .checkbox-custom:checked {
+            background-color: #0097B2;
+            border-color: #0097B2;
+        }
+        .checkbox-custom:focus {
+            box-shadow: 0 0 0 2px rgba(0,151,178,0.3);
+        }
+         
+        #voltar-inicio {
+            color: #0097B2;
+            border-color: #0097B2;
+            background-color: transparent;
+        }
+
+        #voltar-inicio:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen flex items-center justify-center">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-8 max-w-7xl">
+
+        <!-- Back Button -->
+        <div class="mb-6 flex justify-end">
+            <button id="voltar-inicio" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
+                <i class="uil uil-arrow-left mr-2"></i>
+                Voltar ao início
+            </button>
+        </div>
+
+        <form id="pesquisa-preco-form">
+            <!-- Main Content Grid -->
+            <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                <!-- Left Section: Search Form -->
+                <div class="space-y-6">
+                    <!-- Search Text Area -->
+                    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <label for="pesquisa-objeto" class="block text-lg font-medium text-gray-900">
+                                Descreva em detalhes objetos similares
+                            </label>
+                            <button data-tooltip-target="tooltip-pesquisa" type="button" class="text-gray-400 hover:text-gray-600">
+                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                </svg>
+                                <span class="sr-only">Info</span>
+                            </button>
+                            <div id="tooltip-pesquisa" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
+                                <!-- <h3 class="font-bold mb-2">Dicas para uma boa pesquisa:</h3>
+                                <ul class="list-disc ml-4 space-y-1">
+                                    <li>Seja específico sobre o produto ou serviço</li>
+                                    <li>Inclua características técnicas importantes</li>
+                                    <li>Mencione quantidades aproximadas</li>
+                                    <li>Informe se há preferências de marca ou modelo</li>
+                                </ul> -->
+                                <div class="tooltip-arrow" data-popper-arrow></div>
+                            </div>
+                        </div>
+                        <textarea 
+                            id="pesquisa-objeto" 
+                            rows="12" 
+                            class="block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" 
+                            placeholder="Ex: Faça uma pesquisa de preço no assunto operador de som, um funcionario que cuidará do audio e video nos dias das sessoes plenarias. São 14 sessoes plenarias por mes. Operação técnica especializada nos equipamentos de áudio e vídeo durante as Sessões Plenárias">
+                        </textarea>
+                        
+                        <div class="flex justify-end mt-4">
+                            <button type="submit" id="enviar-pesquisa" class="flex items-center text-white btn-custom font-medium rounded-lg text-sm px-8 py-2.5 transition-colors">
+                                Enviar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Filters -->
+                <div class="space-y-6">
+                    <!-- Filters Card -->
+                    <div class="p-8 bg-white border border-gray-200 rounded-lg shadow-sm h-fit">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Filtros:</h3>
+                        
+                        <!-- Filtros em formato de botões -->
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <!-- Esfera Filter Button -->
+                            <button type="button" id="filter-esfera-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="uil uil-building mr-2"></i>
+                                <span id="esfera-btn-text">Esfera</span>
+                                <span id="esfera-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">4</span>
+                            </button>
+
+                            <!-- UF Filter Button -->
+                            <button type="button" id="filter-uf-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="uil uil-map-marker mr-2"></i>
+                                <span id="uf-btn-text">UF</span>
+                                <span id="uf-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">27</span>
+                            </button>
+
+                            <!-- Modalidade Filter Button -->
+                            <button type="button" id="filter-modalidade-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="uil uil-file-alt mr-2"></i>
+                                <span id="modalidade-btn-text">Modalidade</span>
+                                <span id="modalidade-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">10</span>
+                            </button>
+
+                            <!-- Clear Filters Button -->
+                            <button type="button" id="clear-all-filters" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500">
+                                <i class="uil uil-times mr-2"></i>
+                                Limpar Filtros
+                            </button>
+                        </div>
+
+                        <!-- Palavras-chave input -->
+                        <div>
+                            <label for="palavras-chave" class="block text-sm font-medium text-gray-900 mb-2">
+                                Palavras-chave
+                                <span class="text-gray-500 text-xs">(Insira no mínimo três palavras separadas por vírgula)</span>
+                            </label>
+                            <input type="text" id="palavras-chave" name="palavras-chave" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: software, desenvolvimento, licença">
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </form>
+
+        <!-- Search Results Section -->
+        <div id="resultados-section" class="mt-8 hidden">
+            <div class="mb-6 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-900">Resultados da Pesquisa</h3>
+                <span id="total-resultados" class="text-sm text-gray-600"></span>
+            </div>
+            
+            <!-- Results Grid -->
+            <div id="resultados-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-96">
+                <!-- Results will be populated here by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-center mt-8">
+                <nav aria-label="Page navigation">
+                    <ul class="flex items-center -space-x-px h-8 text-sm">
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
+                                <span class="sr-only">Previous</span>
+                                <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                                </svg>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
+                        </li>
+                        <li>
+                            <a href="#" aria-current="page" class="z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">3</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
+                        </li>
+                        <li>
+                            <a href="#" class="flex items-center justify-center px-3 h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
+                                <span class="sr-only">Next</span>
+                                <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                                </svg>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+            <!-- Spinning Gear Icon -->
+            <div class="mb-4">
+                <i class="uil uil-cog text-blue-600 text-5xl animate-spin-icon"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Pesquisando Preços</h3>
+            <p class="text-gray-600 mb-6">Analisando bases de dados de compras públicas...</p>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="btn-custom h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modals -->
+    
+    <!-- Esfera Filter Modal -->
+    <div id="filter-esfera-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-96 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Filtrar por Esfera</h3>
+                <button type="button" id="close-esfera-modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="uil uil-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 max-h-80 overflow-y-auto">
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="esfera-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todas</span>
+                    </label>
+                    <div class="border-t border-gray-200 pt-3 space-y-2">
+                        <label class="flex items-center">
+                            <input type="checkbox" value="distrital" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                            <span class="ml-3 text-sm text-gray-700">Distrital</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" value="estadual" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                            <span class="ml-3 text-sm text-gray-700">Estadual</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" value="federal" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                            <span class="ml-3 text-sm text-gray-700">Federal</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="checkbox" value="municipal" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                            <span class="ml-3 text-sm text-gray-700">Municipal</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button type="button" id="cancel-esfera" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" id="apply-esfera" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                    Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UF Filter Modal -->
+    <div id="filter-uf-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Filtrar por UF</h3>
+                <button type="button" id="close-uf-modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="uil uil-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="uf-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todos</span>
+                    </label>
+                    <div class="border-t border-gray-200 pt-3 space-y-2" id="uf-options-modal">
+                        <!-- UF options will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button type="button" id="cancel-uf" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" id="apply-uf" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                    Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modalidade Filter Modal -->
+    <div id="filter-modalidade-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col max-h-[90vh]">
+            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-900">Filtrar por Modalidade</h3>
+                <button type="button" id="close-modalidade-modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="uil uil-times text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div class="space-y-3">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="modalidade-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todas</span>
+                    </label>
+                    <div class="border-t border-gray-200 pt-3 space-y-2" id="modalidade-options-modal">
+                        <!-- Modalidade options will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+                <button type="button" id="cancel-modalidade" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" id="apply-modalidade" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                    Aplicar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/pdp/pdp-solicitacao.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: fastapi_lia_app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+    volumes:
+      - .:/lia
+    ports:
+      - "8081:8001"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASS
+      - POSTGRES_DB
+      - DATABASE_URL
+      - GENAI_API_KEY
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15
+    container_name: lia_postgres_db
+    restart: always
+    ports:
+      - "5433:5432"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD=${POSTGRES_PASS}
+      - POSTGRES_DB
+    volumes:
+      - lia_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  db-seed:
+    image: postgres:15
+    container_name: lia_db_seeder
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./seed:/seed
+    environment:
+      - PGPASSWORD=${POSTGRES_PASS}
+    entrypoint: ["bash", "/seed/seed.sh"]
+
+volumes:
+  lia_postgres_data:

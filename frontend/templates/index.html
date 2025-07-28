@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+    <title>LIA - Licitações com IA</title>
+    <style>
+        :root {
+          --background-color: #F0F0F0;
+        }
+
+        body {
+          background-color: var(--background-color);
+          margin: 0;
+          padding: 0;
+        }
+
+        .background-waves {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 300px; /* Ajuste a largura conforme necessário */
+            height: 100vh;
+            background-image: url('/static/assets/img/abstract.jpg'); /* Substitua pelo caminho da sua imagem */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1; /* Fica atrás do conteúdo */
+        }
+        
+        .content-wrapper {
+            margin-left: 300px; /* Mesmo valor da largura da imagem */
+            min-height: 100vh;
+        }
+
+        .btn-custom {
+            background-color: #0097B2;
+        }
+
+        .btn-custom:hover {
+            background-color: #007d96;
+        }
+
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+        }
+
+        .btn-manual {
+            background-color: #919297;
+            color: white;
+            border: none;
+        }
+
+        .btn-manual:hover {
+            background-color: #7a7d82;
+        }
+
+        .btn-manual:focus {
+            box-shadow: 0 0 0 4px rgba(145, 146, 151, 0.3);
+        }
+
+        .container-projetos {
+            border: 2px solid #0097B2;
+        }
+
+        .credits-section {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .credits-text {
+            color: #000;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .credits-section img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .credits-section #logo-nativa {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+        }
+      
+    </style>
+</head>
+<body>
+    <!-- Elemento para a imagem de fundo -->
+    <div class="background-waves"></div>
+    
+    <main class="content-wrapper">
+        <div class="layout-wrapper h-screen flex items-center justify-center">
+            <div class="grid-wrapper grid grid-cols-2 gap-8 items-start">
+                <div class="container-introducao p-4 flex flex-col">
+                    <div>
+                        <div class="mb-6 w-128">
+                         <img src="/static/assets/img/logo_lia.png" alt="LIA - Licitações com IA" class="h-30 w-auto pb-8">
+                        </div>
+                        <p class="text-2xl w-128 max-w-xl mb-6 pb-8">
+                          O LIA é a plataforma que simplifica a geração de documentos licitatórios. Mais eficiência. Mais segurança. Mais inovação.
+                        </p>
+                    </div>
+                    <div class="flex gap-4">
+                        <button type="button" class="btn-manual cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                            Manual
+                        </button>
+                        <button type="button" id="iniciar_projeto" class="btn-custom cursor-pointer text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                            Iniciar projeto
+                        </button>
+                    </div>
+                    
+                    <!-- Seção de créditos -->
+                    <div class="credits-section">
+                        <p class="credits-text">DESENVOLVIDO POR:</p>
+                        <img src="/static/assets/img/logo_tre.png" alt="Logo 1">
+                        <img src="/static/assets/img/logo_nativa.png" alt="Logo 2" id="logo-nativa">
+                    </div>
+                </div>
+                <div class="container-projetos w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 flex flex-col mt-8 h-[40rem]">
+                    <div>
+                        <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl">
+                            Projetos recentes
+                        </h5>
+                        <p class="text-sm font-normal text-gray-500">
+                            Selecione um dos projetos recentes para acessar os serviços:
+                        </p>
+                    </div>
+                    <ul id="lista-projetos" class="my-4 space-y-3 gap-2 flex-grow overflow-y-auto">
+                        <!-- Itens do projeto serão inseridos aqui dinamicamente -->
+                    </ul>
+                    <div class="text-center mt-auto">
+                        <a href="listar_projetos" class="inline-flex items-center text-sm font-normal text-gray-500 hover:underline">
+                            Ver todos os projetos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

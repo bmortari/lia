@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.F.D. - Solicitação</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        body {
+            background-color: #f9fafb; /* A light gray background */
+        }
+        /* Custom styling for the tooltip content */
+        #tooltip-info h3 {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+        }
+        #tooltip-info ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        #tooltip-info li {
+            margin-bottom: 0.25rem;
+        }
+        /* Spinning animation for the icon */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin-icon {
+            display: inline-block;
+            animation: spin 1.5s linear infinite;
+        }
+        .custom-radio {
+            accent-color: #0097B2;
+            background-color: #f9fafb;
+            border-color: #0097B2;
+        }
+        .custom-radio:focus {
+            box-shadow: 0 0 0 2px rgba(0, 151, 178, 0.3);
+            outline: none;
+        }
+        .btn-custom {
+            background-color: #0097B2;
+            color: #fff;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #007d96;
+        }
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen flex items-center justify-center">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-8 max-w-6xl">
+
+        <form id="dfd-solicitacao-form">
+            <!-- Main Content Grid -->
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Section: Form -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Project and Type Info -->
+                <div class="space-y-6">
+                    <div>
+                        <label for="project-name" class="block mb-2 text-sm font-medium text-gray-900">PROJETO</label>
+                        <input type="text" id="project-name" value="{{ projeto.nome }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
+                    </div>
+                    <div>
+                        <label for="item-type" class="block mb-2 text-sm font-medium text-gray-900">TIPO</label>
+                        <input type="text" id="item-type" value="{{ projeto.tipo }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
+                    </div>
+                </div>
+
+                <!-- Solicitation Text Area -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                     <div class="flex items-center justify-between mb-2">
+                        <label for="solicitation" class="block text-sm font-medium text-gray-900">Envie sua solicitação:</label>
+                        <button data-tooltip-target="tooltip-info" type="button" class="text-gray-400 hover:text-gray-600">
+                           <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                           </svg>
+                           <span class="sr-only">Info</span>
+                        </button>
+                        <div id="tooltip-info" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
+                            <h3>Como Usar o Formulário:</h3>
+                            <ol>
+                                <li>Descreva claramente o objeto da contratação que deseja realizar</li>
+                                <li>Identifique-se com seu nome completo e cargo</li>
+                                <li>Informe sua unidade, departamento ou setor</li>
+                                <li>Inclua quaisquer requisitos específicos ou preferências</li>
+                                <li>Clique no botão "Enviar" quando estiver pronto</li>
+                            </ol>
+                            <p>Sua solicitação será processada pela nossa IA, e você receberá um DFD formatado.</p>
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                     </div>
+                     <textarea id="solicitation" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" placeholder="Descreva sua solicitação aqui..."></textarea>
+                     <div class="flex justify-end mt-4">
+                        <button type="submit" id="send-button" class="btn-custom text-white font-medium rounded-lg text-sm px-8 py-2.5">
+                            Enviar
+                        </button>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Right Section: Checklist -->
+            <div class="flex flex-col">
+                <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col max-h-[30rem]">
+                    <h3 class="text-lg font-bold text-gray-900">PCA 2026</h3>
+                    
+                    <!-- Search input -->
+                    <div class="py-4">
+                        <label for="pca-search" class="sr-only">Search</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                </svg>
+                            </div>
+                            <input type="text" id="pca-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5" placeholder="Filtrar opções...">
+                        </div>
+                    </div>
+
+                    <!-- Options container -->
+                    <div id="pca-options-container" class="flex-grow overflow-y-auto space-y-4 pr-2">
+                        <!-- Options will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </form>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+            <!-- Spinning Gear Icon -->
+            <div class="mb-4">
+                <i class="uil uil-cog text-blue-600 text-5xl animate-spin-icon"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Gerando D.F.D.</h3>
+            <p class="text-gray-600 mb-6">Isso pode levar alguns minutos. Por favor, aguarde.</p>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dfd/dfd-solicitacao.js" defer></script>
+</body>
+</html>
