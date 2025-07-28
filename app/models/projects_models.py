@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, DateTime, Enum
+from sqlalchemy import Column, Integer, Text, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -23,5 +23,14 @@ class Projeto(Base):
     tipo = Column(Text, nullable=True)
     user_created = Column(Text, nullable=True)
     dt_created = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Colunas booleanas para controle de artefatos existentes
+    exist_dfd = Column(Boolean, nullable=False, default=False, comment="Indica se existe DFD vinculado ao projeto")
+    exist_pdp = Column(Boolean, nullable=False, default=False, comment="Indica se existe PDP vinculado ao projeto")
+    exist_etp = Column(Boolean, nullable=False, default=False, comment="Indica se existe ETP vinculado ao projeto")
+    exist_mr = Column(Boolean, nullable=False, default=False, comment="Indica se existe MR vinculado ao projeto")
+    exist_tr = Column(Boolean, nullable=False, default=False, comment="Indica se existe TR vinculado ao projeto")
+    exist_ed = Column(Boolean, nullable=False, default=False, comment="Indica se existe ED vinculado ao projeto")
+    
     dfds = relationship("app.models.dfd_models.DFD", back_populates="projeto", cascade="all, delete-orphan")
     pdps = relationship("app.models.pdp_models.PDP", back_populates="projeto", cascade="all, delete-orphan")

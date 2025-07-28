@@ -49,16 +49,14 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
     if not projeto:
         raise ValueError("Projeto não encontrado.")
     
-    #previsto = dfd_in.item != 0
-
-    # Monta dados básicos
-    dados_dfd = {
-        "id_projeto": project_id,
-        "user_created": current_user.username,
-        "group_created": current_user.group, # aqui
-        "data_created": datetime.now(acre_tz).isoformat(),
-        "item": dfd_in.item
-    }
+    # Verifica se já existe DFD para este projeto
+    stmt = select(DFD).where(DFD.id_projeto == project_id)
+    result = await db.execute(stmt)
+    if result.scalars().first():
+        raise HTTPException(
+            status_code=409,
+            detail="Já existe um DFD cadastrado para este projeto."
+        )
 
     # Monta o prompt para IA
     prompt_usuario = dfd_in.descricao
@@ -84,7 +82,6 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
     resposta_ia = await consulta_ia(prompt_final_completo)
     print(resposta_ia)
 
-    
     resposta = resposta_ia[0]  # Extrai o dicionário de dentro da lista
     
     quantidade_raw = resposta["quantidade_justifica_a_ser_contratada"].get("quantidade")
@@ -97,16 +94,7 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
 
     resposta["quantidade_justifica_a_ser_contratada"]["quantidade"] = quantidade
     
-    # 1. Processar data_created
-    data_created = dados_dfd["data_created"]
-    if isinstance(data_created, str):
-        try:
-            from dateutil import parser
-            data_created = parser.isoparse(data_created)
-        except:
-            data_created = datetime.now(acre_tz)
-    
-    # 2. Processar previsao_data_bem_servico
+    # Processar previsao_data_bem_servico
     previsao_str = resposta["previsao_da_entrega_do_bem_ou_inicio_dos_servicos"]
     try:
         # Formato brasileiro DD/MM/YYYY
@@ -130,20 +118,70 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
     else:
         equipe_str = str(equipe) if equipe else ""
 
-    resultado = {
-        "id_projeto": dados_dfd["id_projeto"],
-        "user_created": dados_dfd["user_created"],
-        "group_created": dados_dfd["group_created"], #aqui
-        "data_created": data_created,  # datetime object
-        "item": dados_dfd["item"],
+    # CRIAR O OBJETO DFD E GRAVAR NO BANCO
+    novo_dfd = DFD(
+        id_projeto=project_id,
+        user_created=current_user.username,
+        data_created=datetime.now(acre_tz),
+        previsto_pca=(dfd_in.item > 0),
+        item=dfd_in.item,
+        unidade_demandante=current_user.group,  # ou outro campo apropriado
+        objeto_contratado=resposta["objeto_a_ser_contratado"],
+        justificativa_contratacao=resposta["justificativa"],
+        quantidade_contratada=resposta["quantidade_justifica_a_ser_contratada"],
+        previsao_data_bem_servico=previsao_data,
+        alinhamento_estrategico=resposta["alinhamento_estrategico"],
+        equipe_de_planejamento=equipe_str,
+        status=True
+    )
+
+    # Persiste no banco
+    db.add(novo_dfd)
+    try:
+        await db.commit()
+        await db.refresh(novo_dfd)
         
-        # CAMPOS COM NOMES CORRETOS PARA O SCHEMA DFDProjectRead
-        "objeto_contratado": resposta["objeto_a_ser_contratado"],
-        "justificativa_contratacao": resposta["justificativa"],
-        "quantidade_contratada": resposta["quantidade_justifica_a_ser_contratada"],
-        "previsao_data_bem_servico": previsao_data,  # datetime object
-        "alinhamento_estrategico": resposta["alinhamento_estrategico"],
-        "equipe_de_planejamento": equipe_str,  # string
+        # Atualiza o campo exist_dfd do projeto para True
+        update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_dfd=True)
+        await db.execute(update_stmt)
+        await db.commit()
+        
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="Já existe um DFD cadastrado para este projeto."
+        )
+    except Exception:
+        await db.rollback()
+        raise
+
+    # RECUPERAR DO BANCO E RETORNAR COMO JSON
+    stmt = (
+        select(DFD)
+        .options(selectinload(DFD.projeto))
+        .where(DFD.id_projeto == project_id)
+    )
+    result = await db.execute(stmt)
+    dfd_criado = result.scalars().first()
+
+    # Montar o resultado JSON com os dados do banco
+    resultado = {
+        "id": dfd_criado.id,
+        "id_projeto": dfd_criado.id_projeto,
+        "user_created": dfd_criado.user_created,
+        "group_created": current_user.group,  # Adiciona o campo group_created
+        "data_created": dfd_criado.data_created,
+        "item": dfd_criado.item,
+        "previsto_pca": dfd_criado.previsto_pca,
+        "unidade_demandante": dfd_criado.unidade_demandante,
+        "objeto_contratado": dfd_criado.objeto_contratado,
+        "justificativa_contratacao": dfd_criado.justificativa_contratacao,
+        "quantidade_contratada": dfd_criado.quantidade_contratada,
+        "previsao_data_bem_servico": dfd_criado.previsao_data_bem_servico,
+        "alinhamento_estrategico": dfd_criado.alinhamento_estrategico,
+        "equipe_de_planejamento": dfd_criado.equipe_de_planejamento,
+        "status": dfd_criado.status
     }
     
     print(resultado)
@@ -272,6 +310,12 @@ async def create_dfd_for_project(
     try:
         await db.commit()
         await db.refresh(novo)
+        
+        # Atualiza o campo exist_dfd do projeto para True
+        update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_dfd=True)
+        await db.execute(update_stmt)
+        await db.commit()
+        
         return novo
 
     except IntegrityError:
@@ -369,4 +413,9 @@ async def delete_dfd_for_project(project_id: int, db: AsyncSession, current_user
     # Executa o delete
     del_stmt = delete(DFD).where(DFD.id_projeto == project_id)
     await db.execute(del_stmt)
+    
+    # Atualiza o campo exist_dfd do projeto para False
+    update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_dfd=False)
+    await db.execute(update_stmt)
+    
     await db.commit()

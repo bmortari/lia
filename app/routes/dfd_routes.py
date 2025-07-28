@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from typing import List, Dict, Any
 
 from app.database import get_db
@@ -8,13 +9,10 @@ from app.dependencies import get_current_remote_user, RemoteUser
 from app.services.dfd_services import fetch_dfd_pca_data, create_dfd_service, create_dfd_for_project, update_dfd_for_project, delete_dfd_for_project
 from app.schemas.dfd_schemas import DFDCreate, DFDRead, DFDProjectRead, DFDCreator, DFDUpdate
 from app.models.projects_models import Projeto
+from app.models.dfd_models import DFD
 from fastapi.templating import Jinja2Templates
 
-
-
-router = APIRouter(
-                   tags=["DFD"]
-                   )
+router = APIRouter(tags=["DFD"])
 
 templates_dfd = Jinja2Templates(directory="frontend/templates/dfd")
 
@@ -28,7 +26,6 @@ async def get_dfd_pca(db: AsyncSession = Depends(get_db)):
         return await fetch_dfd_pca_data(db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar dados: {str(e)}")
-
 
 
 # CREATE - Criar novo DFD
@@ -46,15 +43,15 @@ async def create_dfd(
         raise HTTPException(status_code=404, detail=str(ve))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao criar DFD: {str(e)}")
-    
-    
-    
+
+
 @router.get("/projetos/{projeto_id}/criar_dfd")
-async def dfd(request: Request, 
-        projeto_id: int,
-        db: AsyncSession = Depends(get_db),
-    #    current_user: RemoteUser = Depends(get_current_remote_user)
-    ):
+async def dfd(
+    request: Request, 
+    projeto_id: int,
+    db: AsyncSession = Depends(get_db),
+    # current_user: RemoteUser = Depends(get_current_remote_user)
+):
     stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
     result = await db.execute(stmt)
     projeto = result.scalar_one_or_none()
@@ -66,33 +63,47 @@ async def dfd(request: Request,
         "request": request,
         "projeto": projeto
     })
-    
+
 
 @router.get("/projetos/{projeto_id}/confere_dfd")
-async def edit_dfd(request: Request, 
-        projeto_id: int,
-        db: AsyncSession = Depends(get_db),
-    #    current_user: RemoteUser = Depends(get_current_remote_user)
-    ):
+async def confere_dfd(
+    request: Request, 
+    projeto_id: int,
+    db: AsyncSession = Depends(get_db),
+    # current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    # Busca o projeto
     stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
     result = await db.execute(stmt)
     projeto = result.scalar_one_or_none()
 
     if not projeto:
         raise HTTPException(status_code=404, detail="Projeto não encontrado")
+    
+    # Busca o DFD associado ao projeto
+    dfd_stmt = (
+        select(DFD)
+        .options(selectinload(DFD.projeto))
+        .where(DFD.id_projeto == projeto_id)
+    )
+    dfd_result = await db.execute(dfd_stmt)
+    dfd = dfd_result.scalars().first()
     
     return templates_dfd.TemplateResponse("dfd-curadoria.html", {
         "request": request,
-        "projeto": projeto
+        "projeto": projeto,
+        "dfd": dfd  # Agora o template tem acesso aos dados do DFD
     })
-    
-    
+
+
 @router.get("/projetos/{projeto_id}/visualizacao_dfd")
-async def edit_dfd(request: Request, 
-        projeto_id: int,
-        db: AsyncSession = Depends(get_db),
-    #    current_user: RemoteUser = Depends(get_current_remote_user)
-    ):
+async def visualizacao_dfd(
+    request: Request, 
+    projeto_id: int,
+    db: AsyncSession = Depends(get_db),
+    # current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    # Busca o projeto
     stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
     result = await db.execute(stmt)
     projeto = result.scalar_one_or_none()
@@ -100,12 +111,22 @@ async def edit_dfd(request: Request,
     if not projeto:
         raise HTTPException(status_code=404, detail="Projeto não encontrado")
     
+    # Busca o DFD associado ao projeto
+    dfd_stmt = (
+        select(DFD)
+        .options(selectinload(DFD.projeto))
+        .where(DFD.id_projeto == projeto_id)
+    )
+    dfd_result = await db.execute(dfd_stmt)
+    dfd = dfd_result.scalars().first()
+    
     return templates_dfd.TemplateResponse("dfd-resultado.html", {
         "request": request,
-        "projeto": projeto
+        "projeto": projeto,
+        "dfd": dfd  # Agora o template tem acesso aos dados do DFD
     })
-    
-    
+
+
 @router.post("/projetos/{project_id}/save_dfd", response_model=DFDRead, status_code=201)
 async def save_dfd(
     project_id: int,
@@ -131,28 +152,29 @@ async def save_dfd(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-
 @router.patch("/projetos/{project_id}/dfd", response_model=DFDRead, status_code=200)
 async def patch_dfd(
     project_id: int,
     dfd_upd: DFDUpdate,
     db: AsyncSession = Depends(get_db),
-    current_user: RemoteUser = Depends(get_current_remote_user)
+    current_user: RemoteUser = Depends(get_current_remote_user)  # ✅ MESMO PADRÃO DA ROTA QUE FUNCIONA
 ):
     try:
-        return await update_dfd_for_project(
+        dfd_atualizado = await update_dfd_for_project(
             project_id=project_id,
             dfd_upd=dfd_upd,
             db=db,
             current_user=current_user
         )
         
+        # ✅ RETORNA O OBJETO ATUALIZADO COMO JSON (mesmo padrão)
+        return dfd_atualizado
+        
     except HTTPException:
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-    
+
 
 @router.delete("/projetos/{project_id}/dfd", status_code=204)
 async def delete_dfd(

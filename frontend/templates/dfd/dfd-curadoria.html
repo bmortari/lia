@@ -45,8 +45,22 @@
                 <i class="las la-file-alt text-6xl text-blue-600 mb-4"></i>
                 <h1 class="text-4xl font-bold text-gray-900 mb-2">Curadoria de Documento</h1>
                 <p class="text-xl text-gray-600">D.F.D. Gerado - Documento de Formalização de Demanda</p>
+                {% if projeto %}
+                    <p class="text-lg text-gray-500 mt-2">Projeto: {{ projeto.nome }}</p>
+                {% endif %}
             </div>
         </div>
+
+        {% if not dfd %}
+        <div class="max-w-4xl mx-auto mb-6">
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="las la-exclamation-triangle text-yellow-600 text-2xl mr-3"></i>
+                    <p class="text-yellow-800">Nenhum DFD encontrado para este projeto.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="max-w-4xl mx-auto space-y-6">
 
@@ -73,7 +87,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="unidade-demandante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled></textarea>
+                    <textarea id="unidade-demandante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled>{% if dfd %}{{ dfd.unidade_demandante or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -89,7 +103,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="objeto-contratado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled></textarea>
+                    <textarea id="objeto-contratado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled>{% if dfd %}{{ dfd.objeto_contratado or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -105,7 +119,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="justificativa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled></textarea>
+                    <textarea id="justificativa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled>{% if dfd %}{{ dfd.justificativa_contratacao or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -122,7 +136,33 @@
                         </button>
                     </div>
                     <div id="items-container" class="space-y-3">
-                        <!-- Itens serão inseridos aqui dinamicamente -->
+                        {% if dfd and dfd.quantidade_contratada %}
+                            {% if dfd.quantidade_contratada is string %}
+                                <!-- Se quantidade_contratada for uma string, exibe como texto -->
+                                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                    <p class="text-sm text-gray-700">{{ dfd.quantidade_contratada }}</p>
+                                </div>
+                            {% else %}
+                                <!-- Se for um objeto/dict, exibe as propriedades -->
+                                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                    {% if dfd.quantidade_contratada.id_do_item %}
+                                        <p class="text-sm text-gray-700"><strong>ID do Item:</strong> {{ dfd.quantidade_contratada.id_do_item }}</p>
+                                    {% endif %}
+                                    {% if dfd.quantidade_contratada.descricao %}
+                                        <p class="text-sm text-gray-700"><strong>Descrição:</strong> {{ dfd.quantidade_contratada.descricao }}</p>
+                                    {% endif %}
+                                    {% if dfd.quantidade_contratada.quantidade %}
+                                        <p class="text-sm text-gray-700"><strong>Quantidade:</strong> {{ dfd.quantidade_contratada.quantidade }}</p>
+                                    {% else %}
+                                        <p class="text-sm text-gray-500"><strong>Quantidade:</strong> Não especificada</p>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                                <p class="text-sm text-gray-500">Nenhuma quantidade especificada</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -139,7 +179,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <input type="text" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" disabled>
+                    <input type="text" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" value="{% if dfd and dfd.previsao_data_bem_servico %}{{ dfd.previsao_data_bem_servico.strftime('%d/%m/%Y') if dfd.previsao_data_bem_servico else '' }}{% endif %}" disabled>
                 </div>
             </div>
 
@@ -155,7 +195,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="alinhamento-estrategico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="12" disabled></textarea>
+                    <textarea id="alinhamento-estrategico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="12" disabled>{% if dfd and dfd.alinhamento_estrategico %}{% for item in dfd.alinhamento_estrategico %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -171,9 +211,39 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="informacoes-adicionais" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" placeholder="Equipe de planejamento e outras informações relevantes..." disabled></textarea>
+                    <textarea id="informacoes-adicionais" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" placeholder="Equipe de planejamento e outras informações relevantes..." disabled>{% if dfd %}{{ dfd.equipe_de_planejamento or '' }}{% endif %}</textarea>
                 </div>
             </div>
+
+            {% if dfd %}
+            <!-- Informações de Metadados -->
+            <div class="bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                <div class="p-6">
+                    <div class="flex items-center mb-4">
+                        <i class="las la-info text-2xl text-gray-600 mr-3"></i>
+                        <h2 class="text-xl font-semibold text-gray-900">Informações do DFD</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <span class="font-medium text-gray-700">ID:</span>
+                            <span class="text-gray-600">{{ dfd.id }}</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">Item PCA:</span>
+                            <span class="text-gray-600">{{ dfd.item }}</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">Criado por:</span>
+                            <span class="text-gray-600">{{ dfd.user_created }}</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-700">Data de criação:</span>
+                            <span class="text-gray-600">{{ dfd.data_created.strftime('%d/%m/%Y %H:%M') if dfd.data_created else '' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
 
         </div>
 
