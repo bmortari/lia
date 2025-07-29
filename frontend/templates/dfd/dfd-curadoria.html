@@ -221,7 +221,7 @@
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <input type="text" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" value="{% if dfd and dfd.previsao_data_bem_servico %}{{ dfd.previsao_data_bem_servico.strftime('%d/%m/%Y') if dfd.previsao_data_bem_servico else '' }}{% endif %}" disabled>
+                    <input type="date" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" value="{% if dfd and dfd.previsao_data_bem_servico %}{{ dfd.previsao_data_bem_servico.strftime('%Y-%m-%d') if dfd.previsao_data_bem_servico else '' }}{% endif %}" disabled>
                 </div>
             </div>
 

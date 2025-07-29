@@ -161,13 +161,17 @@ function converterDadosDFD(dfdBanco) {
         // Processar data de previsão
         let previsao_entrega = '';
         if (dfdBanco.previsao_data_bem_servico) {
-            if (typeof dfdBanco.previsao_data_bem_servico === 'string') {
-                // Se já é uma string, usar diretamente
-                previsao_entrega = dfdBanco.previsao_data_bem_servico;
+            // Adiciona 'T00:00:00' para garantir que a data seja interpretada como UTC e evitar problemas de fuso horário
+            const dateString = dfdBanco.previsao_data_bem_servico.toString();
+            const date = new Date(dateString.includes('T') ? dateString : dateString + 'T00:00:00');
+            
+            if (!isNaN(date.getTime())) {
+                const day = String(date.getUTCDate()).padStart(2, '0');
+                const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Mês é base 0
+                const year = date.getUTCFullYear();
+                previsao_entrega = `${day}/${month}/${year}`;
             } else {
-                // Se é um objeto Date, formatar
-                const date = new Date(dfdBanco.previsao_data_bem_servico);
-                previsao_entrega = date.toLocaleDateString('pt-BR');
+                previsao_entrega = dfdBanco.previsao_data_bem_servico; // Manter o valor original se a data for inválida
             }
         }
         

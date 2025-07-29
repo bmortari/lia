@@ -4,11 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // ✅ NOVO: Função para obter dados atuais dos campos (que já vêm do template)
     function obterDadosAtuais() {
+        const previsaoEntregaEl = document.getElementById('previsao-entrega');
+        let previsaoEntrega = previsaoEntregaEl?.value || '';
+
+        // O input type date retorna uma data em formato YYYY-MM-DD 
+        // Quando isso ocorre, converte para DD/MM/YYYY
+        if (previsaoEntrega.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = previsaoEntrega.split('-');
+            previsaoEntrega = `${day}/${month}/${year}`;
+        }
+
         return {
             unidade_demandante: document.getElementById('unidade-demandante')?.value?.trim() || '',
             objeto_a_ser_contratado: document.getElementById('objeto-contratado')?.value?.trim() || '',
             justificativa: document.getElementById('justificativa')?.value?.trim() || '',
-            previsao_da_entrega_do_bem_ou_inicio_dos_servicos: document.getElementById('previsao-entrega')?.value?.trim() || '',
+            previsao_da_entrega_do_bem_ou_inicio_dos_servicos: previsaoEntrega,
             alinhamento_estrategico: extrairAlinhamentoEstrategico(),
             equipe_de_planejamento: document.getElementById('informacoes-adicionais')?.value?.trim() || '',
             quantidade_justifica_a_ser_contratada: extrairQuantidadeItens(),
