@@ -137,30 +137,72 @@
                     </div>
                     <div id="items-container" class="space-y-3">
                         {% if dfd and dfd.quantidade_contratada %}
-                            {% if dfd.quantidade_contratada is string %}
-                                <!-- Se quantidade_contratada for uma string, exibe como texto -->
-                                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                                    <p class="text-sm text-gray-700">{{ dfd.quantidade_contratada }}</p>
+                            {% if dfd.quantidade_contratada is iterable and dfd.quantidade_contratada is not string %}
+                                <!-- Se for uma lista de itens -->
+                                {% for item in dfd.quantidade_contratada %}
+                                <div class="flex items-center gap-3 p-2 border rounded-md item-row">
+                                    <input type="text" 
+                                           value="{{ item.descricao if item.descricao else '' }}" 
+                                           placeholder="Descrição do item" 
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description">
+                                    <input type="number" 
+                                           value="{{ item.quantidade if item.quantidade else '' }}" 
+                                           placeholder="Qtd." 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity" 
+                                           min="1">
+                                    <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
+                                        <i class="las la-trash-alt text-xl"></i>
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            {% elif dfd.quantidade_contratada is mapping %}
+                                <!-- Se for um único objeto -->
+                                <div class="flex items-center gap-3 p-2 border rounded-md item-row">
+                                    <input type="text" 
+                                           value="{{ dfd.quantidade_contratada.descricao if dfd.quantidade_contratada.descricao else '' }}" 
+                                           placeholder="Descrição do item" 
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description">
+                                    <input type="number" 
+                                           value="{{ dfd.quantidade_contratada.quantidade if dfd.quantidade_contratada.quantidade else '' }}" 
+                                           placeholder="Qtd." 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity" 
+                                           min="1">
+                                    <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
+                                        <i class="las la-trash-alt text-xl"></i>
+                                    </button>
                                 </div>
                             {% else %}
-                                <!-- Se for um objeto/dict, exibe as propriedades -->
-                                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                                    {% if dfd.quantidade_contratada.id_do_item %}
-                                        <p class="text-sm text-gray-700"><strong>ID do Item:</strong> {{ dfd.quantidade_contratada.id_do_item }}</p>
-                                    {% endif %}
-                                    {% if dfd.quantidade_contratada.descricao %}
-                                        <p class="text-sm text-gray-700"><strong>Descrição:</strong> {{ dfd.quantidade_contratada.descricao }}</p>
-                                    {% endif %}
-                                    {% if dfd.quantidade_contratada.quantidade %}
-                                        <p class="text-sm text-gray-700"><strong>Quantidade:</strong> {{ dfd.quantidade_contratada.quantidade }}</p>
-                                    {% else %}
-                                        <p class="text-sm text-gray-500"><strong>Quantidade:</strong> Não especificada</p>
-                                    {% endif %}
+                                <!-- Se for uma string ou outro tipo -->
+                                <div class="flex items-center gap-3 p-2 border rounded-md item-row">
+                                    <input type="text" 
+                                           value="{{ dfd.quantidade_contratada if dfd.quantidade_contratada is string else '' }}" 
+                                           placeholder="Descrição do item" 
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description">
+                                    <input type="number" 
+                                           value="" 
+                                           placeholder="Qtd." 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity" 
+                                           min="1">
+                                    <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
+                                        <i class="las la-trash-alt text-xl"></i>
+                                    </button>
                                 </div>
                             {% endif %}
                         {% else %}
-                            <div class="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                                <p class="text-sm text-gray-500">Nenhuma quantidade especificada</p>
+                            <!-- Se não há dados, criar um item vazio -->
+                            <div class="flex items-center gap-3 p-2 border rounded-md item-row">
+                                <input type="text" 
+                                       value="" 
+                                       placeholder="Descrição do item" 
+                                       class="flex-grow p-2 border-gray-300 border rounded-md item-description">
+                                <input type="number" 
+                                       value="" 
+                                       placeholder="Qtd." 
+                                       class="w-24 p-2 border-gray-300 border rounded-md item-quantity" 
+                                       min="1">
+                                <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
+                                    <i class="las la-trash-alt text-xl"></i>
+                                </button>
                             </div>
                         {% endif %}
                     </div>

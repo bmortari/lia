@@ -22,9 +22,9 @@
             position: fixed;
             left: 0;
             top: 0;
-            width: 300px; /* Ajuste a largura conforme necessário */
+            width: 300px;
             height: 100vh;
-            background-image: url('/static/assets/img/abstract.jpg'); /* Substitua pelo caminho da sua imagem */
+            background-image: url('/static/assets/img/abstract.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -32,11 +32,11 @@
         }
         
         .content-wrapper {
-            margin-left: 300px; /* Mantém a margem para não sobrepor a imagem */
+            margin-left: 300px;
             min-height: 100vh;
-            padding-top: 140px; /* Espaço para o header fixo com mais margem */
+            padding-top: 140px;
             position: relative;
-            z-index: 30; /* Fica acima do abstract e do header */
+            z-index: 30;
         }
 
         .btn-custom {
@@ -55,6 +55,16 @@
             box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
         }
 
+        .btn-custom:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .btn-custom-dev:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
         .icon-custom {
             color: #0097B2;
         }
@@ -63,17 +73,61 @@
             color: rgb(105, 105, 105);
         }
 
+        .icon-custom-gray {
+            color: #9ca3af;
+        }
+
+        /* Estados dos cards */
+        .card-with-artifact {
+            border: 3px solid #0097B2 !important;
+            background-color: #f0fcff;
+        }
+
+        .card-without-artifact {
+            border: 2px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+
+        .card-with-artifact .icon-custom {
+            color: #0097B2;
+        }
+
+        .card-without-artifact .icon-custom,
+        .card-without-artifact .icon-custom-dev {
+            color: #9ca3af;
+        }
+
+        .artifact-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .artifact-exists {
+            background-color: #e6f7ff;
+            color: #005c73;
+        }
+
+        .artifact-not-exists {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+
         .header-container {
-            background-color: var(--background-color); /* Mesma cor do fundo */
-            border-radius: 12px; /* Bordas mais arredondadas em todos os 4 cantos */
+            background-color: var(--background-color);
+            border-radius: 12px;
             outline: 3px solid var(--background-color);
             margin-bottom: 2.5rem;
             position: fixed;
             top: 20px;
-            left: 320px; /* Ajustado para ficar após a imagem (300px + 20px de margem) */
-            right: 20px; /* Margem direita */
-            max-width: calc(100% - 340px); /* Largura ajustada para não sobrepor a imagem */
-            z-index: 60; /* Z-index maior que o abstract para ficar por cima */
+            left: 320px;
+            right: 20px;
+            max-width: calc(100% - 340px);
+            z-index: 60;
             padding: 24px;
         }
 
@@ -90,31 +144,36 @@
             opacity: 0.8;
         }
 
+        /* Botões desabilitados */
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         /* Media query para dispositivos móveis */
         @media (max-width: 768px) {
             .background-waves {
-                display: none; /* Esconde a imagem em telas pequenas */
+                display: none;
             }
             
             .content-wrapper {
-                margin-left: 0; /* Remove margem em telas pequenas */
+                margin-left: 0;
             }
             
             .header-container {
-                left: 20px; /* Reposiciona o header em telas pequenas */
+                left: 20px;
                 max-width: calc(100% - 40px);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Elemento para a imagem de fundo -->
     <div class="background-waves"></div>
     
     <main class="content-wrapper">
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         
-        <!-- Container retangular branco no topo -->
         <div class="header-container">
             <div class="flex justify-between items-center">
                 <div class="flex items-center">
@@ -133,97 +192,346 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-8 justify-center">
             
             <!-- D.F.D. Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">  
-                    <div class="flex justify-center icon-custom text-6xl mb-3">
+            <div class="flex flex-col items-center" data-card-type="dfd">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 
+                     {% if projeto.exist_dfd %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <!-- Status do artefato -->
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_dfd %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3 
+                         {% if projeto.exist_dfd %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-file-search-alt"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">D.F.D.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Documento de Formalização da Demanda.</p>
-                    <button id="gera_dfd" class="w-full text-white btn-custom focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Gerar</button>
+                    
+                    <button id="gera_dfd" 
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_dfd %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
+                            {% if projeto.exist_dfd %}disabled{% endif %}>
+                        {% if projeto.exist_dfd %}Já Criado{% else %}Gerar{% endif %}
+                    </button>
+                    
                     <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="dfd"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_dfd %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_dfd %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="dfd"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_dfd %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_dfd %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Pesquisa preço Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div class="flex justify-center icon-custom text-6xl mb-3">
+            <!-- Pesquisa de Preços Card -->
+            <div class="flex flex-col items-center" data-card-type="pdp">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_pdp %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_pdp %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_pdp %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-bill"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Pesquisa de Preços</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um documento de pesquisa de preços.</p>
-                    <button id="gera_pdp" class="w-full text-white btn-custom focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Gerar</button>
+                    
+                    <button id="gera_pdp" 
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_pdp %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
+                            {% if projeto.exist_pdp %}disabled{% endif %}>
+                        {% if projeto.exist_pdp %}Já Criado{% else %}Gerar{% endif %}
+                    </button>
+                    
                     <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="pdp"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_pdp %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="pdp"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_pdp %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- E.T.P. Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+            <div class="flex flex-col items-center" data-card-type="etp">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_etp %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_etp %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_etp %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-analysis"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">E. T. P.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Estudo Técnico Preliminar.</p>
-                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_etp %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
+                            {% if projeto.exist_etp %}disabled{% endif %}>
+                        {% if projeto.exist_etp %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                    </button>
+                    
                     <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="etp"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_etp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_etp %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="etp"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_etp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_etp %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa de Riscos Card -->
+            <div class="flex flex-col items-center" data-card-type="mr">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_mr %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_mr %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_mr %}icon-custom{% else %}icon-custom-gray{% endif %}">
+                        <i class="uil uil-map"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Mapa de Riscos</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um mapa de riscos.</p>
+                    
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_mr %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
+                            {% if projeto.exist_mr %}disabled{% endif %}>
+                        {% if projeto.exist_mr %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="mr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_mr %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="mr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_mr %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- T.R. Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
-                        <i class="uil uil-map"></i>
+            <div class="flex flex-col items-center" data-card-type="tr">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_tr %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_tr %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
                     </div>
-                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Mapa de Riscos</h5>
-                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um mapa de riscos.</p>
-                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
-                    <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Parecer Jurídico Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_tr %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-file-contract-dollar"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">T. R.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Termo de Referência.</p>
-                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_tr %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
+                            {% if projeto.exist_tr %}disabled{% endif %}>
+                        {% if projeto.exist_tr %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                    </button>
+                    
                     <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="tr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_tr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_tr %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="tr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_tr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_tr %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>
 
             <!-- Edital Card -->
-            <div class="flex flex-col items-center">
-                <div class="w-full max-w-xs p-4 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                    <div class="flex justify-center icon-custom-dev text-6xl mb-3">
+            <div class="flex flex-col items-center" data-card-type="ed">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_ed %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_ed %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_ed %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-megaphone"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Edital</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um documento de Edital.</p>
-                    <button class="w-full text-white btn-custom-dev focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none">Em Desenvolvimento</button>
+                    
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_ed %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
+                            {% if projeto.exist_ed %}disabled{% endif %}>
+                        {% if projeto.exist_ed %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                    </button>
+                    
                     <div class="flex gap-2">
-                        <button type="button" title="Editar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-edit"></i></button>
-                        <button type="button" title="Visualizar documento" class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl"><i class="uil uil-file-alt"></i></button>
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="ed"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_ed %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_ed %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="ed"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_ed %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_ed %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
                     </div>
                 </div>
             </div>

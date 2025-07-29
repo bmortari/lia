@@ -47,7 +47,7 @@ class DFDRead(BaseModel):
         
         
 class QuantidadeJustificaTest(BaseModel):
-    id_do_item: int
+    id_do_item: Optional[int] = None  # ✅ CORRIGIDO: Agora aceita None
     descricao: Optional[str] = None
     quantidade: Optional[int] = None
 
@@ -100,4 +100,3 @@ class DFDUpdate(BaseModel):
 
     class Config:
         validate_by_name = True
-        

@@ -46,17 +46,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return alinhamentos;
     }
 
-    // Função auxiliar para extrair quantidade de itens
+    // ✅ FUNÇÃO ATUALIZADA: Extrair quantidade de itens dos campos de input
     function extrairQuantidadeItens() {
         const itemsContainer = document.getElementById('items-container');
         const quantidadeItens = [];
         
         if (itemsContainer) {
-            const itemRows = itemsContainer.querySelectorAll('.flex.items-center.gap-3');
+            const itemRows = itemsContainer.querySelectorAll('.item-row');
             
             itemRows.forEach((row, index) => {
-                const descricaoInput = row.querySelector('input[type="text"]');
-                const quantidadeInput = row.querySelector('input[type="number"]');
+                const descricaoInput = row.querySelector('.item-description');
+                const quantidadeInput = row.querySelector('.item-quantity');
                 
                 const descricao = descricaoInput?.value?.trim() || null;
                 const quantidade = quantidadeInput?.value ? parseInt(quantidadeInput.value) : null;
@@ -166,6 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
             throw error;
         }
     }
+
     function normalizarTexto(texto) {
         return texto
             .toLowerCase()
@@ -354,28 +355,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const itemsContainer = document.getElementById('items-container');
 
-    // Função para criar uma nova linha de item
-    const createItemRow = (item) => {
+    // ✅ FUNÇÃO ATUALIZADA: Criar uma nova linha de item
+    const createItemRow = (item = {}) => {
         const itemRow = document.createElement('div');
-        itemRow.className = 'flex items-center gap-3 p-2 border rounded-md';
+        itemRow.className = 'flex items-center gap-3 p-2 border rounded-md item-row';
 
         const descriptionInput = document.createElement('input');
         descriptionInput.type = 'text';
         descriptionInput.value = item.descricao || '';
         descriptionInput.placeholder = 'Descrição do item';
-        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md';
+        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md item-description';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.value = item.quantidade || '';
         quantityInput.placeholder = 'Qtd.';
-        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md';
+        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md item-quantity';
         quantityInput.min = '1';
 
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'text-red-500 hover:text-red-700';
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'text-red-500 hover:text-red-700 remove-item-btn';
         deleteBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
-        deleteBtn.onclick = () => itemRow.remove();
+        deleteBtn.onclick = () => {
+            // Verifica se há pelo menos uma linha antes de remover
+            const totalRows = itemsContainer.querySelectorAll('.item-row').length;
+            if (totalRows > 1) {
+                itemRow.remove();
+            } else {
+                exibirAlerta('Aviso', 'É necessário manter pelo menos um item.', 'warning');
+            }
+        };
 
         itemRow.appendChild(descriptionInput);
         itemRow.appendChild(quantityInput);
@@ -384,25 +394,29 @@ document.addEventListener('DOMContentLoaded', function () {
         return itemRow;
     };
 
-    // ✅ COMENTADO: Não popular itens automaticamente - deixar os do template
-    // if (itemsContainer) {
-    //     const items = jsonData.quantidade_justifica_a_ser_contratada;
-    //     if (Array.isArray(items)) {
-    //         items.forEach(item => {
-    //             itemsContainer.appendChild(createItemRow(item));
-    //         });
-    //     } else if (items) {
-    //         itemsContainer.appendChild(createItemRow(items));
-    //     }
-    // }
-
     // Event listener para o botão "Adicionar Item"
     const addItemBtn = document.getElementById('add-item-btn');
     if (addItemBtn && itemsContainer) {
         addItemBtn.addEventListener('click', () => {
-            itemsContainer.appendChild(createItemRow({}));
+            itemsContainer.appendChild(createItemRow());
         });
     }
+
+    // ✅ NOVO: Event listener para botões de remover item existentes
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.remove-item-btn')) {
+            e.preventDefault();
+            const button = e.target.closest('.remove-item-btn');
+            const itemRow = button.closest('.item-row');
+            const totalRows = itemsContainer.querySelectorAll('.item-row').length;
+            
+            if (totalRows > 1) {
+                itemRow.remove();
+            } else {
+                exibirAlerta('Aviso', 'É necessário manter pelo menos um item.', 'warning');
+            }
+        }
+    });
 
     // Event listener para todos os botões "Editar"
     document.querySelectorAll('.edit-btn').forEach(button => {
@@ -433,8 +447,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Substitua o bloco do event listener do botão "Salvar alterações" por este código:
-
+    // Event listener do botão "Salvar alterações"
     const botaoSalvarAlteracoes = document.querySelector('button:has(i.las.la-save)');
     if (botaoSalvarAlteracoes) {
         botaoSalvarAlteracoes.addEventListener('click', async function(e) {

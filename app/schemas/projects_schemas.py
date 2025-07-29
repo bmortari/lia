@@ -24,11 +24,25 @@ class ProjetoUpdate(BaseModel):
     nome: Optional[str] = None
     descricao: Optional[str] = None
     tipo: Optional[TipoProjetoEnum] = None
+    # Campos para controle de artefatos existentes
+    exist_dfd: Optional[bool] = None
+    exist_pdp: Optional[bool] = None
+    exist_etp: Optional[bool] = None
+    exist_mr: Optional[bool] = None
+    exist_tr: Optional[bool] = None
+    exist_ed: Optional[bool] = None
 
 class ProjetoRead(ProjetoBase):
     id_projeto: int
     user_created: str
     dt_created: datetime
+    # Campos para controle de artefatos existentes
+    exist_dfd: bool = False
+    exist_pdp: bool = False
+    exist_etp: bool = False
+    exist_mr: bool = False
+    exist_tr: bool = False
+    exist_ed: bool = False
 
     class Config:
         from_attributes = True  # Pydantic V2

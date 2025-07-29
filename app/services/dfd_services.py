@@ -84,15 +84,43 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
 
     resposta = resposta_ia[0]  # Extrai o dicionário de dentro da lista
     
-    quantidade_raw = resposta["quantidade_justifica_a_ser_contratada"].get("quantidade")
-
-    # Garante que seja int ou None
+    # ✅ CORREÇÃO: Processa e limpa os dados de quantidade_contratada
+    quantidade_contratada = resposta["quantidade_justifica_a_ser_contratada"]
+    
+    # Corrige o campo quantidade (já existia)
+    quantidade_raw = quantidade_contratada.get("quantidade")
     try:
         quantidade = int(quantidade_raw) if quantidade_raw not in [None, "null", ""] else None
     except ValueError:
         quantidade = None
+    quantidade_contratada["quantidade"] = quantidade
+    
+    # ✅ NOVA CORREÇÃO: Corrige o campo id_do_item
+    id_do_item_raw = quantidade_contratada.get("id_do_item")
+    try:
+        # Se for uma string como "A definir", converte para None
+        if isinstance(id_do_item_raw, str) and id_do_item_raw.strip().lower() in ["a definir", "", "null"]:
+            id_do_item = None
+        else:
+            id_do_item = int(id_do_item_raw) if id_do_item_raw not in [None, "null", ""] else None
+    except (ValueError, TypeError):
+        id_do_item = None
+    quantidade_contratada["id_do_item"] = id_do_item
+    
+    # ✅ Atualiza o objeto resposta com os dados limpos
+    resposta["quantidade_justifica_a_ser_contratada"] = quantidade_contratada
 
-    resposta["quantidade_justifica_a_ser_contratada"]["quantidade"] = quantidade
+    #resposta = resposta_ia[0]  # Extrai o dicionário de dentro da lista
+    
+    #quantidade_raw = resposta["quantidade_justifica_a_ser_contratada"].get("quantidade")
+
+    # Garante que seja int ou None
+    #try:
+    #    quantidade = int(quantidade_raw) if quantidade_raw not in [None, "null", ""] else None
+    #except ValueError:
+    #    quantidade = None
+
+    #resposta["quantidade_justifica_a_ser_contratada"]["quantidade"] = quantidade
     
     # Processar previsao_data_bem_servico
     previsao_str = resposta["previsao_da_entrega_do_bem_ou_inicio_dos_servicos"]

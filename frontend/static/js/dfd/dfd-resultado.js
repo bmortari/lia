@@ -4,14 +4,199 @@ const { jsPDF } = window.jspdf;
 // Configuração do endpoint
 const BASE_URL = window.location.origin;
 
+// ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
+function obterTokenAutenticacao() {
+    // Tenta buscar token em várias fontes
+    const tokenLocalStorage = localStorage.getItem('access_token') || localStorage.getItem('token');
+    const tokenSessionStorage = sessionStorage.getItem('access_token') || sessionStorage.getItem('token');
+    
+    // Função para buscar cookie por nome
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+    
+    const tokenCookie = getCookie('access_token') || getCookie('token') || getCookie('auth_token');
+    
+    return tokenLocalStorage || tokenSessionStorage || tokenCookie;
+}
 
-// Função para carregar dados do localStorage
+// ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
+async function fazerRequisicaoAutenticada(url, options = {}) {
+    const token = obterTokenAutenticacao();
+    
+    // Configuração base da requisição
+    const requestConfig = {
+        ...options,
+        credentials: 'include', // Inclui cookies automaticamente
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            ...options.headers
+        }
+    };
+    
+    // Se tiver token, adiciona ao header Authorization
+    if (token) {
+        requestConfig.headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    console.log('Fazendo requisição com config:', requestConfig);
+    
+    try {
+        const response = await fetch(url, requestConfig);
+        
+        // Se retornar 401, tenta sem token (talvez use só cookies)
+        if (response.status === 401 && token) {
+            console.log('Tentativa com token falhou, tentando só com cookies...');
+            delete requestConfig.headers['Authorization'];
+            return await fetch(url, requestConfig);
+        }
+        
+        return response;
+        
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        throw error;
+    }
+}
+
+// Função para extrair project_id da URL
+function getProjectIdFromUrl() {
+    const url = window.location.pathname;
+    const match = url.match(/\/projetos\/(\d+)\//);
+    return match ? match[1] : null;
+}
+
+// ✅ NOVA FUNÇÃO: Buscar dados do DFD no banco de dados
+async function buscarDadosDFD() {
+    try {
+        const projectId = getProjectIdFromUrl();
+        
+        if (!projectId) {
+            throw new Error('ID do projeto não encontrado na URL');
+        }
+        
+        console.log('Buscando DFD para o projeto:', projectId);
+        
+        const response = await fazerRequisicaoAutenticada(`/projetos/${projectId}/dfd`, {
+            method: 'GET',
+            headers: {
+                'remote-user': 'user.test',
+                'remote-groups': 'TI,OUTROS'
+            }
+        });
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('DFD não encontrado para este projeto');
+            } else if (response.status === 401) {
+                throw new Error('Você não está autenticado. Por favor, faça login novamente.');
+            } else if (response.status === 403) {
+                throw new Error('Você não tem permissão para visualizar este DFD.');
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`Erro ${response.status}: ${errorData.detail || 'Erro ao buscar DFD'}`);
+            }
+        }
+        
+        const dfdData = await response.json();
+        console.log('DFD carregado do banco:', dfdData);
+        
+        // Converter os dados do banco para o formato esperado pelo PDF
+        return converterDadosDFD(dfdData);
+        
+    } catch (error) {
+        console.error('Erro ao buscar dados do DFD:', error);
+        throw error;
+    }
+}
+
+// ✅ NOVA FUNÇÃO: Converter dados do banco para formato do JSON esperado
+function converterDadosDFD(dfdBanco) {
+    try {
+        // Processar alinhamento estratégico
+        let alinhamento_estrategico = [];
+        if (dfdBanco.alinhamento_estrategico) {
+            if (Array.isArray(dfdBanco.alinhamento_estrategico)) {
+                alinhamento_estrategico = dfdBanco.alinhamento_estrategico;
+            } else if (typeof dfdBanco.alinhamento_estrategico === 'string') {
+                // Se for string com vírgulas, dividir
+                alinhamento_estrategico = dfdBanco.alinhamento_estrategico
+                    .split(',')
+                    .map(item => item.trim())
+                    .filter(item => item.length > 0);
+            }
+        }
+        
+        // Processar quantidade contratada
+        let quantidade_justifica_a_ser_contratada = [];
+        if (dfdBanco.quantidade_contratada) {
+            if (Array.isArray(dfdBanco.quantidade_contratada)) {
+                quantidade_justifica_a_ser_contratada = dfdBanco.quantidade_contratada;
+            } else if (typeof dfdBanco.quantidade_contratada === 'object') {
+                // Se for um objeto único, converter para array
+                quantidade_justifica_a_ser_contratada = [dfdBanco.quantidade_contratada];
+            } else if (typeof dfdBanco.quantidade_contratada === 'string') {
+                // Se for string, criar um item padrão
+                quantidade_justifica_a_ser_contratada = [{
+                    id_do_item: 1,
+                    descricao: dfdBanco.quantidade_contratada,
+                    quantidade: 1
+                }];
+            }
+        }
+        
+        // Se não tiver itens válidos, criar um padrão
+        if (quantidade_justifica_a_ser_contratada.length === 0) {
+            quantidade_justifica_a_ser_contratada = [{
+                id_do_item: 1,
+                descricao: "Item não especificado",
+                quantidade: 1
+            }];
+        }
+        
+        // Processar data de previsão
+        let previsao_entrega = '';
+        if (dfdBanco.previsao_data_bem_servico) {
+            if (typeof dfdBanco.previsao_data_bem_servico === 'string') {
+                // Se já é uma string, usar diretamente
+                previsao_entrega = dfdBanco.previsao_data_bem_servico;
+            } else {
+                // Se é um objeto Date, formatar
+                const date = new Date(dfdBanco.previsao_data_bem_servico);
+                previsao_entrega = date.toLocaleDateString('pt-BR');
+            }
+        }
+        
+        // Montar objeto final no formato esperado
+        const dadosConvertidos = {
+            unidade_demandante: dfdBanco.unidade_demandante || "Unidade não especificada",
+            objeto_a_ser_contratado: dfdBanco.objeto_contratado || "Objeto não especificado",
+            justificativa: dfdBanco.justificativa_contratacao || "Justificativa não especificada",
+            quantidade_justifica_a_ser_contratada: quantidade_justifica_a_ser_contratada,
+            previsao_da_entrega_do_bem_ou_inicio_dos_servicos: previsao_entrega,
+            alinhamento_estrategico: alinhamento_estrategico,
+            equipe_de_planejamento: dfdBanco.equipe_de_planejamento || "Equipe não especificada"
+        };
+        
+        console.log('Dados convertidos para o PDF:', dadosConvertidos);
+        return dadosConvertidos;
+        
+    } catch (error) {
+        console.error('Erro ao converter dados do DFD:', error);
+        throw new Error('Erro ao processar dados do DFD');
+    }
+}
+
+// Função para carregar dados do localStorage (mantida como fallback)
 function loadDataFromStorage() {
     try {
         const savedData = localStorage.getItem('dfdDados');
         if (!savedData) {
             console.warn('Nenhum dado encontrado no localStorage');
-            showError('Nenhum dado encontrado. Retorne à página de curadoria para gerar o documento.');
             return null;
         }
         
@@ -20,7 +205,6 @@ function loadDataFromStorage() {
         return parsedData;
     } catch (error) {
         console.error('Erro ao carregar dados do localStorage:', error);
-        showError('Erro ao carregar os dados salvos. Retorne à página de curadoria.');
         return null;
     }
 }
@@ -45,6 +229,19 @@ function showSuccess(message) {
         loadingStatus.innerHTML = `
             <div class="inline-flex items-center text-green-700 bg-green-50 border border-green-200 font-medium rounded-lg text-sm px-4 py-2">
                 <i class="uil uil-check mr-2"></i>
+                ${message}
+            </div>
+        `;
+    }
+}
+
+// Função para exibir loading
+function showLoading(message) {
+    const loadingStatus = document.getElementById('loadingStatus');
+    if (loadingStatus) {
+        loadingStatus.innerHTML = `
+            <div class="inline-flex items-center text-blue-700 bg-blue-50 border border-blue-200 font-medium rounded-lg text-sm px-4 py-2">
+                <i class="uil uil-spinner animate-spin mr-2"></i>
                 ${message}
             </div>
         `;
@@ -534,30 +731,60 @@ function populateDocument(jsonData) {
     displayPDF(pdf);
 }
 
+// ✅ FUNÇÃO PRINCIPAL: Carregar e processar dados do DFD
+async function carregarDadosDFD() {
+    try {
+        showLoading('Buscando dados do DFD no banco de dados...');
+        
+        // Tentar buscar dados do banco primeiro
+        const dadosBanco = await buscarDadosDFD();
+        
+        if (dadosBanco) {
+            console.log('Dados carregados do banco, gerando PDF...');
+            showSuccess('Dados carregados do banco de dados! Gerando documento...');
+            
+            // Pequeno delay para mostrar o status de sucesso
+            setTimeout(() => {
+                populateDocument(dadosBanco);
+                
+                // Atualizar status para concluído
+                setTimeout(() => {
+                    showSuccess('Documento gerado com sucesso!');
+                }, 1000);
+            }, 500);
+            
+            return;
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do banco:', error);
+        showError(`Erro ao carregar DFD: ${error.message}`);
+        
+        // Tentar fallback para localStorage
+        console.log('Tentando carregar dados do localStorage como fallback...');
+        const savedData = loadDataFromStorage();
+        
+        if (savedData) {
+            console.log('Dados encontrados no localStorage, gerando PDF...');
+            showSuccess('Dados carregados do localStorage! Gerando documento...');
+            
+            setTimeout(() => {
+                populateDocument(savedData);
+                
+                setTimeout(() => {
+                    showSuccess('Documento gerado com sucesso! (usando dados locais)');
+                }, 1000);
+            }, 500);
+        } else {
+            showError('Nenhum dado encontrado. Retorne à página de curadoria para gerar o documento.');
+        }
+    }
+}
+
 // Event listener para carregar dados automaticamente quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Carregando dados do localStorage...');
-    
-    // Tentar carregar dados do localStorage
-    const savedData = loadDataFromStorage();
-    
-    if (savedData) {
-        console.log('Dados encontrados, gerando PDF...');
-        showSuccess('Dados carregados com sucesso! Gerando documento...');
-        
-        // Pequeno delay para mostrar o status de sucesso
-        setTimeout(() => {
-            populateDocument(savedData);
-            
-            // Atualizar status para concluído
-            setTimeout(() => {
-                showSuccess('Documento gerado com sucesso!');
-            }, 1000);
-        }, 500);
-    } else {
-        console.log('Nenhum dado encontrado no localStorage, usando dados de exemplo...');
-        showError('Dados não encontrados.');
-    }
+    console.log('Iniciando carregamento dos dados do DFD...');
+    carregarDadosDFD();
 });
 
 // Funcionalidade do botão de download
@@ -569,84 +796,6 @@ document.getElementById('downloadButton').addEventListener('click', function() {
         currentPDF.save(fileName);
     } else {
         alert('Nenhum documento foi gerado ainda. Por favor, aguarde o processamento.');
-    }
-});
-
-// Função para extrair project_id da URL
-function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)\//);
-    return match ? match[1] : null;
-}
-
-// Funcionalidade do botão salvar no banco
-document.getElementById('saveButton').addEventListener('click', async function() {
-    try {
-        // Obter o project_id da URL
-        const projectId = getProjectIdFromUrl();
-
-        // Obter os dados salvos do localStorage
-        const savedData = loadDataFromStorage();
-        
-        // // TEMPORÁRIO: Usar sampleJSON para testes
-        // const dataToSend = sampleJSON;
-        
-        if (!savedData) {
-            alert('Erro: Falha ao obter dados da curadoria. Por favor, retorne à página de curadoria e gere o documento novamente.');
-            return;
-        }
-
-        // Mostrar loading
-        const originalText = this.innerHTML;
-        this.disabled = true;
-        this.innerHTML = '<i class="uil uil-spinner animate-spin mr-2"></i>Salvando...';
-
-        // Fazer o POST para a API
-        const response = await fetch(`${BASE_URL}/projetos/${projectId}/save_dfd`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json',
-                'remote-user': 'user.test',
-                'remote-groups': 'TI,OUTROS'
-            },
-            body: JSON.stringify(savedData)
-        });
-
-        if (!response.ok) {
-            if (response.status === 409) {
-                // Status 409 Conflict - DFD já existe
-                alert('DFD já existente. Edite o DFD gerado, exclua ou comece um novo projeto.');
-
-                setTimeout(() => {
-                   window.location.href = `${BASE_URL}/projetos/${projectId}`;
-                }, 300);
-
-                return;
-            }
-            
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || `Erro HTTP: ${response.status}`);
-        }
-
-        const result = await response.json();
-        
-        // Sucesso
-        showSuccess('Documento salvo com sucesso no banco de dados!');
-        console.log('Resultado do salvamento:', result);
-
-        // Redirecionar após breve delay para mostrar a mensagem de sucesso
-        setTimeout(() => {
-            window.location.href = `${BASE_URL}/projetos/${projectId}`;
-        }, 300);
-        
-    } catch (error) {
-        console.error('Erro ao salvar documento:', error);
-        showError(`Erro ao salvar documento. Tente novamente mais tarde`);
-    } finally {
-        // Restaurar botão
-        this.disabled = false;
-        this.innerHTML = originalText;
     }
 });
 
