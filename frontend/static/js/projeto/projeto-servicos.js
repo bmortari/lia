@@ -33,92 +33,100 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Adiciona comportamento para botões desabilitados
-    const buttonsDisabled = document.querySelectorAll('.btn-disabled');
-    buttonsDisabled.forEach(button => {
+    // Event listeners para botões de editar, visualizar e deletar
+    const actionButtons = document.querySelectorAll('button[data-action]');
+    actionButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            return false;
+            
+            // Se o botão está desabilitado, não fazer nada
+            if (button.disabled || button.classList.contains('btn-disabled')) {
+                console.log('Botão desabilitado clicado');
+                return false;
+            }
+            
+            const action = button.getAttribute('data-action');
+            const service = button.getAttribute('data-service');
+            const projectId = button.getAttribute('data-project-id');
+            
+            console.log(`Action: ${action}, Service: ${service}, Project: ${projectId}`);
+            
+            // Verifica se é ação de delete
+            if (action === 'delete') {
+                // Só permite delete para DFD por enquanto
+                if (service === 'dfd') {
+                    showDeleteConfirmation(projectId, service);
+                } else {
+                    showServiceNotAvailable(service.toUpperCase() + ' DELETE');
+                }
+                return;
+            }
+            
+            // Verifica se o serviço está disponível
+            if (!isServiceAvailable(service) && action !== 'view') {
+                showServiceNotAvailable(service.toUpperCase());
+                return;
+            }
+            
+            // Monta a URL baseada no serviço e ação
+            let url = `/projetos/${projectId}`;
+            
+            if (action === 'edit') {
+                // Rotas para edição
+                switch (service) {
+                    case 'dfd':
+                        url += '/confere_dfd';
+                        break;
+                    case 'pdp':
+                        url += '/criar_pdp';
+                        break;
+                    case 'etp':
+                        url += '/criar_etp';
+                        break;
+                    case 'mr':
+                        url += '/criar_mr';
+                        break;
+                    case 'tr':
+                        url += '/criar_tr';
+                        break;
+                    case 'ed':
+                        url += '/criar_ed';
+                        break;
+                    default:
+                        console.error('Serviço não reconhecido:', service);
+                        return;
+                }
+            } else if (action === 'view') {
+                // Rotas para visualização
+                switch (service) {
+                    case 'dfd':
+                        url += '/visualizacao_dfd';
+                        break;
+                    case 'pdp':
+                        url += '/visualizacao_pdp';
+                        break;
+                    case 'etp':
+                        url += '/visualizacao_etp';
+                        break;
+                    case 'mr':
+                        url += '/visualizacao_mr';
+                        break;
+                    case 'tr':
+                        url += '/visualizacao_tr';
+                        break;
+                    case 'ed':
+                        url += '/visualizacao_ed';
+                        break;
+                    default:
+                        console.error('Serviço não reconhecido:', service);
+                        return;
+                }
+            }
+            
+            // Redireciona para a URL construída
+            window.location.href = url;
         });
-    });
-
-    // Event listeners para botões de editar e visualizar
-    const actionButtons = document.querySelectorAll('button[data-action]');
-    actionButtons.forEach(button => {
-        if (!button.disabled) {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                const action = button.getAttribute('data-action');
-                const service = button.getAttribute('data-service');
-                const projectId = button.getAttribute('data-project-id');
-                
-                // Verifica se o serviço está disponível
-                if (!isServiceAvailable(service) && action !== 'view') {
-                    showServiceNotAvailable(service.toUpperCase());
-                    return;
-                }
-                
-                // Monta a URL baseada no serviço e ação
-                let url = `/projetos/${projectId}`;
-                
-                if (action === 'edit') {
-                    // Rotas para edição
-                    switch (service) {
-                        case 'dfd':
-                            url += '/confere_dfd';
-                            break;
-                        case 'pdp':
-                            url += '/criar_pdp';
-                            break;
-                        case 'etp':
-                            url += '/criar_etp';
-                            break;
-                        case 'mr':
-                            url += '/criar_mr';
-                            break;
-                        case 'tr':
-                            url += '/criar_tr';
-                            break;
-                        case 'ed':
-                            url += '/criar_ed';
-                            break;
-                        default:
-                            console.error('Serviço não reconhecido:', service);
-                            return;
-                    }
-                } else if (action === 'view') {
-                    // Rotas para visualização
-                    switch (service) {
-                        case 'dfd':
-                            url += '/visualizacao_dfd';
-                            break;
-                        case 'pdp':
-                            url += '/visualizacao_pdp';
-                            break;
-                        case 'etp':
-                            url += '/visualizacao_etp';
-                            break;
-                        case 'mr':
-                            url += '/visualizacao_mr';
-                            break;
-                        case 'tr':
-                            url += '/visualizacao_tr';
-                            break;
-                        case 'ed':
-                            url += '/visualizacao_ed';
-                            break;
-                        default:
-                            console.error('Serviço não reconhecido:', service);
-                            return;
-                    }
-                }
-                
-                // Redireciona para a URL construída
-                window.location.href = url;
-            });
-        }
     });
 
     // Inicializar estado dos cards baseado nos dados do projeto
@@ -141,7 +149,157 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     });
+
+    // Event listeners para o modal de confirmação de delete
+    setupDeleteModal();
 });
+
+// Função para configurar o modal de delete
+function setupDeleteModal() {
+    const cancelBtn = document.getElementById('cancelDelete');
+    const modal = document.getElementById('deleteModal');
+    
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            hideDeleteConfirmation();
+        });
+    }
+    
+    // Fecha modal ao clicar fora dele
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideDeleteConfirmation();
+            }
+        });
+    }
+    
+    // Fecha modal com ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+            hideDeleteConfirmation();
+        }
+    });
+}
+
+// Função para mostrar modal de confirmação de delete
+function showDeleteConfirmation(projectId, service) {
+    console.log(`Mostrando confirmação de delete para projeto ${projectId}, serviço ${service}`);
+    
+    const modal = document.getElementById('deleteModal');
+    const confirmBtn = document.getElementById('confirmDelete');
+    
+    if (!modal || !confirmBtn) {
+        console.error('Modal ou botão de confirmação não encontrado');
+        return;
+    }
+    
+    // Remove event listeners anteriores clonando o botão
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    
+    // Adiciona novo event listener
+    newConfirmBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        executeDelete(projectId, service);
+    });
+    
+    // Mostra o modal
+    modal.classList.remove('hidden');
+    
+    // Impede scroll do body
+    document.body.style.overflow = 'hidden';
+    
+    console.log('Modal de confirmação exibido');
+}
+
+// Função para esconder modal de confirmação
+function hideDeleteConfirmation() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        
+        // Restaura scroll do body
+        document.body.style.overflow = '';
+    }
+}
+
+// Função para executar o delete
+async function executeDelete(projectId, service) {
+    console.log(`Executando delete para projeto ${projectId}, serviço ${service}`);
+    
+    try {
+        // Mostra loading no botão
+        const confirmBtn = document.getElementById('confirmDelete');
+        if (confirmBtn) {
+            confirmBtn.textContent = 'Deletando...';
+            confirmBtn.disabled = true;
+        }
+        
+        // Faz a requisição de delete
+        const response = await fetch(`/projetos/${projectId}/dfd`, {
+            method: 'DELETE',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+                'remote-user': 'user.test', // REMOVER O HARDCODING AO COLOCAR EM PRODUÇÃO
+                'remote-groups': 'TI,OUTROS' // REMOVER O HARDCODING AO COLOCAR EM PRODUÇÃO
+            }
+        });
+        
+        if (response.ok) {
+            console.log('DFD deletado com sucesso');
+            
+            // Sucesso - atualiza a interface
+            updateCardState(service, false);
+            hideDeleteConfirmation();
+            
+            // Mostra mensagem de sucesso
+            showSuccessMessage('DFD deletado com sucesso!');
+            
+        } else {
+            const errorData = await response.json().catch(() => ({ detail: 'Erro desconhecido' }));
+            throw new Error(errorData.detail || `Erro HTTP ${response.status}`);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao deletar:', error);
+        alert('Erro ao deletar DFD: ' + error.message);
+        
+        // Restaura botão
+        const confirmBtn = document.getElementById('confirmDelete');
+        if (confirmBtn) {
+            confirmBtn.textContent = 'Sim, deletar';
+            confirmBtn.disabled = false;
+        }
+    }
+}
+
+// Função para mostrar mensagem de sucesso
+function showSuccessMessage(message) {
+    // Cria elemento de notificação
+    const notification = document.createElement('div');
+    notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
+    notification.innerHTML = `
+        <div class="flex items-center">
+            <i class="uil uil-check-circle mr-2"></i>
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove após 3 segundos
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}
 
 // Função para inicializar o estado visual dos cards
 function initializeCardStates() {
@@ -162,6 +320,7 @@ function initializeCardStates() {
 function updateTooltips() {
     const editButtons = document.querySelectorAll('button[title="Editar documento"]');
     const viewButtons = document.querySelectorAll('button[title="Visualizar documento"]');
+    const deleteButtons = document.querySelectorAll('button[title="Deletar documento"]');
 
     editButtons.forEach(button => {
         if (button.disabled) {
@@ -172,6 +331,12 @@ function updateTooltips() {
     viewButtons.forEach(button => {
         if (button.disabled) {
             button.title = "Crie o artefato primeiro para poder visualizá-lo";
+        }
+    });
+
+    deleteButtons.forEach(button => {
+        if (button.disabled) {
+            button.title = "Crie o artefato primeiro para poder deletá-lo";
         }
     });
 }
@@ -228,8 +393,13 @@ function updateCardVisualState(cardType, hasArtifact) {
 
 // Função para atualizar o estado de um card (pode ser chamada via AJAX)
 window.updateCardState = function(cardType, hasArtifact) {
+    console.log(`Atualizando estado do card ${cardType} para hasArtifact: ${hasArtifact}`);
+    
     const cardElement = document.querySelector(`[data-card-type="${cardType}"]`);
-    if (!cardElement) return;
+    if (!cardElement) {
+        console.error(`Card do tipo ${cardType} não encontrado`);
+        return;
+    }
 
     const card = cardElement.querySelector('.w-full.max-w-xs');
     const icon = cardElement.querySelector('.text-6xl');
@@ -237,6 +407,7 @@ window.updateCardState = function(cardType, hasArtifact) {
     const generateButton = cardElement.querySelector('button[id^="gera_"], button:first-of-type');
     const editButton = cardElement.querySelector('button[data-action="edit"]');
     const viewButton = cardElement.querySelector('button[data-action="view"]');
+    const deleteButton = cardElement.querySelector('button[data-action="delete"]');
 
     // Atualiza estado visual
     updateCardVisualState(cardType, hasArtifact);
@@ -262,6 +433,20 @@ window.updateCardState = function(cardType, hasArtifact) {
             viewButton.disabled = false;
             viewButton.classList.remove('btn-disabled');
             viewButton.title = 'Visualizar documento';
+        }
+        
+        // Habilita botão de deletar (apenas para DFD por enquanto)
+        if (deleteButton && cardType === 'dfd') {
+            deleteButton.disabled = false;
+            deleteButton.classList.remove('btn-disabled');
+            deleteButton.title = 'Deletar documento';
+            
+            // Força a cor vermelha do botão delete
+            if (!deleteButton.classList.contains('btn-danger')) {
+                deleteButton.classList.add('btn-danger');
+            }
+            
+            console.log('Botão de delete habilitado para DFD');
         }
     } else {
         // Atualiza botão de gerar
@@ -301,6 +486,17 @@ window.updateCardState = function(cardType, hasArtifact) {
             }
             viewButton.title = 'Crie o artefato primeiro para poder visualizá-lo';
         }
+        
+        // Desabilita botão de deletar
+        if (deleteButton) {
+            deleteButton.disabled = true;
+            if (!deleteButton.classList.contains('btn-disabled')) {
+                deleteButton.classList.add('btn-disabled');
+            }
+            deleteButton.title = 'Crie o artefato primeiro para poder deletá-lo';
+            
+            console.log('Botão de delete desabilitado');
+        }
     }
 };
 
@@ -316,7 +512,12 @@ window.showServiceNotAvailable = function(serviceName) {
         'ETP': 'Estudo Técnico Preliminar',
         'MR': 'Mapa de Riscos',
         'TR': 'Termo de Referência',
-        'ED': 'Edital'
+        'ED': 'Edital',
+        'PDP DELETE': 'Deletar Pesquisa de Preços',
+        'ETP DELETE': 'Deletar Estudo Técnico Preliminar',
+        'MR DELETE': 'Deletar Mapa de Riscos',
+        'TR DELETE': 'Deletar Termo de Referência',
+        'ED DELETE': 'Deletar Edital'
     };
     
     const fullName = serviceNames[serviceName] || serviceName;

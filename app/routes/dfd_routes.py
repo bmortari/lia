@@ -157,7 +157,7 @@ async def patch_dfd(
     project_id: int,
     dfd_upd: DFDUpdate,
     db: AsyncSession = Depends(get_db),
-    current_user: RemoteUser = Depends(get_current_remote_user)  # ✅ MESMO PADRÃO DA ROTA QUE FUNCIONA
+    current_user: RemoteUser = Depends(get_current_remote_user)
 ):
     try:
         dfd_atualizado = await update_dfd_for_project(
@@ -167,7 +167,6 @@ async def patch_dfd(
             current_user=current_user
         )
         
-        # ✅ RETORNA O OBJETO ATUALIZADO COMO JSON (mesmo padrão)
         return dfd_atualizado
         
     except HTTPException:
@@ -176,20 +175,28 @@ async def patch_dfd(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/projetos/{project_id}/dfd", status_code=204)
+@router.delete("/projetos/{project_id}/dfd", status_code=200)
 async def delete_dfd(
     project_id: int,
     db: AsyncSession = Depends(get_db),
     current_user: RemoteUser = Depends(get_current_remote_user)
 ):
+    """
+    Deleta um DFD específico de um projeto
+    """
     try:
         await delete_dfd_for_project(
             project_id=project_id,
             db=db,
             current_user=current_user
         )
+        
+        # Retorna uma resposta de sucesso com status 200
+        return {"message": "DFD deletado com sucesso", "project_id": project_id}
     
     except HTTPException:
+        # Re-levanta HTTPExceptions (404, 403, etc.)
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # Captura outros erros inesperados
+        raise HTTPException(status_code=500, detail=f"Erro interno ao deletar DFD: {str(e)}")

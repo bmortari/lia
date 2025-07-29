@@ -421,29 +421,87 @@ async def update_dfd_for_project(project_id: int, dfd_upd: DFDUpdate, db: AsyncS
 
 
 
+
 async def delete_dfd_for_project(project_id: int, db: AsyncSession, current_user: RemoteUser) -> None:
-    # Corrigido: carrega o projeto relacionado junto com o DFD
-    stmt = (
-        select(DFD)
-        .options(selectinload(DFD.projeto))
-        .where(DFD.id_projeto == project_id)
-    )
-    result = await db.execute(stmt)
-    dfd = result.scalars().first()
-
-    if not dfd:
-        raise HTTPException(status_code=404, detail="DFD não encontrado para este projeto.")
-
-    # Verifica permissão
-    if dfd.user_created != current_user.username and dfd.projeto.user_created != current_user.username:
-        raise HTTPException(status_code=403, detail="Você não tem permissão para deletar este DFD.")
-
-    # Executa o delete
-    del_stmt = delete(DFD).where(DFD.id_projeto == project_id)
-    await db.execute(del_stmt)
+    """
+    Deleta um DFD de um projeto específico.
     
-    # Atualiza o campo exist_dfd do projeto para False
-    update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_dfd=False)
-    await db.execute(update_stmt)
-    
-    await db.commit()
+    Args:
+        project_id: ID do projeto
+        db: Sessão do banco de dados
+        current_user: Usuário atual autenticado
+        
+    Raises:
+        HTTPException: 404 se DFD não encontrado, 403 se sem permissão
+    """
+    try:
+        # Busca o DFD com o projeto relacionado
+        stmt = (
+            select(DFD)
+            .options(selectinload(DFD.projeto))
+            .where(DFD.id_projeto == project_id)
+        )
+        result = await db.execute(stmt)
+        dfd = result.scalars().first()
+
+        # Verifica se o DFD existe
+        if not dfd:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"DFD não encontrado para o projeto {project_id}"
+            )
+
+        # Verifica permissão: usuário deve ser criador do DFD ou do projeto
+        if (dfd.user_created != current_user.username and 
+            dfd.projeto.user_created != current_user.username):
+            raise HTTPException(
+                status_code=403, 
+                detail="Você não tem permissão para deletar este DFD"
+            )
+
+        # Executa o delete do DFD
+        del_stmt = delete(DFD).where(DFD.id_projeto == project_id)
+        delete_result = await db.execute(del_stmt)
+        
+        # Verifica se algo foi deletado
+        if delete_result.rowcount == 0:
+            raise HTTPException(
+                status_code=404,
+                detail="DFD não encontrado ou já foi deletado"
+            )
+        
+        # Atualiza o campo exist_dfd do projeto para False
+        update_stmt = (
+            update(Projeto)
+            .where(Projeto.id_projeto == project_id)
+            .values(exist_dfd=False)
+        )
+        update_result = await db.execute(update_stmt)
+        
+        # Verifica se o projeto foi atualizado
+        if update_result.rowcount == 0:
+            # Se não conseguiu atualizar o projeto, faz rollback
+            await db.rollback()
+            raise HTTPException(
+                status_code=404,
+                detail="Projeto não encontrado para atualizar"
+            )
+        
+        # Confirma as alterações
+        await db.commit()
+        
+        print(f"DFD do projeto {project_id} deletado com sucesso por {current_user.username}")
+        
+    except HTTPException:
+        # Re-levanta HTTPExceptions sem modificar
+        await db.rollback()
+        raise
+        
+    except Exception as e:
+        # Rollback em caso de erro inesperado
+        await db.rollback()
+        print(f"Erro inesperado ao deletar DFD: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erro interno ao deletar DFD: {str(e)}"
+        )
