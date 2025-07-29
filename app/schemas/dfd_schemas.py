@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Union
 from datetime import datetime
 
 class DFDCreate(BaseModel):
@@ -36,7 +36,7 @@ class DFDRead(BaseModel):
     # Alterados para corresponder aos nomes dos campos no seu modelo DFD (do banco)
     objeto_contratado: str
     justificativa_contratacao: str
-    quantidade_contratada: List[QuantidadeJustificativa] # Ajustado para o nome do campo
+    quantidade_contratada: Union[List[QuantidadeJustificativa], QuantidadeJustificativa] # Ajustado para o nome do campo
     # A data é salva como datetime, então deve ser lida como datetime
     previsao_data_bem_servico: datetime
     alinhamento_estrategico: List[str]
