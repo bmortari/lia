@@ -15,38 +15,48 @@
         body {
             background-color: #f9fafb;
         }
-        /* Custom styling for search results */
-        .search-result-item {
+        
+        .solution-card {
             transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideInUp 0.6s ease forwards;
         }
-        .search-result-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        .solution-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
         }
-        /* Spinning animation for loading */
-        @keyframes spin {
+        
+        @keyframes slideInUp {
             from {
-                transform: rotate(0deg);
+                opacity: 0;
+                transform: translateY(20px);
             }
             to {
-                transform: rotate(360deg);
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
+        
+        /* Spinning animation for loading */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         .animate-spin-icon {
             display: inline-block;
             animation: spin 1.5s linear infinite;
         }
+        
         .btn-custom {
             background-color: #0097B2;
         }
-
         .btn-custom:hover {
             background-color: #007d96;
         }
-
         .btn-custom:focus {
             box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
         }
+        
         .checkbox-custom:checked {
             background-color: #0097B2;
             border-color: #0097B2;
@@ -60,117 +70,125 @@
             border-color: #0097B2;
             background-color: transparent;
         }
-
         #voltar-inicio:focus {
             box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
             outline: none;
         }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 h-screen flex items-center justify-center">
+<body class="bg-gray-50 text-gray-800">
 
     <!-- Main Container -->
     <div class="container mx-auto p-8 max-w-7xl">
 
-        <!-- Back Button -->
-        <div class="mb-6 flex justify-end">
-            <button id="voltar-inicio" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-                <i class="uil uil-arrow-left mr-2"></i>
-                Voltar ao início
-            </button>
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Pesquisa de Preços</h1>
+                    <p class="text-gray-600 mt-2">Análise de mercado baseada em contratos públicos</p>
+                </div>
+                <button id="voltar-inicio" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors border border-current px-4 py-2 rounded-lg">
+                    <i class="uil uil-arrow-left mr-2"></i>
+                    Voltar ao início
+                </button>
+            </div>
         </div>
 
-        <form id="pesquisa-preco-form">
-            <!-- Main Content Grid -->
-            <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Análise da IA - Cards de Soluções -->
+        <div id="solucoes-ia-section" class="mb-8 hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="uil uil-brain mr-3 text-blue-600"></i>
+                    Soluções Identificadas pela IA
+                </h2>
+                <p class="text-gray-600 mt-2">Baseado na análise do seu projeto, encontramos as seguintes opções:</p>
+            </div>
+            
+            <div id="solucoes-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <!-- Cards serão inseridos aqui pelo JavaScript -->
+            </div>
+        </div>
 
-                <!-- Left Section: Search Form -->
-                <div class="space-y-6">
-                    <!-- Search Text Area -->
-                    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-                        <div class="flex items-center justify-between mb-4">
-                            <label for="pesquisa-objeto" class="block text-lg font-medium text-gray-900">
-                                Descreva em detalhes objetos similares
-                            </label>
-                            <button data-tooltip-target="tooltip-pesquisa" type="button" class="text-gray-400 hover:text-gray-600">
-                                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                </svg>
-                                <span class="sr-only">Info</span>
-                            </button>
-                            <div id="tooltip-pesquisa" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
-                                <!-- <h3 class="font-bold mb-2">Dicas para uma boa pesquisa:</h3>
-                                <ul class="list-disc ml-4 space-y-1">
-                                    <li>Seja específico sobre o produto ou serviço</li>
-                                    <li>Inclua características técnicas importantes</li>
-                                    <li>Mencione quantidades aproximadas</li>
-                                    <li>Informe se há preferências de marca ou modelo</li>
-                                </ul> -->
-                                <div class="tooltip-arrow" data-popper-arrow></div>
+        <!-- Formulário de Busca Simplificado -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Refinar Busca</h3>
+                <div class="text-sm text-gray-500">
+                    <i class="uil uil-search mr-1"></i>
+                    Personalize sua pesquisa de preços
+                </div>
+            </div>
+
+            <form id="pesquisa-preco-form">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Campo de Palavras-chave -->
+                    <div class="lg:col-span-2">
+                        <label for="palavras-chave" class="block text-sm font-medium text-gray-900 mb-3">
+                            <i class="uil uil-tag-alt mr-1"></i>
+                            Palavras-chave para busca
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                id="palavras-chave" 
+                                name="palavras-chave" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 pr-12" 
+                                placeholder="Ex: software, desenvolvimento, licença, manutenção"
+                            >
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4">
+                                <i class="uil uil-search text-gray-400"></i>
                             </div>
                         </div>
-                        <textarea 
-                            id="pesquisa-objeto" 
-                            rows="12" 
-                            class="block p-4 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" 
-                            placeholder="Ex: Faça uma pesquisa de preço no assunto operador de som, um funcionario que cuidará do audio e video nos dias das sessoes plenarias. São 14 sessoes plenarias por mes. Operação técnica especializada nos equipamentos de áudio e vídeo durante as Sessões Plenárias"></textarea>
-                        <div class="flex justify-end mt-4">
-                            <button type="submit" id="enviar-pesquisa" class="flex items-center text-white btn-custom font-medium rounded-lg text-sm px-8 py-2.5 transition-colors">
-                                Enviar
-                            </button>
-                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            💡 Use palavras específicas do seu objeto de contratação separadas por vírgula
+                        </p>
                     </div>
-                </div>
 
-                <!-- Right Section: Filters -->
-                <div class="space-y-6">
-                    <!-- Filters Card -->
-                    <div class="p-8 bg-white border border-gray-200 rounded-lg shadow-sm h-fit">
-                        <h3 class="text-lg font-bold text-gray-900 mb-6">Filtros:</h3>
-                        
-                        <!-- Filtros em formato de botões -->
-                        <div class="flex flex-wrap gap-3 mb-6">
-                            <!-- Esfera Filter Button -->
-                            <button type="button" id="filter-esfera-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <i class="uil uil-building mr-2"></i>
-                                <span id="esfera-btn-text">Esfera</span>
-                                <span id="esfera-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">4</span>
-                            </button>
-
-                            <!-- UF Filter Button -->
-                            <button type="button" id="filter-uf-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <i class="uil uil-map-marker mr-2"></i>
-                                <span id="uf-btn-text">UF</span>
-                                <span id="uf-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">27</span>
-                            </button>
-
-                            <!-- Modalidade Filter Button -->
-                            <button type="button" id="filter-modalidade-btn" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <i class="uil uil-file-alt mr-2"></i>
-                                <span id="modalidade-btn-text">Modalidade</span>
-                                <span id="modalidade-count" class="ml-1.5 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-full">10</span>
-                            </button>
-
-                            <!-- Clear Filters Button -->
-                            <button type="button" id="clear-all-filters" class="inline-flex items-center px-3 py-1.5 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500">
-                                <i class="uil uil-times mr-2"></i>
-                                Limpar Filtros
-                            </button>
-                        </div>
-
-                        <!-- Palavras-chave input -->
+                    <!-- Filtros Rápidos -->
+                    <div class="space-y-4">
                         <div>
-                            <label for="palavras-chave" class="block text-sm font-medium text-gray-900 mb-2">
-                                Palavras-chave
-                                <span class="text-gray-500 text-xs">(Insira no mínimo três palavras separadas por vírgula)</span>
+                            <label class="block text-sm font-medium text-gray-900 mb-3">
+                                <i class="uil uil-filter mr-1"></i>
+                                Filtros Rápidos
                             </label>
-                            <input type="text" id="palavras-chave" name="palavras-chave" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Ex: software, desenvolvimento, licença">
+                            
+                            <!-- Filtros em botões -->
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <button type="button" id="filter-esfera-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <i class="uil uil-building mr-2"></i>
+                                    <span id="esfera-btn-text">Esfera</span>
+                                    <span id="esfera-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">4</span>
+                                </button>
+
+                                <button type="button" id="filter-uf-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <i class="uil uil-map-marker mr-2"></i>
+                                    <span id="uf-btn-text">UF</span>
+                                    <span id="uf-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">27</span>
+                                </button>
+
+                                <button type="button" id="filter-modalidade-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <i class="uil uil-file-alt mr-2"></i>
+                                    <span id="modalidade-btn-text">Modalidade</span>
+                                    <span id="modalidade-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">10</span>
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Botão de Busca -->
+                        <button type="submit" id="enviar-pesquisa" class="w-full flex items-center justify-center text-white btn-custom font-medium rounded-lg text-lg px-6 py-4 transition-colors hover:shadow-lg">
+                            <i class="uil uil-search mr-2"></i>
+                            Buscar Preços
+                        </button>
                     </div>
                 </div>
-
-            </main>
-        </form>
+            </form>
+        </div>
 
         <!-- Search Results Section -->
         <div id="resultados-section" class="mt-8 hidden">
@@ -183,67 +201,24 @@
             <div id="resultados-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-96">
                 <!-- Results will be populated here by JavaScript -->
             </div>
-
-            <!-- Pagination -->
-            <div class="flex items-center justify-center mt-8">
-                <nav aria-label="Page navigation">
-                    <ul class="flex items-center -space-x-px h-8 text-sm">
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">
-                                <span class="sr-only">Previous</span>
-                                <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-                                </svg>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">2</a>
-                        </li>
-                        <li>
-                            <a href="#" aria-current="page" class="z-10 flex items-center justify-center px-3 h-8 leading-tight text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">3</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">4</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">5</a>
-                        </li>
-                        <li>
-                            <a href="#" class="flex items-center justify-center px-3 h-8 px-3 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">
-                                <span class="sr-only">Next</span>
-                                <svg class="w-2.5 h-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
         </div>
     </div>
 
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
-            <!-- Spinning Gear Icon -->
             <div class="mb-4">
                 <i class="uil uil-cog text-blue-600 text-5xl animate-spin-icon"></i>
             </div>
-            
             <h3 class="text-xl font-bold text-gray-900 mb-2">Pesquisando Preços</h3>
             <p class="text-gray-600 mb-6">Analisando bases de dados de compras públicas...</p>
-            
-            <!-- Progress Bar -->
             <div class="w-full bg-gray-200 rounded-full h-2.5">
                 <div id="progress-bar" class="btn-custom h-2.5 rounded-full" style="width: 0%"></div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Modals -->
+    <!-- Filter Modals (mantidos iguais) -->
     
     <!-- Esfera Filter Modal -->
     <div id="filter-esfera-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
@@ -353,6 +328,12 @@
         </div>
     </div>
 
-    <script src="/static/js/pdp/pdp-solicitacao.js" defer></script>
+    <!-- Scripts -->
+    <script>
+        window.analiseInicial = {{ analise_inicial | tojson | safe }};
+        console.log('Análise inicial:', window.analiseInicial);
+    </script>
+    
+    <script src="/static/js/pdp/pdp-inicial.js" defer></script>
 </body>
 </html>

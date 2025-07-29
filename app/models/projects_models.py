@@ -34,4 +34,4 @@ class Projeto(Base):
     
     dfds = relationship("app.models.dfd_models.DFD", back_populates="projeto", cascade="all, delete-orphan")
     pdps = relationship("app.models.pdp_models.PDP", back_populates="projeto", cascade="all, delete-orphan")
-    etps = relationship("app.models.pdp_models.ETP", back_populates="projeto", cascade="all, delete-orphan")
+    #etps = relationship("app.models.pdp_models.ETP", back_populates="projeto", cascade="all, delete-orphan")
