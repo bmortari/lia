@@ -749,11 +749,20 @@ function generatePDF(jsonData) {
 
 // Função para exibir PDF no visualizador
 function displayPDF(pdf) {
-    const pdfDataUri = pdf.output('datauristring');
+    const pdfBlob = pdf.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
     const pdfViewer = document.getElementById('pdfViewer');
     const pdfPlaceholder = document.getElementById('pdfPlaceholder');
     
-    pdfViewer.src = pdfDataUri;
+    pdfViewer.src = pdfUrl;
+    
+    pdfViewer.onload = () => {
+        // Revogar a URL do objeto para liberar memória após o carregamento
+        URL.revokeObjectURL(pdfUrl);
+        console.log('PDF carregado e URL do objeto revogada.');
+    };
+
     pdfPlaceholder.style.display = 'none';
     pdfViewer.style.display = 'block';
 }
