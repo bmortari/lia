@@ -156,7 +156,7 @@ async def create_dfd_service(dfd_in: DFDCreate, db: AsyncSession, current_user: 
         unidade_demandante=current_user.group,  # ou outro campo apropriado
         objeto_contratado=resposta["objeto_a_ser_contratado"],
         justificativa_contratacao=resposta["justificativa"],
-        quantidade_contratada=resposta["quantidade_justifica_a_ser_contratada"],
+        quantidade_contratada=[resposta["quantidade_justifica_a_ser_contratada"]],
         previsao_data_bem_servico=previsao_data,
         alinhamento_estrategico=resposta["alinhamento_estrategico"],
         equipe_de_planejamento=equipe_str,
