@@ -314,407 +314,437 @@ function wrapText(text, maxWidth) {
 
 // Função para gerar PDF a partir dos dados JSON
 function generatePDF(jsonData) {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 15; // Margem reduzida para tornar tabelas mais largas
-    const lineHeight = 7; // Aumentado para melhor espaçamento com fontes maiores
-    const maxWidth = pageWidth - (margin * 2); // Largura total menos margens
-    const textMaxWidth = 70; // caracteres por linha para quebra de texto
-    let yPosition = 30;
-
-    // Cabeçalho - Nome da instituição
-    doc.setFontSize(9);
-    doc.setFont("times", "normal");
-    doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 6;
-    
-    // Linha do endereço
-    doc.setFontSize(8);
-    doc.setFont("times", "normal");
-    doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 15;
-
-    // Título do documento e número
-    doc.setFontSize(12);
-    doc.setFont("times", "bold");
-    const currentDate = new Date().toLocaleDateString('pt-BR');
-    const docTitle = `DFD - DOCUMENTO DE FORMALIZAÇÃO DA DEMANDA - ${currentDate}`;
-    doc.text(docTitle, pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 10;
-    
-    doc.setFontSize(11);
-    doc.text("ANEXO I", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 15;
-
-    doc.setFontSize(11);
-    doc.text("DOCUMENTO DE FORMALIZAÇÃO DE DEMANDA (DFD)/FORMULÁRIO PARA PEDIDO DE", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 5;
-    doc.text("AQUISIÇÃO/CONTRATAÇÃO (FPA)", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 20;
-
-    // Função auxiliar para normalizar texto (remove acentos, espaços extras, converte para minúsculo)
-    function normalizeText(text) {
-        return text
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-            .replace(/\s+/g, ' ') // Remove espaços extras
-            .trim();
-    }
-
-    // Função auxiliar para calcular similaridade entre duas strings
-    function calculateSimilarity(str1, str2) {
-        const s1 = normalizeText(str1);
-        const s2 = normalizeText(str2);
+    return new Promise((resolve) => {
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 15; // Margem reduzida para tornar tabelas mais largas
+        const lineHeight = 7; // Aumentado para melhor espaçamento com fontes maiores
+        const maxWidth = pageWidth - (margin * 2); // Largura total menos margens
+        const textMaxWidth = 70; // caracteres por linha para quebra de texto
         
-        // Se uma string contém a outra (após normalização), considera alta similaridade
-        if (s1.includes(s2) || s2.includes(s1)) {
-            return 0.9;
-        }
-        
-        // Verifica palavras-chave em comum
-        const words1 = s1.split(' ').filter(p => p.length > 2);
-        const words2 = s2.split(' ').filter(p => p.length > 2);
-        
-        let commonWords = 0;
-        words1.forEach(p1 => {
-            if (words2.some(p2 => p1.includes(p2) || p2.includes(p1))) {
-                commonWords++;
+        const brasaoImg = new Image();
+        brasaoImg.src = '/static/assets/img/brasao_oficial_republica.png';
+
+        const proceedWithPdf = (yPosition) => {
+            // Título do documento e número
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            const currentDate = new Date().toLocaleDateString('pt-BR');
+            const docTitle = `DFD - DOCUMENTO DE FORMALIZAÇÃO DA DEMANDA - ${currentDate}`;
+            doc.text(docTitle, pageWidth/2, yPosition, { align: 'center' });
+            yPosition += 10;
+            
+            doc.setFontSize(11);
+            doc.text("ANEXO I", pageWidth/2, yPosition, { align: 'center' });
+            yPosition += 15;
+
+            doc.setFontSize(11);
+            doc.text("DOCUMENTO DE FORMALIZAÇÃO DE DEMANDA (DFD)/FORMULÁRIO PARA PEDIDO DE", pageWidth/2, yPosition, { align: 'center' });
+            yPosition += 5;
+            doc.text("AQUISIÇÃO/CONTRATAÇÃO (FPA)", pageWidth/2, yPosition, { align: 'center' });
+            yPosition += 20;
+
+            // Função auxiliar para normalizar texto (remove acentos, espaços extras, converte para minúsculo)
+            function normalizeText(text) {
+                return text
+                    .toLowerCase()
+                    .normalize('NFD')
+                    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+                    .replace(/\s+/g, ' ') // Remove espaços extras
+                    .trim();
             }
-        });
-        
-        const maxWords = Math.max(words1.length, words2.length);
-        return maxWords > 0 ? commonWords / maxWords : 0;
-    }
 
-    // Função auxiliar para formatar seção de alinhamento estratégico
-    function formatStrategicAlignment(jsonData) {
-        // Todas as opções estratégicas disponíveis
-        const strategicOptions = [
-            'Garantia dos Direitos Fundamentais',
-            'Fortalecimento da Relação Institucional com a Sociedade',
-            'Agilidade e Produtividade na Prestação Jurisdicional',
-            'Enfrentamento à Corrupção, à Improbidade Administrativa e aos Ilícitos Eleitorais',
-            'Promoção da Sustentabilidade',
-            'Aperfeiçoamento da Gestão Administrativa e da Governança Judiciária',
-            'Aperfeiçoamento da Gestão de Pessoas',
-            'Aperfeiçoamento da Gestão Orçamentária e Financeira',
-            'Fortalecimento da Estratégia Nacional de TIC e de Proteção de Dados'
-        ];
-
-        const alignments = jsonData.alinhamento_estrategico || [];
-        const hasAlignment = Array.isArray(alignments) && alignments.length > 0;
-
-        // Criar o array de opções marcadas
-        const markedOptions = new Set();
-        
-        if (hasAlignment) {
-            // Encontrar correspondências para cada alinhamento no JSON
-            alignments.forEach(alignmentJson => {
-                let bestOption = null;
-                let bestSimilarity = 0;
+            // Função auxiliar para calcular similaridade entre duas strings
+            function calculateSimilarity(str1, str2) {
+                const s1 = normalizeText(str1);
+                const s2 = normalizeText(str2);
                 
-                strategicOptions.forEach(option => {
-                    const similarity = calculateSimilarity(alignmentJson, option);
-                    
-                    if (similarity > bestSimilarity && similarity >= 0.6) { // Limiar de 60%
-                        bestSimilarity = similarity;
-                        bestOption = option;
+                // Se uma string contém a outra (após normalização), considera alta similaridade
+                if (s1.includes(s2) || s2.includes(s1)) {
+                    return 0.9;
+                }
+                
+                // Verifica palavras-chave em comum
+                const words1 = s1.split(' ').filter(p => p.length > 2);
+                const words2 = s2.split(' ').filter(p => p.length > 2);
+                
+                let commonWords = 0;
+                words1.forEach(p1 => {
+                    if (words2.some(p2 => p1.includes(p2) || p2.includes(p1))) {
+                        commonWords++;
                     }
                 });
                 
-                if (bestOption) {
-                    markedOptions.add(bestOption);
-                }
-            });
-        }
-
-        return { hasAlignment, markedOptions, strategicOptions };
-    }
-
-    // Função auxiliar para adicionar texto justificado
-    function addJustifiedText(text, x, y, maxWidth) {
-        const lines = doc.splitTextToSize(text, maxWidth);
-        lines.forEach((line, index) => {
-            if (index < lines.length - 1) { // Não justificar a última linha
-                doc.text(line, x, y + (index * lineHeight), { align: 'justify', maxWidth: maxWidth });
-            } else {
-                doc.text(line, x, y + (index * lineHeight));
+                const maxWords = Math.max(words1.length, words2.length);
+                return maxWords > 0 ? commonWords / maxWords : 0;
             }
-        });
-        return lines.length * lineHeight;
-    }
 
-    // Função auxiliar para criar uma caixa de seção com bordas
-    function createSectionBox(title, subtitle, content, startY, isTableContent = false, isItemsList = false, customContentHeight = null) {
-        const sectionWidth = maxWidth;
-        const padding = 4; // Reduzido de volta para 4px
-        const topMargin = 4; // Reduzido para 4px
-        let contentHeight = 0;
-        
-        // Calcular altura do título com quebra
-        doc.setFontSize(10);
-        doc.setFont("times", "bold");
-        const titleLines = doc.splitTextToSize(title, sectionWidth - 16); // Padding mais conservador para quebra
-        const titleHeight = titleLines.length * 7 + 6; // Altura dinâmica baseada nas linhas
-        
-        // Calcular altura do subtítulo com quebra
-        let subtitleHeight = 0;
-        let subtitleLines = [];
-        if (subtitle) {
-            doc.setFontSize(9);
-            doc.setFont("times", "normal");
-            subtitleLines = doc.splitTextToSize(subtitle, sectionWidth - 16); // Padding mais conservador
-            subtitleHeight = subtitleLines.length * 6 + 4;
-        }
-        
-        // Usar altura de conteúdo personalizada se fornecida, caso contrário calcular
-        if (customContentHeight !== null) {
-            contentHeight = customContentHeight;
-        } else {
-            // Calcular altura do conteúdo
-            if (isTableContent) {
-                // Para conteúdo da unidade demandante (hardcoded), calcular baseado no texto fixo
-                const unidadeText = "Unidade: Diversas unidades da Secretaria do Tribunal e todas as Zonas Eleitorais\nResponsável: Carlos Venícius Ferreira Ribeiro (pelo apresentação do DFD)";
+            // Função auxiliar para formatar seção de alinhamento estratégico
+            function formatStrategicAlignment(jsonData) {
+                // Todas as opções estratégicas disponíveis
+                const strategicOptions = [
+                    'Garantia dos Direitos Fundamentais',
+                    'Fortalecimento da Relação Institucional com a Sociedade',
+                    'Agilidade e Produtividade na Prestação Jurisdicional',
+                    'Enfrentamento à Corrupção, à Improbidade Administrativa e aos Ilícitos Eleitorais',
+                    'Promoção da Sustentabilidade',
+                    'Aperfeiçoamento da Gestão Administrativa e da Governança Judiciária',
+                    'Aperfeiçoamento da Gestão de Pessoas',
+                    'Aperfeiçoamento da Gestão Orçamentária e Financeira',
+                    'Fortalecimento da Estratégia Nacional de TIC e de Proteção de Dados'
+                ];
+
+                const alignments = jsonData.alinhamento_estrategico || [];
+                const hasAlignment = Array.isArray(alignments) && alignments.length > 0;
+
+                // Criar o array de opções marcadas
+                const markedOptions = new Set();
+                
+                if (hasAlignment) {
+                    // Encontrar correspondências para cada alinhamento no JSON
+                    alignments.forEach(alignmentJson => {
+                        let bestOption = null;
+                        let bestSimilarity = 0;
+                        
+                        strategicOptions.forEach(option => {
+                            const similarity = calculateSimilarity(alignmentJson, option);
+                            
+                            if (similarity > bestSimilarity && similarity >= 0.6) { // Limiar de 60%
+                                bestSimilarity = similarity;
+                                bestOption = option;
+                            }
+                        });
+                        
+                        if (bestOption) {
+                            markedOptions.add(bestOption);
+                        }
+                    });
+                }
+
+                return { hasAlignment, markedOptions, strategicOptions };
+            }
+
+            // Função auxiliar para adicionar texto justificado
+            function addJustifiedText(text, x, y, maxWidth) {
+                const lines = doc.splitTextToSize(text, maxWidth);
+                lines.forEach((line, index) => {
+                    if (index < lines.length - 1) { // Não justificar a última linha
+                        doc.text(line, x, y + (index * lineHeight), { align: 'justify', maxWidth: maxWidth });
+                    } else {
+                        doc.text(line, x, y + (index * lineHeight));
+                    }
+                });
+                return lines.length * lineHeight;
+            }
+
+            // Função auxiliar para criar uma caixa de seção com bordas
+            function createSectionBox(title, subtitle, content, startY, isTableContent = false, isItemsList = false, customContentHeight = null) {
+                const sectionWidth = maxWidth;
+                const padding = 4; // Reduzido de volta para 4px
+                const topMargin = 4; // Reduzido para 4px
+                let contentHeight = 0;
+                
+                // Calcular altura do título com quebra
+                doc.setFontSize(10);
+                doc.setFont("times", "bold");
+                const titleLines = doc.splitTextToSize(title, sectionWidth - 16); // Padding mais conservador para quebra
+                const titleHeight = titleLines.length * 7 + 6; // Altura dinâmica baseada nas linhas
+                
+                // Calcular altura do subtítulo com quebra
+                let subtitleHeight = 0;
+                let subtitleLines = [];
+                if (subtitle) {
+                    doc.setFontSize(9);
+                    doc.setFont("times", "normal");
+                    subtitleLines = doc.splitTextToSize(subtitle, sectionWidth - 16); // Padding mais conservador
+                    subtitleHeight = subtitleLines.length * 6 + 4;
+                }
+                
+                // Usar altura de conteúdo personalizada se fornecida, caso contrário calcular
+                if (customContentHeight !== null) {
+                    contentHeight = customContentHeight;
+                } else {
+                    // Calcular altura do conteúdo
+                    if (isTableContent) {
+                        // Para conteúdo da unidade demandante (hardcoded), calcular baseado no texto fixo
+                        const unidadeText = "Unidade: Diversas unidades da Secretaria do Tribunal e todas as Zonas Eleitorais\nResponsável: Carlos Venícius Ferreira Ribeiro (pelo apresentação do DFD)";
+                        const lines = unidadeText.split('\n');
+                        let textHeight = 0;
+                        
+                        lines.forEach(line => {
+                            if (line.trim()) {
+                                const wrappedLines = doc.splitTextToSize(line.trim(), sectionWidth - 8);
+                                textHeight += (wrappedLines.length * 6) + 2; // 6px por linha + 2px de espaço
+                            }
+                        });
+                        
+                        contentHeight = Math.max(textHeight + 8, 30); // Altura mínima de 30px
+                    } else if (isItemsList && Array.isArray(content)) {
+                        // Calcular altura para lista de itens - deve corresponder ao usado em addContentToBox
+                        content.forEach((item, index) => {
+                            const itemNumber = String(index + 1).padStart(2, '0');
+                            const itemText = `Item ${itemNumber} - ${item.descricao}`;
+                            const lines = doc.splitTextToSize(itemText, sectionWidth - 8); // Cálculo de padding reduzido
+                            const itemTextHeight = lines.length * 7; // Altura do texto do item usando lineHeight
+                            contentHeight += itemTextHeight + 4 + 7 + 10; // textHeight + 4 (espaço) + 7 (linha quantidade) + 10 (espaço final)
+                        });
+                        contentHeight += padding;
+                    } else {
+                        // Calcular altura para conteúdo de texto regular
+                        const lines = doc.splitTextToSize(content || 'Não informado', sectionWidth - 8); // Cálculo de padding reduzido
+                        contentHeight = (lines.length * 6) + padding; // Aumentado para fonte maior
+                    }
+                }
+                
+                const totalHeight = titleHeight + subtitleHeight + contentHeight + padding + topMargin;
+                
+                // Desenhar borda externa com linha mais fina
+                doc.setLineWidth(0.2);
+                doc.setDrawColor(0, 0, 0); // Preto para borda externa
+                doc.rect(margin, startY, sectionWidth, totalHeight);
+                
+                // Desenhar linha de fundo do título em cinza claro
+                doc.setDrawColor(169, 169, 169); // Cinza claro
+                doc.setLineWidth(0.2);
+                doc.line(margin, startY + titleHeight + subtitleHeight, margin + sectionWidth, startY + titleHeight + subtitleHeight);
+                
+                // Resetar cor de desenho para preto
+                doc.setDrawColor(0, 0, 0);
+                
+                // Adicionar título com quebra de linha adequada
+                doc.setFontSize(10);
+                doc.setFont("times", "bold");
+                titleLines.forEach((line, index) => {
+                    doc.text(line, margin + 4, startY + 10 + (index * 7));
+                });
+                
+                // Adicionar subtítulo se fornecido com quebra de linha adequada
+                if (subtitle) {
+                    doc.setFontSize(9);
+                    doc.setFont("times", "normal");
+                    doc.setTextColor(128, 128, 128); // Cor cinza
+                    subtitleLines.forEach((line, index) => {
+                        doc.text(line, margin + 4, startY + titleHeight + 4 + (index * 6));
+                    });
+                    doc.setTextColor(0, 0, 0); // Resetar para preto
+                }
+                
+                return { endY: startY + totalHeight, contentStartY: startY + titleHeight + subtitleHeight + topMargin + 4 };
+            }
+
+            // Função auxiliar para adicionar conteúdo da unidade demandante
+            function addUnidadeDemandanteContent(startY, jsonData) {
+                // Usar o campo unidade_demandante do JSON ou fallback para texto padrão
+                const unidadeText = jsonData?.unidade_demandante || "Unidade: Diversas unidades da Secretaria do Tribunal e todas as Zonas Eleitorais\nResponsável: Carlos Venícius Ferreira Ribeiro (pelo apresentação do DFD)";
+                
+                doc.setFontSize(10);
+                doc.setFont("times", "normal");
+                doc.setTextColor(0, 0, 0);
+                
+                // Dividir o texto por quebras de linha (\n)
                 const lines = unidadeText.split('\n');
-                let textHeight = 0;
+                let currentY = startY;
                 
                 lines.forEach(line => {
-                    if (line.trim()) {
-                        const wrappedLines = doc.splitTextToSize(line.trim(), sectionWidth - 8);
-                        textHeight += (wrappedLines.length * 6) + 2; // 6px por linha + 2px de espaço
+                    if (line.trim()) { // Apenas adicionar linhas não vazias
+                        const wrappedLines = doc.splitTextToSize(line.trim(), maxWidth - 8);
+                        wrappedLines.forEach(wrappedLine => {
+                            doc.text(wrappedLine, margin + 4, currentY);
+                            currentY += 6;
+                        });
+                        currentY += 2; // Espaço extra entre as linhas principais
                     }
                 });
                 
-                contentHeight = Math.max(textHeight + 8, 30); // Altura mínima de 30px
-            } else if (isItemsList && Array.isArray(content)) {
-                // Calcular altura para lista de itens - deve corresponder ao usado em addContentToBox
-                content.forEach((item, index) => {
-                    const itemNumber = String(index + 1).padStart(2, '0');
-                    const itemText = `Item ${itemNumber} - ${item.descricao}`;
-                    const lines = doc.splitTextToSize(itemText, sectionWidth - 8); // Cálculo de padding reduzido
-                    const itemTextHeight = lines.length * 7; // Altura do texto do item usando lineHeight
-                    contentHeight += itemTextHeight + 4 + 7 + 10; // textHeight + 4 (espaço) + 7 (linha quantidade) + 10 (espaço final)
-                });
-                contentHeight += padding;
-            } else {
-                // Calcular altura para conteúdo de texto regular
-                const lines = doc.splitTextToSize(content || 'Não informado', sectionWidth - 8); // Cálculo de padding reduzido
-                contentHeight = (lines.length * 6) + padding; // Aumentado para fonte maior
+                return currentY;
             }
+
+            // Função auxiliar para adicionar conteúdo dentro de uma caixa de seção
+            function addContentToBox(content, startY, isItemsList = false) {
+                doc.setFontSize(10); // Aumentado de 9
+                doc.setFont("times", "normal");
+                let currentY = startY;
+                
+                if (isItemsList && Array.isArray(content)) {
+                    content.forEach((item, index) => {
+                        const itemNumber = String(index + 1).padStart(2, '0');
+                        const itemText = `Item ${itemNumber} - ${item.descricao}`;
+                        
+                        const textHeight = addJustifiedText(itemText, margin + 4, currentY, maxWidth - 8); // Padding horizontal reduzido
+                        currentY += textHeight + 4; // Espaçamento aumentado
+                        
+                        doc.text(`Quantidade: ${item.quantidade}`, margin + 8, currentY); // Padding horizontal reduzido
+                        currentY += 10; // Espaçamento aumentado
+                    });
+                } else {
+                    addJustifiedText(content || 'Não informado', margin + 4, currentY, maxWidth - 8); // Padding horizontal reduzido
+                }
+            }
+
+            // Seção 1 - IDENTIFICAÇÃO DA UNIDADE DEMANDANTE com conteúdo de texto
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 30;
+            }
+            
+            const section1 = createSectionBox("1 - IDENTIFICAÇÃO DA UNIDADE DEMANDANTE", null, "", yPosition, true);
+            addUnidadeDemandanteContent(section1.contentStartY, jsonData);
+            yPosition = section1.endY + 10;
+
+            // Seção 2 - OBJETO A SER CONTRATADO
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 30;
+            }
+            
+            const section2 = createSectionBox("2. OBJETO A SER CONTRATADO", null, 
+                jsonData.objeto_a_ser_contratado, yPosition);
+            addContentToBox(jsonData.objeto_a_ser_contratado, section2.contentStartY);
+            yPosition = section2.endY + 10;
+
+            // Seção 3 - JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 30;
+            }
+            
+            const section3 = createSectionBox("3. JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO", null,
+                jsonData.justificativa, yPosition);
+            addContentToBox(jsonData.justificativa, section3.contentStartY);
+            yPosition = section3.endY + 10;
+
+            // Seção 4 - QUANTIDADE JUSTIFICADA A SER CONTRATADA
+            if (yPosition > 200) {
+                doc.addPage();
+                yPosition = 30;
+            }
+            
+            const section4 = createSectionBox("4. QUANTIDADE JUSTIFICADA A SER CONTRATADA", null,
+                jsonData.quantidade_justifica_a_ser_contratada, yPosition, false, true);
+            addContentToBox(jsonData.quantidade_justifica_a_ser_contratada, section4.contentStartY, true);
+            yPosition = section4.endY + 10;
+
+            // Seção 5 - PREVISÃO DA DATA EM QUE DEVE SER ENTREGUE O BEM OU INICIADA A PRESTAÇÃO DOS SERVIÇOS
+            if (yPosition > 260) {
+                doc.addPage();
+                yPosition = 30;
+            }
+            
+            const deliveryText = `Data: ${jsonData.previsao_da_entrega_do_bem_ou_inicio_dos_servicos || 'Não informado'}`;
+            const section5 = createSectionBox("5. PREVISÃO DA DATA EM QUE DEVE SER ENTREGUE O BEM OU INICIADA A PRESTAÇÃO DOS SERVIÇOS", 
+                null, deliveryText, yPosition);
+            addContentToBox(deliveryText, section5.contentStartY);
+            yPosition = section5.endY + 10;
+
+            // Seção 6 - ALINHAMENTO ESTRATÉGICO
+            // Calcular altura total necessária para a seção
+            const strategicData = formatStrategicAlignment(jsonData);
+            const baseContentHeight = 60; // Altura base aumentada para fontes maiores
+            const optionsHeight = strategicData.strategicOptions.length * 8; // Altura aumentada por opção
+            const totalContentHeight = baseContentHeight + optionsHeight;
+            const totalSectionHeight = totalContentHeight + 30; // Incluir altura do cabeçalho da seção
+            
+            // Verificar se há espaço suficiente na página atual
+            if (yPosition + totalSectionHeight > 270) {
+                doc.addPage();
+                yPosition = 30;
+            }
+
+            const section6 = createSectionBox("6. ALINHAMENTO ESTRATÉGICO", null, "", yPosition, false, false, totalContentHeight);
+            
+            // Adicionar conteúdo de alinhamento estratégico manualmente para melhor formatação
+            doc.setFontSize(10); // Aumentado de 9
+            doc.setFont("times", "normal");
+            let strategicY = section6.contentStartY;
+            
+            doc.text("A contratação está alinhada a algum objetivo do Plano Estratégico?", margin + 4, strategicY); // Padding horizontal reduzido
+            strategicY += 10; // Espaçamento aumentado
+            
+            // Marcar "Sim" ou deixar desmarcado baseado nos dados
+            const simMark = strategicData.hasAlignment ? "(X)" : "( )";
+            doc.text(`${simMark} Sim - Qual?`, margin + 4, strategicY); // Padding horizontal reduzido
+            strategicY += 10; // Espaçamento aumentado
+
+            // Listar todas as opções estratégicas com marcação adequada
+            strategicData.strategicOptions.forEach((option) => {
+                const optionMark = strategicData.markedOptions.has(option) ? "(X)" : "( )";
+                const optionText = `    ${optionMark} ${option}`;
+                
+                const textHeight = addJustifiedText(optionText, margin + 4, strategicY, maxWidth - 8); // Padding horizontal reduzido
+                strategicY += Math.max(textHeight, 8); // Espaçamento mínimo aumentado
+            });
+
+            strategicY += 6; // Espaço aumentado antes de "Não"
+            
+            // Marcar "Não" ou deixar desmarcado baseado nos dados
+            const naoMark = !strategicData.hasAlignment ? "(X)" : "( )";
+            doc.text(`${naoMark} Não`, margin + 4, strategicY); // Padding horizontal reduzido
+
+            yPosition = section6.endY + 10;
+
+            // Seção final - RESPONSÁVEL PELA FORMALIZAÇÃO DA DEMANDA
+            if (yPosition > 240) {
+                doc.addPage();
+                yPosition = 30;
+            }
+
+            // Criar caixa para o responsável
+            const responsavelHeight = 50; // Altura fixa para a seção do responsável
+            const responsavelBox = createSectionBox("RESPONSÁVEL PELA FORMALIZAÇÃO DA DEMANDA", null, "", yPosition, false, false, responsavelHeight);
+            
+            // Adicionar conteúdo do responsável (hardcoded)
+            doc.setFontSize(10);
+            doc.setFont("times", "normal");
+            let responsavelY = responsavelBox.contentStartY;
+            
+            // Nome do responsável
+            doc.setFont("times", "bold");
+            doc.text("Carlos Venícius Ferreira Ribeiro", margin + 4, responsavelY);
+            responsavelY += 10;
+            
+            // Cargo do responsável
+            doc.setFont("times", "normal");
+            doc.text("Secretário de Administração, Orçamento e Finanças", margin + 4, responsavelY);
+
+            resolve(doc);
         }
-        
-        const totalHeight = titleHeight + subtitleHeight + contentHeight + padding + topMargin;
-        
-        // Desenhar borda externa com linha mais fina
-        doc.setLineWidth(0.2);
-        doc.setDrawColor(0, 0, 0); // Preto para borda externa
-        doc.rect(margin, startY, sectionWidth, totalHeight);
-        
-        // Desenhar linha de fundo do título em cinza claro
-        doc.setDrawColor(169, 169, 169); // Cinza claro
-        doc.setLineWidth(0.2);
-        doc.line(margin, startY + titleHeight + subtitleHeight, margin + sectionWidth, startY + titleHeight + subtitleHeight);
-        
-        // Resetar cor de desenho para preto
-        doc.setDrawColor(0, 0, 0);
-        
-        // Adicionar título com quebra de linha adequada
-        doc.setFontSize(10);
-        doc.setFont("times", "bold");
-        titleLines.forEach((line, index) => {
-            doc.text(line, margin + 4, startY + 10 + (index * 7));
-        });
-        
-        // Adicionar subtítulo se fornecido com quebra de linha adequada
-        if (subtitle) {
+
+        brasaoImg.onload = function () {
+            let yPosition = 15;
+
+            // Tamanho alvo da largura 
+            const targetWidth = 50;
+
+            // Calcula altura proporcional
+            const aspectRatio = brasaoImg.height / brasaoImg.width;
+            const targetHeight = targetWidth * aspectRatio;
+
+            // Centraliza horizontalmente
+            const xPosition = pageWidth / 2 - targetWidth / 2;
+
+            doc.addImage(brasaoImg, 'PNG', xPosition, yPosition, targetWidth, targetHeight);
+            yPosition += targetHeight + 10;
+
+            // Cabeçalho
             doc.setFontSize(9);
             doc.setFont("times", "normal");
-            doc.setTextColor(128, 128, 128); // Cor cinza
-            subtitleLines.forEach((line, index) => {
-                doc.text(line, margin + 4, startY + titleHeight + 4 + (index * 6));
-            });
-            doc.setTextColor(0, 0, 0); // Resetar para preto
-        }
-        
-        return { endY: startY + totalHeight, contentStartY: startY + titleHeight + subtitleHeight + topMargin + 4 };
-    }
+            doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 6;
 
-    // Função auxiliar para adicionar conteúdo da unidade demandante
-    function addUnidadeDemandanteContent(startY, jsonData) {
-        // Usar o campo unidade_demandante do JSON ou fallback para texto padrão
-        const unidadeText = jsonData?.unidade_demandante || "Unidade: Diversas unidades da Secretaria do Tribunal e todas as Zonas Eleitorais\nResponsável: Carlos Venícius Ferreira Ribeiro (pelo apresentação do DFD)";
-        
-        doc.setFontSize(10);
-        doc.setFont("times", "normal");
-        doc.setTextColor(0, 0, 0);
-        
-        // Dividir o texto por quebras de linha (\n)
-        const lines = unidadeText.split('\n');
-        let currentY = startY;
-        
-        lines.forEach(line => {
-            if (line.trim()) { // Apenas adicionar linhas não vazias
-                const wrappedLines = doc.splitTextToSize(line.trim(), maxWidth - 8);
-                wrappedLines.forEach(wrappedLine => {
-                    doc.text(wrappedLine, margin + 4, currentY);
-                    currentY += 6;
-                });
-                currentY += 2; // Espaço extra entre as linhas principais
-            }
-        });
-        
-        return currentY;
-    }
+            doc.setFontSize(8);
+            doc.setFont("times", "normal");
+            doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 15;
 
-    // Função auxiliar para adicionar conteúdo dentro de uma caixa de seção
-    function addContentToBox(content, startY, isItemsList = false) {
-        doc.setFontSize(10); // Aumentado de 9
-        doc.setFont("times", "normal");
-        let currentY = startY;
-        
-        if (isItemsList && Array.isArray(content)) {
-            content.forEach((item, index) => {
-                const itemNumber = String(index + 1).padStart(2, '0');
-                const itemText = `Item ${itemNumber} - ${item.descricao}`;
-                
-                const textHeight = addJustifiedText(itemText, margin + 4, currentY, maxWidth - 8); // Padding horizontal reduzido
-                currentY += textHeight + 4; // Espaçamento aumentado
-                
-                doc.text(`Quantidade: ${item.quantidade}`, margin + 8, currentY); // Padding horizontal reduzido
-                currentY += 10; // Espaçamento aumentado
-            });
-        } else {
-            addJustifiedText(content || 'Não informado', margin + 4, currentY, maxWidth - 8); // Padding horizontal reduzido
-        }
-    }
+            proceedWithPdf(yPosition);
+        };
 
-    // Seção 1 - IDENTIFICAÇÃO DA UNIDADE DEMANDANTE com conteúdo de texto
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 30;
-    }
-    
-    const section1 = createSectionBox("1 - IDENTIFICAÇÃO DA UNIDADE DEMANDANTE", null, "", yPosition, true);
-    addUnidadeDemandanteContent(section1.contentStartY, jsonData);
-    yPosition = section1.endY + 10;
-
-    // Seção 2 - OBJETO A SER CONTRATADO
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 30;
-    }
-    
-    const section2 = createSectionBox("2. OBJETO A SER CONTRATADO", null, 
-        jsonData.objeto_a_ser_contratado, yPosition);
-    addContentToBox(jsonData.objeto_a_ser_contratado, section2.contentStartY);
-    yPosition = section2.endY + 10;
-
-    // Seção 3 - JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 30;
-    }
-    
-    const section3 = createSectionBox("3. JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO", null,
-        jsonData.justificativa, yPosition);
-    addContentToBox(jsonData.justificativa, section3.contentStartY);
-    yPosition = section3.endY + 10;
-
-    // Seção 4 - QUANTIDADE JUSTIFICADA A SER CONTRATADA
-    if (yPosition > 200) {
-        doc.addPage();
-        yPosition = 30;
-    }
-    
-    const section4 = createSectionBox("4. QUANTIDADE JUSTIFICADA A SER CONTRATADA", null,
-        jsonData.quantidade_justifica_a_ser_contratada, yPosition, false, true);
-    addContentToBox(jsonData.quantidade_justifica_a_ser_contratada, section4.contentStartY, true);
-    yPosition = section4.endY + 10;
-
-    // Seção 5 - PREVISÃO DA DATA EM QUE DEVE SER ENTREGUE O BEM OU INICIADA A PRESTAÇÃO DOS SERVIÇOS
-    if (yPosition > 260) {
-        doc.addPage();
-        yPosition = 30;
-    }
-    
-    const deliveryText = `Data: ${jsonData.previsao_da_entrega_do_bem_ou_inicio_dos_servicos || 'Não informado'}`;
-    const section5 = createSectionBox("5. PREVISÃO DA DATA EM QUE DEVE SER ENTREGUE O BEM OU INICIADA A PRESTAÇÃO DOS SERVIÇOS", 
-        null, deliveryText, yPosition);
-    addContentToBox(deliveryText, section5.contentStartY);
-    yPosition = section5.endY + 10;
-
-    // Seção 6 - ALINHAMENTO ESTRATÉGICO
-    // Calcular altura total necessária para a seção
-    const strategicData = formatStrategicAlignment(jsonData);
-    const baseContentHeight = 60; // Altura base aumentada para fontes maiores
-    const optionsHeight = strategicData.strategicOptions.length * 8; // Altura aumentada por opção
-    const totalContentHeight = baseContentHeight + optionsHeight;
-    const totalSectionHeight = totalContentHeight + 30; // Incluir altura do cabeçalho da seção
-    
-    // Verificar se há espaço suficiente na página atual
-    if (yPosition + totalSectionHeight > 270) {
-        doc.addPage();
-        yPosition = 30;
-    }
-
-    const section6 = createSectionBox("6. ALINHAMENTO ESTRATÉGICO", null, "", yPosition, false, false, totalContentHeight);
-    
-    // Adicionar conteúdo de alinhamento estratégico manualmente para melhor formatação
-    doc.setFontSize(10); // Aumentado de 9
-    doc.setFont("times", "normal");
-    let strategicY = section6.contentStartY;
-    
-    doc.text("A contratação está alinhada a algum objetivo do Plano Estratégico?", margin + 4, strategicY); // Padding horizontal reduzido
-    strategicY += 10; // Espaçamento aumentado
-    
-    // Marcar "Sim" ou deixar desmarcado baseado nos dados
-    const simMark = strategicData.hasAlignment ? "(X)" : "( )";
-    doc.text(`${simMark} Sim - Qual?`, margin + 4, strategicY); // Padding horizontal reduzido
-    strategicY += 10; // Espaçamento aumentado
-
-    // Listar todas as opções estratégicas com marcação adequada
-    strategicData.strategicOptions.forEach((option) => {
-        const optionMark = strategicData.markedOptions.has(option) ? "(X)" : "( )";
-        const optionText = `    ${optionMark} ${option}`;
-        
-        const textHeight = addJustifiedText(optionText, margin + 4, strategicY, maxWidth - 8); // Padding horizontal reduzido
-        strategicY += Math.max(textHeight, 8); // Espaçamento mínimo aumentado
+        brasaoImg.onerror = function() {
+            console.error("Não foi possível carregar a imagem do brasão.");
+            let yPosition = 30; // Posição inicial sem imagem
+            proceedWithPdf(yPosition);
+        };
     });
-
-    strategicY += 6; // Espaço aumentado antes de "Não"
-    
-    // Marcar "Não" ou deixar desmarcado baseado nos dados
-    const naoMark = !strategicData.hasAlignment ? "(X)" : "( )";
-    doc.text(`${naoMark} Não`, margin + 4, strategicY); // Padding horizontal reduzido
-
-    yPosition = section6.endY + 10;
-
-    // Seção final - RESPONSÁVEL PELA FORMALIZAÇÃO DA DEMANDA
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 30;
-    }
-
-    // Criar caixa para o responsável
-    const responsavelHeight = 50; // Altura fixa para a seção do responsável
-    const responsavelBox = createSectionBox("RESPONSÁVEL PELA FORMALIZAÇÃO DA DEMANDA", null, "", yPosition, false, false, responsavelHeight);
-    
-    // Adicionar conteúdo do responsável (hardcoded)
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    let responsavelY = responsavelBox.contentStartY;
-    
-    // Nome do responsável
-    doc.setFont("times", "bold");
-    doc.text("Carlos Venícius Ferreira Ribeiro", margin + 4, responsavelY);
-    responsavelY += 10;
-    
-    // Cargo do responsável
-    doc.setFont("times", "normal");
-    doc.text("Secretário de Administração, Orçamento e Finanças", margin + 4, responsavelY);
-
-    return doc;
 }
 
 // Função para exibir PDF no visualizador
@@ -729,8 +759,8 @@ function displayPDF(pdf) {
 }
 
 // Função para popular a pré-visualização do documento com PDF
-function populateDocument(jsonData) {
-    const pdf = generatePDF(jsonData);
+async function populateDocument(jsonData) {
+    const pdf = await generatePDF(jsonData);
     currentPDF = pdf;
     displayPDF(pdf);
 }
@@ -748,8 +778,8 @@ async function carregarDadosDFD() {
             showSuccess('Dados carregados do banco de dados! Gerando documento...');
             
             // Pequeno delay para mostrar o status de sucesso
-            setTimeout(() => {
-                populateDocument(dadosBanco);
+            setTimeout(async () => {
+                await populateDocument(dadosBanco);
                 
                 // Atualizar status para concluído
                 setTimeout(() => {
@@ -772,8 +802,8 @@ async function carregarDadosDFD() {
             console.log('Dados encontrados no localStorage, gerando PDF...');
             showSuccess('Dados carregados do localStorage! Gerando documento...');
             
-            setTimeout(() => {
-                populateDocument(savedData);
+            setTimeout(async () => {
+                await populateDocument(savedData);
                 
                 setTimeout(() => {
                     showSuccess('Documento gerado com sucesso! (usando dados locais)');
