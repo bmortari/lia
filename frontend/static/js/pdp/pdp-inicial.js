@@ -750,6 +750,15 @@ function testarDadosSimplificados() {
     
     // Inicializar filtros e outros event listeners
     inicializarFiltros();
+
+    // Adiciona o listener para o botão Voltar
+    const backButton = document.getElementById('voltar-inicio');
+    backButton.addEventListener('click', () => {
+        const projetoId = extrairProjetoId();
+        if (projetoId) {
+            window.location.href = `${window.location.origin}/projetos/${projetoId}/`;
+        }
+    });
     
     function inicializarFiltros() {
         // Event listeners para os modais de filtro

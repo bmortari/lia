@@ -574,4 +574,25 @@ document.addEventListener('DOMContentLoaded', function () {
     window.validarFormulario = validarFormulario;
     window.exibirAlerta = exibirAlerta;
     window.processarAlinhamentoEstrategico = processarAlinhamentoEstrategico;
+
+    // Função para extrair project_id da URL
+    function getProjectIdFromUrl() {
+        const url = window.location.pathname;
+        const match = url.match(/\/projetos\/(\d+)\//);
+        return match ? match[1] : null;
+    }
+
+    // Funcionalidade do botão Voltar ao início
+    const voltarInicioButton = document.getElementById('voltar-inicio');
+    if (voltarInicioButton) {
+        voltarInicioButton.addEventListener('click', function() {
+            const projectId = getProjectIdFromUrl();
+            if (projectId) {
+                window.location.href = `${window.location.origin}/projetos/${projectId}/`;
+            } else {
+                // Fallback caso o ID do projeto não seja encontrado
+                window.location.href = `${window.location.origin}/`;
+            }
+        });
+    }
 });

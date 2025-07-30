@@ -842,7 +842,34 @@ document.getElementById('downloadButton').addEventListener('click', function() {
     }
 });
 
+// Funcionalidade do botão Voltar ao início
+document.getElementById('voltar-inicio').addEventListener('click', function() {
+    const projectId = getProjectIdFromUrl();
+    if (projectId) {
+        window.location.href = `${BASE_URL}/projetos/${projectId}/`;
+    } else {
+        // Fallback caso o ID do projeto não seja encontrado
+        window.location.href = `${BASE_URL}/`;
+    }
+});
+
 // Função para ser chamada ao receber JSON de fonte externa
 function processJSON(jsonResponse) {
     populateDocument(jsonResponse);
 }
+
+// Funcionalidade do botão Voltar à curadoria
+document.addEventListener('DOMContentLoaded', function() {
+    const voltarCuradoriaButton = document.getElementById('voltar-curadoria');
+    if (voltarCuradoriaButton) {
+        voltarCuradoriaButton.addEventListener('click', function() {
+            const projectId = getProjectIdFromUrl();
+            if (projectId) {
+                window.location.href = `${BASE_URL}/projetos/${projectId}/confere_dfd`;
+            } else {
+                // Fallback caso o ID do projeto não seja encontrado
+                window.location.href = `${BASE_URL}/`;
+            }
+        });
+    }
+});

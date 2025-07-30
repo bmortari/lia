@@ -150,4 +150,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Adiciona o listener de submit ao formulário
     const form = document.getElementById('dfd-solicitacao-form');
     form.addEventListener('submit', handleFormSubmit);
+
+    // Adiciona o listener para o botão Voltar
+    const backButton = document.getElementById('voltar-inicio');
+    backButton.addEventListener('click', () => {
+        window.location.href = `${URL}/projetos/${idProjeto}/`;
+    });
 });
