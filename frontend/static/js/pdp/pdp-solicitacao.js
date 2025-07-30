@@ -1,6 +1,5 @@
 const BASE_URL = window.location.origin;
 
-
 // Função para extrair project_id da URL
 function getProjectIdFromUrl() {
     const url = window.location.pathname;
@@ -23,19 +22,16 @@ function clearFilters() {
     filterState.modalidade = ['concorrencia_eletronica', 'concorrencia_presencial', 'credenciamento', 'dispensa', 'inexigibilidade', 'leilao_eletronico', 'leilao_presencial', 'pre_qualificacao', 'pregao_eletronico', 'pregao_presencial'];
 
     // Marcar todas as checkboxes nos modais
-    // Esfera
     document.querySelectorAll('.esfera-option').forEach(option => option.checked = true);
-    const esferaAll = document.getElementById('esfera-all');
-    if (esferaAll) esferaAll.checked = true;
-
-    // UF
     document.querySelectorAll('.uf-option').forEach(option => option.checked = true);
-    const ufAll = document.getElementById('uf-all');
-    if (ufAll) ufAll.checked = true;
-
-    // Modalidade
     document.querySelectorAll('.modalidade-option').forEach(option => option.checked = true);
+
+    const esferaAll = document.getElementById('esfera-all');
+    const ufAll = document.getElementById('uf-all');
     const modalidadeAll = document.getElementById('modalidade-all');
+    
+    if (esferaAll) esferaAll.checked = true;
+    if (ufAll) ufAll.checked = true;
     if (modalidadeAll) modalidadeAll.checked = true;
 
     updateFilterButtons();
@@ -147,49 +143,132 @@ function populateModalOptions() {
     }
 }
 
-// Função para criar card de resultado
-function createResultCard(item) {
-    return `
-        <div class="search-result-item bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-all">
-            <div class="flex items-start justify-between mb-3">
-                <h4 class="text-lg font-semibold text-gray-900 line-clamp-2">${item.objeto || 'Objeto não informado'}</h4>
-                <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full whitespace-nowrap ml-2">
-                    ${item.esfera || 'N/A'}
-                </span>
+// Função para exibir PDPs criados
+function displayPDPResults(pdps) {
+    console.log('PDPs recebidos:', pdps);
+    
+    if (!Array.isArray(pdps) || pdps.length === 0) {
+        console.warn('Nenhum PDP foi retornado');
+        alert('Nenhum PDP foi gerado. Verifique os dados e tente novamente.');
+        return;
+    }
+
+    // Criar resumo dos PDPs
+    const resultadosSection = document.getElementById('resultados-section');
+    const totalResultados = document.getElementById('total-resultados');
+    const resultadosGrid = document.getElementById('resultados-grid');
+    
+    if (!resultadosSection || !totalResultados || !resultadosGrid) {
+        console.error('Elementos de resultado não encontrados no DOM');
+        return;
+    }
+
+    // Atualizar contador
+    totalResultados.textContent = `${pdps.length} PDP(s) gerado(s)`;
+    
+    // Limpar grid anterior
+    resultadosGrid.innerHTML = '';
+    
+    // Criar cards para cada PDP
+    pdps.forEach((pdp, index) => {
+        const card = createPDPCard(pdp, index + 1);
+        resultadosGrid.appendChild(card);
+    });
+    
+    // Mostrar seção de resultados
+    resultadosSection.classList.remove('hidden');
+    
+    // Scroll para resultados
+    resultadosSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Função para criar card de PDP
+function createPDPCard(pdp, index) {
+    const card = document.createElement('div');
+    card.className = 'bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:shadow-md transition-all';
+    
+    // Calcular valor total dos itens
+    let valorTotal = 0;
+    let quantidadeItens = 0;
+    
+    if (Array.isArray(pdp.tabela_itens)) {
+        quantidadeItens = pdp.tabela_itens.length;
+        valorTotal = pdp.tabela_itens.reduce((total, item) => {
+            return total + (parseFloat(item.valor_total) || 0);
+        }, 0);
+    }
+
+    // CORREÇÃO: usar data_created em vez de created_at para formatação de datas se necessário
+    let dataFormatada = 'N/A';
+    if (pdp.data_created) {
+        try {
+            const data = new Date(pdp.data_created);
+            dataFormatada = data.toLocaleDateString('pt-BR');
+        } catch (e) {
+            console.warn('Erro ao formatar data:', e);
+        }
+    }
+
+    card.innerHTML = `
+        <div class="flex items-start justify-between mb-3">
+            <h4 class="text-lg font-semibold text-gray-900 line-clamp-2">PDP ${index}</h4>
+            <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full whitespace-nowrap ml-2">
+                ${pdp.tipo_fonte || 'N/A'}
+            </span>
+        </div>
+        
+        <div class="space-y-2 mb-4">
+            <div class="text-sm">
+                <span class="font-medium text-gray-700">Objeto:</span>
+                <span class="text-gray-600 ml-1">${pdp.objeto || 'N/A'}</span>
             </div>
             
-            <div class="space-y-2 mb-4">
-                <div class="flex items-center text-sm text-gray-600">
-                    <i class="uil uil-map-marker mr-2"></i>
-                    <span>${item.orgao || 'Órgão não informado'} - ${item.uf || 'N/A'}</span>
-                </div>
-                
-                <div class="flex items-center text-sm text-gray-600">
-                    <i class="uil uil-calendar-alt mr-2"></i>
-                    <span>${item.data || 'Data não informada'}</span>
-                </div>
-                
-                <div class="flex items-center text-sm text-gray-600">
-                    <i class="uil uil-file-alt mr-2"></i>
-                    <span>Modalidade: ${item.modalidade || 'N/A'}</span>
-                </div>
+            <div class="text-sm">
+                <span class="font-medium text-gray-700">Órgão:</span>
+                <span class="text-gray-600 ml-1">${pdp.orgao_contratante || 'N/A'}</span>
             </div>
             
-            <div class="flex items-center justify-between">
-                <div class="text-right">
-                    <div class="text-xs text-gray-500">Valor Total</div>
-                    <div class="text-lg font-bold text-green-600">
-                        R$ ${item.valor ? parseFloat(item.valor).toLocaleString('pt-BR', {minimumFractionDigits: 2}) : '0,00'}
-                    </div>
-                </div>
-                
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors" onclick="viewDetails('${item.id}')">
-                    Ver detalhes
-                    <i class="uil uil-external-link-alt ml-1"></i>
-                </button>
+            <div class="text-sm">
+                <span class="font-medium text-gray-700">Processo:</span>
+                <span class="text-gray-600 ml-1">${pdp.processo_pregao || 'N/A'}</span>
+            </div>
+
+            <div class="text-sm">
+                <span class="font-medium text-gray-700">Empresa:</span>
+                <span class="text-gray-600 ml-1">${pdp.empresa_adjudicada || 'N/A'}</span>
+            </div>
+
+            <div class="text-sm">
+                <span class="font-medium text-gray-700">Criado em:</span>
+                <span class="text-gray-600 ml-1">${dataFormatada}</span>
             </div>
         </div>
+        
+        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div class="text-left">
+                <div class="text-xs text-gray-500">Valor Total</div>
+                <div class="text-lg font-bold text-green-600">
+                    R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                </div>
+                <div class="text-xs text-gray-500">${quantidadeItens} item(ns)</div>
+            </div>
+            
+            <button class="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors" onclick="viewPDPDetails(${pdp.id})">
+                Ver detalhes
+                <i class="uil uil-external-link-alt ml-1"></i>
+            </button>
+        </div>
     `;
+    
+    return card;
+}
+
+// Função para visualizar detalhes do PDP
+function viewPDPDetails(pdpId) {
+    const projectId = getProjectIdFromUrl();
+    if (projectId) {
+        window.location.href = `${BASE_URL}/projetos/${projectId}/confere_pdp?pdp_id=${pdpId}`;
+    }
 }
 
 // Função para pesquisar preços
@@ -215,6 +294,8 @@ async function searchPrices(searchData) {
             progressBar.style.width = `${progress}%`;
         }, 200);
 
+        console.log('Enviando dados para API:', searchData);
+
         // Fazer requisição para a API
         const response = await fetch(`${BASE_URL}/projetos/${projectId}/create_pdp`, {
             method: 'POST',
@@ -237,12 +318,13 @@ async function searchPrices(searchData) {
         }
 
         const results = await response.json();
+        console.log('Resposta da API:', results);
         
-        // Salvar resultados no localStorage se necessário
-        localStorage.setItem('draftPDP', JSON.stringify(results));
-
-        // Navegar para a página de curadoria PDP (editar com o caminho correto)
-        window.location.href = window.location.href.replace("criar_pdp", "confere_pdp");
+        // Esconder loading
+        loadingOverlay.classList.add('hidden');
+        
+        // Exibir resultados
+        displayPDPResults(results);
 
     } catch (error) {
         console.error('Erro na pesquisa:', error);
@@ -251,7 +333,7 @@ async function searchPrices(searchData) {
         loadingOverlay.classList.add('hidden');
         
         // Mostrar erro para o usuário
-        alert(`Ocorreu um erro ao pesquisar. Tente novamente mais tarde.`);
+        alert(`Ocorreu um erro ao pesquisar: ${error.message}. Tente novamente mais tarde.`);
     }
 }
 
@@ -274,11 +356,10 @@ function getFilterValues() {
 async function handleFormSubmit(event) {
     event.preventDefault();
     
-    const object = document.getElementById('pesquisa-objeto').value.trim();
     const palavrasChaveInput = document.getElementById('palavras-chave').value.trim();
     
-    if (!object) {
-        alert('Por favor, descreva o objeto que deseja pesquisar.');
+    if (!palavrasChaveInput) {
+        alert('Por favor, insira palavras-chave para a pesquisa.');
         return;
     }
     
@@ -287,12 +368,14 @@ async function handleFormSubmit(event) {
     
     // Coletar dados dos filtros no formato correto
     const searchData = {
-        "palavras-chave": palavrasChaveInput ? palavrasChaveInput.split(',').map(kw => kw.trim()) : [],
-        descricao: object,
+        "palavras_chave": palavrasChaveInput ? palavrasChaveInput.split(',').map(kw => kw.trim()) : [],
+        descricao: palavrasChaveInput, // Usar as palavras-chave como descrição também
         ufs: filterValues.ufs,
         esferas: filterValues.esferas,
         modalidades: filterValues.modalidades
     };
+    
+    console.log('Dados da pesquisa:', searchData);
     
     await searchPrices(searchData);
 }
@@ -388,9 +471,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Event listener para limpar todos os filtros
-    document.getElementById('clear-all-filters').addEventListener('click', clearFilters);
-
     // Event listener para fechar modals ao clicar fora
     document.addEventListener('click', function(event) {
         const modals = ['filter-esfera-modal', 'filter-uf-modal', 'filter-modalidade-modal'];
@@ -409,10 +489,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener para voltar ao início
     const backToStart = document.getElementById('voltar-inicio');
     backToStart.addEventListener('click', function() {
-        // TODO: Implementar navegação para página inicial
         window.history.back();
     });
     
-    // Auto-focus no textarea
-    document.getElementById('pesquisa-objeto').focus();
+    // Auto-focus no campo de palavras-chave
+    const palavrasChaveField = document.getElementById('palavras-chave');
+    if (palavrasChaveField) {
+        palavrasChaveField.focus();
+    }
 });

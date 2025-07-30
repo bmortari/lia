@@ -13,6 +13,9 @@ class PDP(Base):
     # relacionamento com Projeto
     projeto = relationship("Projeto", back_populates="pdps")
     
+    # CORREÇÃO: relacionamento com SolucaoIdentificada adicionado
+    solucoes = relationship("SolucaoIdentificada", back_populates="pdp", cascade="all, delete-orphan")
+    
     user_created = Column("usuario_criacao", String(255), nullable=False)
     data_created = Column("data_criacao", DateTime(timezone=True), server_default=func.now())
 
@@ -31,5 +34,5 @@ class PDP(Base):
     
     status = Column(Boolean, default=True)
     
-    
+
 from app.models.projects_models import Projeto

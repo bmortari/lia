@@ -501,38 +501,115 @@ document.addEventListener('DOMContentLoaded', function() {
         mostrarToast('Palavra-chave "' + palavra + '" adicionada!', 'success');
     };
     
-    // Event listener para o formulário principal
-    if (formPesquisa) {
-        formPesquisa.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // Event listener para o formulário principal - VERSÃO CORRIGIDA
+if (formPesquisa) {
+    formPesquisa.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validações básicas
+        const palavrasChave = palavrasChaveInput.value.trim();
+        
+        if (!palavrasChave) {
+            mostrarToast('Por favor, insira pelo menos uma palavra-chave para busca.', 'warning');
+            palavrasChaveInput.focus();
+            return;
+        }
+        
+        // Mostra loading
+        mostrarLoading();
+        
+        // CORREÇÃO: Mapear dados para corresponder exatamente ao schema PDPCreate
+        const formData = {
+            // Campo obrigatório do PDPCreate
+            "descricao": palavrasChave, // Usar palavras-chave como descrição direta
             
-            // Validações básicas
-            const palavrasChave = palavrasChaveInput.value.trim();
+            // Campos opcionais - verificar se estes são os nomes corretos no schema
+            "palavras_chave": palavrasChave.split(',').map(p => p.trim()).filter(p => p),
+            "ufs": coletarFiltrosSelecionados('uf'),
+            "esferas": coletarFiltrosSelecionados('esfera'), 
+            "modalidades": coletarFiltrosSelecionados('modalidade'),
             
-            if (!palavrasChave) {
-                mostrarToast('Por favor, insira pelo menos uma palavra-chave para busca.', 'warning');
-                palavrasChaveInput.focus();
-                return;
+            // ALTERNATIVA: Caso o schema use nomes diferentes, teste com:
+            // "description": palavrasChave,
+            // "keywords": palavrasChave.split(',').map(p => p.trim()).filter(p => p),
+            // "states": coletarFiltrosSelecionados('uf'),
+            // "spheres": coletarFiltrosSelecionados('esfera'),
+            // "modalities": coletarFiltrosSelecionados('modalidade')
+        };
+        
+        console.log('📋 Dados da busca:', formData);
+        
+        // Envia requisição
+        enviarPesquisaPDP(formData);
+    });
+}
+
+// FUNÇÃO CORRIGIDA para envio
+async function enviarPesquisaPDP(dados) {
+    try {
+        const projetoId = extrairProjetoId();
+        const URL = window.location.origin;
+        
+        console.log('🚀 Enviando pesquisa para projeto:', projetoId);
+        console.log('📋 Payload completo:', JSON.stringify(dados, null, 2));
+        
+        const response = await fetch(URL + '/projetos/' + projetoId + '/create_pdp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'remote-user': 'user.test',
+                'remote-groups': 'TI,OUTROS'
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        console.log('📡 Response status:', response.status);
+        console.log('📡 Response ok:', response.ok);
+        
+        if (response.ok) {
+            const resultado = await response.json();
+            console.log('✅ Resultado da pesquisa:', resultado);
+            
+            mostrarToast('Pesquisa concluída com sucesso!', 'success');
+            
+            // Redireciona para página de resultados
+            setTimeout(() => {
+                window.location.href = '/projetos/' + projetoId + '/confere_pdp';
+            }, 1500);
+        } else {
+            // Log detalhado do erro
+            const contentType = response.headers.get('content-type');
+            let erro;
+            
+            if (contentType && contentType.includes('application/json')) {
+                erro = await response.json();
+                console.error('❌ Erro JSON:', erro);
+            } else {
+                const errorText = await response.text();
+                console.error('❌ Erro texto:', errorText);
+                erro = { detail: errorText };
             }
             
-            // Mostra loading
-            mostrarLoading();
-            
-            // Coleta dados do formulário
-            const formData = {
-                descricao: 'Pesquisa de preços para: ' + palavrasChave,
-                palavras_chave: palavrasChave.split(',').map(p => p.trim()).filter(p => p),
-                ufs: coletarFiltrosSelecionados('uf'),
-                esferas: coletarFiltrosSelecionados('esfera'),
-                modalidades: coletarFiltrosSelecionados('modalidade')
-            };
-            
-            console.log('📋 Dados da busca:', formData);
-            
-            // Envia requisição
-            enviarPesquisaPDP(formData);
-        });
+            throw new Error(erro.detail || `Erro HTTP ${response.status}`);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro na requisição:', error);
+        console.error('❌ Stack trace:', error.stack);
+        mostrarToast('Erro ao realizar pesquisa: ' + error.message, 'error');
+    } finally {
+        esconderLoading();
     }
+}
+
+// VERIFICAÇÃO: Teste também esta versão simplificada dos dados
+function testarDadosSimplificados() {
+    return {
+        "descricao": "Teste de pesquisa",
+        "palavras_chave": ["teste", "exemplo"]
+    };
+}
     
     function mostrarLoading() {
         if (loadingOverlay) {
@@ -570,13 +647,17 @@ document.addEventListener('DOMContentLoaded', function() {
     async function enviarPesquisaPDP(dados) {
         try {
             const projetoId = extrairProjetoId();
+            const URL = window.location.origin; // Adiciona a mesma definição do DFD
             
             console.log('🚀 Enviando pesquisa para projeto:', projetoId);
             
-            const response = await fetch('/projetos/' + projetoId + '/create_pdp', {
+            const response = await fetch(URL + '/projetos/' + projetoId + '/create_pdp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'accept': 'application/json',
+                    'remote-user': 'user.test', // REMOVER HARDCODING
+                    'remote-groups': 'TI,OUTROS' // REMOVER HARDCODING
                 },
                 body: JSON.stringify(dados)
             });

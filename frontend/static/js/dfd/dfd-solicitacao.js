@@ -117,7 +117,7 @@ async function handleFormSubmit(event) {
                 'remote-user': 'user.test', // REMOVER HARDCODING
                 'remote-groups': 'TI,OUTROS' // REMOVER HARDCODING
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(requestBody) 
         });
 
         if (!response.ok) {

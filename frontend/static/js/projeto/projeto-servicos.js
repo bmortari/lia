@@ -2,6 +2,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const btnGerarDFD = document.getElementById('gera_dfd');
     const btnGerarPDP = document.getElementById('gera_pdp');
+    const btnGerarMR = document.getElementById('gera_mr');
 
     // Verifica se os botões existem antes de adicionar event listeners
     if (btnGerarDFD && !btnGerarDFD.disabled) {
@@ -20,6 +21,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const newUrl = currentUrl.endsWith('/')
                 ? currentUrl + 'criar_pdp'
                 : currentUrl + '/criar_pdp';
+            window.location.href = newUrl;
+        });
+    }
+
+    if (btnGerarMR && !btnGerarMR.disabled) {
+        btnGerarMR.addEventListener('click', () => {
+            const currentUrl = window.location.href;
+            const newUrl = currentUrl.endsWith('/')
+                ? currentUrl + 'criar_mr'
+                : currentUrl + '/criar_mr';
             window.location.href = newUrl;
         });
     }
@@ -54,12 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Verifica se é ação de delete
             if (action === 'delete') {
-                // Só permite delete para DFD por enquanto
-                if (service === 'dfd') {
-                    showDeleteConfirmation(projectId, service);
-                } else {
-                    showServiceNotAvailable(service.toUpperCase() + ' DELETE');
-                }
+                showDeleteConfirmation(projectId, service);
                 return;
             }
             
@@ -238,7 +244,7 @@ async function executeDelete(projectId, service) {
         }
         
         // Faz a requisição de delete
-        const response = await fetch(`/projetos/${projectId}/dfd`, {
+        const response = await fetch(`/projetos/${projectId}/${service}`, {
             method: 'DELETE',
             headers: {
                 'accept': 'application/json',
@@ -249,14 +255,14 @@ async function executeDelete(projectId, service) {
         });
         
         if (response.ok) {
-            console.log('DFD deletado com sucesso');
+            console.log(`${service.toUpperCase()} deletado com sucesso`);
             
             // Sucesso - atualiza a interface
             updateCardState(service, false);
             hideDeleteConfirmation();
             
             // Mostra mensagem de sucesso
-            showSuccessMessage('DFD deletado com sucesso!');
+            showSuccessMessage(`${service.toUpperCase()} deletado com sucesso!`);
             
         } else {
             const errorData = await response.json().catch(() => ({ detail: 'Erro desconhecido' }));
@@ -265,7 +271,7 @@ async function executeDelete(projectId, service) {
         
     } catch (error) {
         console.error('Erro ao deletar:', error);
-        alert('Erro ao deletar DFD: ' + error.message);
+        alert(`Erro ao deletar ${service.toUpperCase()}: ` + error.message);
         
         // Restaura botão
         const confirmBtn = document.getElementById('confirmDelete');
@@ -435,8 +441,8 @@ window.updateCardState = function(cardType, hasArtifact) {
             viewButton.title = 'Visualizar documento';
         }
         
-        // Habilita botão de deletar (apenas para DFD por enquanto)
-        if (deleteButton && cardType === 'dfd') {
+        // Habilita botão de deletar
+        if (deleteButton) {
             deleteButton.disabled = false;
             deleteButton.classList.remove('btn-disabled');
             deleteButton.title = 'Deletar documento';
@@ -446,14 +452,14 @@ window.updateCardState = function(cardType, hasArtifact) {
                 deleteButton.classList.add('btn-danger');
             }
             
-            console.log('Botão de delete habilitado para DFD');
+            console.log(`Botão de delete habilitado para ${cardType}`);
         }
     } else {
         // Atualiza botão de gerar
         if (generateButton) {
             const isAvailable = isServiceAvailable(cardType);
             generateButton.textContent = isAvailable ? 'Gerar' : 'Em Desenvolvimento';
-            generateButton.disabled = false;
+            generateButton.disabled = !isServiceAvailable(cardType);
             generateButton.classList.remove('btn-disabled');
             
             // Atualiza classe do botão baseado na disponibilidade
@@ -495,14 +501,14 @@ window.updateCardState = function(cardType, hasArtifact) {
             }
             deleteButton.title = 'Crie o artefato primeiro para poder deletá-lo';
             
-            console.log('Botão de delete desabilitado');
+            console.log(`Botão de delete desabilitado para ${cardType}`);
         }
     }
 };
 
 // Função auxiliar para verificar se um serviço está disponível
 window.isServiceAvailable = function(service) {
-    const availableServices = ['dfd', 'pdp'];
+    const availableServices = ['dfd', 'pdp', 'mr'];
     return availableServices.includes(service);
 };
 
@@ -510,14 +516,8 @@ window.isServiceAvailable = function(service) {
 window.showServiceNotAvailable = function(serviceName) {
     const serviceNames = {
         'ETP': 'Estudo Técnico Preliminar',
-        'MR': 'Mapa de Riscos',
         'TR': 'Termo de Referência',
-        'ED': 'Edital',
-        'PDP DELETE': 'Deletar Pesquisa de Preços',
-        'ETP DELETE': 'Deletar Estudo Técnico Preliminar',
-        'MR DELETE': 'Deletar Mapa de Riscos',
-        'TR DELETE': 'Deletar Termo de Referência',
-        'ED DELETE': 'Deletar Edital'
+        'ED': 'Edital'
     };
     
     const fullName = serviceNames[serviceName] || serviceName;

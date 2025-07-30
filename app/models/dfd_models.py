@@ -16,7 +16,7 @@ class DFD(Base):
 
     # --- CORREÇÃO AQUI ---
     # O 'back_populates' deve corresponder ao nome do atributo no modelo SolucaoIdentificada, que é 'dfd'.
-    solucoes = relationship("SolucaoIdentificada", back_populates="dfd", cascade="all, delete-orphan")
+    #solucoes = relationship("SolucaoIdentificada", back_populates="dfd", cascade="all, delete-orphan")
 
     user_created = Column("usuario_criacao", String(255), nullable=False)
     data_created = Column("data_criacao", DateTime(timezone=True), server_default=func.now())
@@ -39,4 +39,3 @@ class DFD(Base):
 # --- CORREÇÃO AQUI ---
 # Importar os modelos relacionados no final para evitar erros de referência circular.
 from app.models.projects_models import Projeto
-from app.models.solucao_models import SolucaoIdentificada

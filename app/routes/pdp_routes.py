@@ -1,20 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import delete
 from typing import List, Dict, Any
-from datetime import datetime
+from datetime import datetime, date
 
 from app.database import get_db
 from app.dependencies import get_current_remote_user, RemoteUser
 from app.services.pdp_services import create_pdp_service, inicializar_analise_projeto
 from app.schemas.pdp_schemas import PDPCreate, PDPRead
 from app.models.projects_models import Projeto
+from app.models.pdp_models import PDP
+from app.models.solucao_models import SolucaoIdentificada
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
-router = APIRouter(
-                   tags=["PDP"]
-                   )
+import json
+from app.models.pdp_models import PDP
+
+router = APIRouter(tags=["PDP"])
 
 templates_pdp = Jinja2Templates(directory="frontend/templates/pdp")
 
@@ -26,9 +30,13 @@ async def create_pdp(
     db: AsyncSession = Depends(get_db),
     current_user: RemoteUser = Depends(get_current_remote_user)
 ):
+    """
+    Cria PDP baseado nos dados da IA e pesquisa de mercado.
+    Agora o service é responsável por criar o PDP com dados reais.
+    """
     try:
-        pdp = await create_pdp_service(pdp_in, db, current_user, project_id)
-        return pdp
+        pdp_list = await create_pdp_service(pdp_in, db, current_user, project_id)
+        return pdp_list
     
     except ValueError as ve:
         raise HTTPException(status_code=404, detail=str(ve))
@@ -46,6 +54,7 @@ async def criar_pdp_page(
     """
     Carrega a página de criação de PDP, faz análise inicial assíncrona e
     salva as soluções identificadas.
+    MODIFICADO: Não cria mais PDP com valores hard-coded aqui.
     """
     stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
     result = await db.execute(stmt)
@@ -58,37 +67,64 @@ async def criar_pdp_page(
     try:
         analise_inicial = await inicializar_analise_projeto(projeto_id, db)
 
-        # Salva as soluções e a análise de riscos no banco de dados
+        # Salva apenas as soluções identificadas
         if analise_inicial.get("status") == "sucesso":
-            # Crie um PDP (se necessário) ou recupere um existente
-            # Para este exemplo, vamos assumir que um PDP já foi criado ou está sendo criado.
-            # Você precisará ajustar essa lógica conforme o fluxo da sua aplicação.
+            # Verifica se já existe um PDP para este projeto
+            stmt_pdp = select(PDP).where(PDP.id_projeto == projeto_id)
+            result_pdp = await db.execute(stmt_pdp)
+            pdp_existente = result_pdp.scalar_one_or_none()
             
-            # Exemplo: Criando um novo PDP para associar as soluções
-            # Em um cenário real, você provavelmente recuperaria o PDP relevante.
-            novo_pdp = PDP(id_projeto=projeto_id, orgao_contratante="Definir", processo_pregao="Definir", empresa_adjudicada="Definir", cnpj_empresa="Definir", objeto="Definir", data_vigencia_inicio="2025-01-01", tipo_fonte="Definir", tabela_itens=[], user_created="sistema")
-            db.add(novo_pdp)
-            await db.flush() # Para obter o ID do novo PDP
+            # Se não existe PDP, não cria aqui - será criado no POST /create_pdp
+            # Apenas salva as soluções se já existe um PDP
+            if pdp_existente:
+                pdp_para_solucoes = pdp_existente
+                
+                # Remove soluções existentes para este PDP
+                stmt_delete = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_pdp == pdp_para_solucoes.id)
+                await db.execute(stmt_delete)
 
-            solucoes_ia = analise_inicial.get("analise_inicial", {}).get("tipos_solucao", [])
-            
-            for solucao_data in solucoes_ia:
-                nova_solucao = SolucaoIdentificada(
-                    id_pdp=novo_pdp.id,
-                    nome=solucao_data.get("nome"),
-                    descricao=solucao_data.get("descricao"),
-                    palavras_chave=solucao_data.get("palavras_chave"),
-                    complexidade_estimada=solucao_data.get("complexidade_estimada"),
-                    tipo=solucao_data.get("tipo"),
-                    analise_riscos=solucao_data.get("analise_riscos") # Incluindo a análise de riscos
-                )
-                db.add(nova_solucao)
-            
-            await db.commit()
+                # Adiciona as novas soluções
+                solucoes_ia = analise_inicial.get("analise_inicial", {}).get("tipos_solucao", [])
+                
+                print(f"DEBUG: Tentando salvar {len(solucoes_ia)} soluções para PDP ID: {pdp_para_solucoes.id}")
+                
+                for i, solucao_data in enumerate(solucoes_ia):
+                    try:
+                        # Verificações de segurança para evitar valores None
+                        nome = solucao_data.get("nome") or f"Solução {i+1}"
+                        descricao = solucao_data.get("descricao") or "Sem descrição"
+                        palavras_chave = solucao_data.get("palavras_chave") or []
+                        complexidade = solucao_data.get("complexidade_estimada") or "Média"
+                        tipo = solucao_data.get("tipo") or "complementar"
+                        analise_riscos = solucao_data.get("analise_riscos") or []
+                        
+                        print(f"DEBUG: Criando solução {i+1}: {nome}")
+                        
+                        nova_solucao = SolucaoIdentificada(
+                            id_pdp=pdp_para_solucoes.id,
+                            nome=nome,
+                            descricao=descricao,
+                            palavras_chave=palavras_chave,
+                            complexidade_estimada=complexidade,
+                            tipo=tipo,
+                            analise_riscos=analise_riscos,
+                            usuario_criacao="sistema"
+                        )
+                        db.add(nova_solucao)
+                        print(f"DEBUG: Solução {i+1} adicionada com sucesso")
+                        
+                    except Exception as e:
+                        print(f"DEBUG: Erro ao criar solução {i+1}: {e}")
+                        continue
+                
+                await db.commit()
+            else:
+                print("DEBUG: Nenhum PDP existente encontrado. Soluções serão salvas quando o PDP for criado.")
 
     except Exception as e:
+        await db.rollback()
         print(f"Erro na análise inicial ou ao salvar soluções: {e}")
-        # Lógica de fallback, se necessário
+        # Lógica de fallback
         analise_inicial = {
             "status": "erro",
             "analise_inicial": {
@@ -133,16 +169,52 @@ async def confere_pdp_page(
     db: AsyncSession = Depends(get_db),
     # current_user: RemoteUser = Depends(get_current_remote_user)
 ):
-    stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
-    result = await db.execute(stmt)
-    projeto = result.scalar_one_or_none()
+    # 1. Buscar o projeto (como você já faz)
+    stmt_projeto = select(Projeto).where(Projeto.id_projeto == projeto_id)
+    result_projeto = await db.execute(stmt_projeto)
+    projeto = result_projeto.scalar_one_or_none()
 
     if not projeto:
         raise HTTPException(status_code=404, detail="Projeto não encontrado")
-    
+
+    # 2. <<< NOVO: Buscar todos os PDPs associados ao projeto >>>
+    stmt_pdp = select(PDP).where(PDP.id_projeto == projeto_id).order_by(PDP.data_created.desc())
+    result_pdp = await db.execute(stmt_pdp)
+    pdp_records = result_pdp.scalars().all()
+
+    # 3. <<< NOVO: Formatar os dados para o front-end >>>
+    formatted_data = []
+    for record in pdp_records:
+        contract_data = {
+            "orgao_contratante": record.orgao_contratante,
+            "processo_pregao": record.processo_pregao,
+            "empresa_adjudicada": record.empresa_adjudicada,
+            "cnpj_empresa": record.cnpj_empresa,
+            "objeto": record.objeto,
+            # Garante que as datas sejam strings no formato YYYY-MM-DD
+            "data_vigencia_inicio": record.data_vigencia_inicio.isoformat() if record.data_vigencia_inicio else None,
+            "data_vigencia_fim": record.data_vigencia_fim.isoformat() if record.data_vigencia_fim else None,
+            "tipo_fonte": record.tipo_fonte,
+            # Mapeia a estrutura de 'tabela_itens' para a que o JS espera
+            "tabela_itens": [
+                {
+                    "item": item.get("item"),
+                    "descricao_item": item.get("descricao"),  # DE: "descricao" -> PARA: "descricao_item"
+                    "marca_modelo": item.get("marca_referencia", "Não especificado"), # DE: "marca_referencia" -> PARA: "marca_modelo"
+                    "unidade_medida": item.get("unidade"), # DE: "unidade" -> PARA: "unidade_medida"
+                    "quantidade": item.get("quantidade"),
+                    "valor_unitario": item.get("valor_unitario")
+                } for item in (record.tabela_itens or [])
+            ]
+        }
+        formatted_data.append(contract_data)
+
+    # 4. <<< MODIFICADO: Injetar os dados formatados como uma string JSON no template >>>
     return templates_pdp.TemplateResponse("pdp-curadoria.html", {
         "request": request,
-        "projeto": projeto
+        "projeto": projeto,
+        # Converte a lista de dicionários para uma string JSON
+        "pdp_data_json": json.dumps(formatted_data) 
     })
     
     
@@ -164,3 +236,75 @@ async def visualizacao_pdp_page(
         "request": request,
         "projeto": projeto
     })
+
+
+@router.get("/projetos/{projeto_id}/pdp", response_model=List[PDPRead])
+async def get_pdp_by_project(
+    projeto_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Endpoint para buscar PDPs existentes de um projeto
+    """
+    try:
+        stmt = select(PDP).where(PDP.id_projeto == projeto_id)
+        result = await db.execute(stmt)
+        pdps = result.scalars().all()
+        
+        pdps_response = []
+        for pdp in pdps:
+            # CORREÇÃO: usar data_created em vez de created_at
+            pdp_read = PDPRead(
+                id=pdp.id,  # Voltando para id padrão
+                id_projeto=pdp.id_projeto,
+                orgao_contratante=pdp.orgao_contratante,
+                processo_pregao=pdp.processo_pregao,
+                empresa_adjudicada=pdp.empresa_adjudicada,
+                cnpj_empresa=pdp.cnpj_empresa,
+                objeto=pdp.objeto,
+                data_vigencia_inicio=pdp.data_vigencia_inicio,
+                tipo_fonte=pdp.tipo_fonte,
+                tabela_itens=pdp.tabela_itens,
+                user_created=pdp.user_created,
+                data_created=pdp.data_created  # Campo correto: data_created
+            )
+            pdps_response.append(pdp_read)
+        
+        return pdps_response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar PDPs: {str(e)}")
+
+
+@router.delete("/projetos/{projeto_id}/pdp/{pdp_id}")
+async def delete_pdp(
+    projeto_id: int,
+    pdp_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Endpoint para deletar um PDP específico
+    """
+    try:
+        stmt = select(PDP).where(PDP.id == pdp_id, PDP.id_projeto == projeto_id)
+        result = await db.execute(stmt)
+        pdp = result.scalar_one_or_none()
+        
+        if not pdp:
+            raise HTTPException(status_code=404, detail="PDP não encontrado")
+        
+        # Remove soluções relacionadas primeiro
+        stmt_delete_solucoes = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_pdp == pdp_id)
+        await db.execute(stmt_delete_solucoes)
+        
+        # Remove o PDP
+        await db.delete(pdp)
+        await db.commit()
+        
+        return {"message": "PDP deletado com sucesso"}
+        
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar PDP: {str(e)}")

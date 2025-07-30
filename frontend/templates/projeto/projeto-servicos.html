@@ -217,7 +217,7 @@
             <div class="mb-4">
                 <i class="uil uil-exclamation-triangle text-red-500 text-4xl mb-2"></i>
                 <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmar Exclusão</h3>
-                <p class="text-gray-600">Tem certeza que deseja deletar este DFD? Esta ação não pode ser desfeita.</p>
+                <p class="text-gray-600">Tem certeza que deseja deletar este artefato? Esta ação não pode ser desfeita.</p>
             </div>
             <div class="flex gap-3 justify-center">
                 <button id="cancelDelete" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
@@ -373,7 +373,83 @@
                                 {% if not projeto.exist_pdp %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
                         </button>
-                        
+                        <button type="button" 
+                                title="Deletar documento" 
+                                data-action="delete"
+                                data-service="pdp"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                    {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_pdp %}disabled{% endif %}>
+                            <i class="uil uil-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa de Riscos Card -->
+            <div class="flex flex-col items-center" data-card-type="mr">
+                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
+                     {% if projeto.exist_mr %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    
+                    <div class="text-center mb-2">
+                        {% if projeto.exist_mr %}
+                        <span class="artifact-status artifact-exists">
+                            <i class="uil uil-check-circle mr-1"></i>
+                            Artefato criado
+                        </span>
+                        {% else %}
+                        <span class="artifact-status artifact-not-exists">
+                            <i class="uil uil-exclamation-circle mr-1"></i>
+                            Não criado
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex justify-center text-6xl mb-3
+                         {% if projeto.exist_mr %}icon-custom{% else %}icon-custom-gray{% endif %}">
+                        <i class="uil uil-map"></i>
+                    </div>
+                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Mapa de Riscos</h5>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um mapa de riscos.</p>
+                    
+                    <button id="gera_mr" class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                   {% if projeto.exist_mr %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
+                            {% if projeto.exist_mr %}disabled{% endif %}>
+                        {% if projeto.exist_mr %}Já Criado{% else %}Gerar{% endif %}
+                    </button>
+                    
+                    <div class="flex gap-2">
+                        <button type="button" 
+                                title="Editar documento" 
+                                data-action="edit"
+                                data-service="mr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_mr %}disabled{% endif %}>
+                            <i class="uil uil-edit"></i>
+                        </button>
+                        <button type="button" 
+                                title="Visualizar documento" 
+                                data-action="view"
+                                data-service="mr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_mr %}disabled{% endif %}>
+                            <i class="uil uil-file-alt"></i>
+                        </button>
+                        <button type="button" 
+                                title="Deletar documento" 
+                                data-action="delete"
+                                data-service="mr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                    {% if not projeto.exist_mr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_mr %}disabled{% endif %}>
+                            <i class="uil uil-times"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -431,62 +507,15 @@
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
                         </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mapa de Riscos Card -->
-            <div class="flex flex-col items-center" data-card-type="mr">
-                <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
-                     {% if projeto.exist_mr %}card-with-artifact{% else %}card-without-artifact{% endif %}">
-                    
-                    <div class="text-center mb-2">
-                        {% if projeto.exist_mr %}
-                        <span class="artifact-status artifact-exists">
-                            <i class="uil uil-check-circle mr-1"></i>
-                            Artefato criado
-                        </span>
-                        {% else %}
-                        <span class="artifact-status artifact-not-exists">
-                            <i class="uil uil-exclamation-circle mr-1"></i>
-                            Não criado
-                        </span>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="flex justify-center text-6xl mb-3
-                         {% if projeto.exist_mr %}icon-custom{% else %}icon-custom-gray{% endif %}">
-                        <i class="uil uil-map"></i>
-                    </div>
-                    <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Mapa de Riscos</h5>
-                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um mapa de riscos.</p>
-                    
-                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
-                                   {% if projeto.exist_mr %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
-                            {% if projeto.exist_mr %}disabled{% endif %}>
-                        {% if projeto.exist_mr %}Já Criado{% else %}Em Desenvolvimento{% endif %}
-                    </button>
-                    
-                    <div class="flex gap-2">
                         <button type="button" 
-                                title="Editar documento" 
-                                data-action="edit"
-                                data-service="mr"
+                                title="Deletar documento" 
+                                data-action="delete"
+                                data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
-                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
-                                {% if not projeto.exist_mr %}disabled{% endif %}>
-                            <i class="uil uil-edit"></i>
-                        </button>
-                        <button type="button" 
-                                title="Visualizar documento" 
-                                data-action="view"
-                                data-service="mr"
-                                data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
-                                       {% if not projeto.exist_mr %}btn-disabled{% endif %}"
-                                {% if not projeto.exist_mr %}disabled{% endif %}>
-                            <i class="uil uil-file-alt"></i>
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                    {% if not projeto.exist_etp %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_etp %}disabled{% endif %}>
+                            <i class="uil uil-times"></i>
                         </button>
                     </div>
                 </div>
@@ -545,6 +574,16 @@
                                 {% if not projeto.exist_tr %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
                         </button>
+                        <button type="button" 
+                                title="Deletar documento" 
+                                data-action="delete"
+                                data-service="tr"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                    {% if not projeto.exist_tr %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_tr %}disabled{% endif %}>
+                            <i class="uil uil-times"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -601,6 +640,16 @@
                                        {% if not projeto.exist_ed %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_ed %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
+                        </button>
+                        <button type="button" 
+                                title="Deletar documento" 
+                                data-action="delete"
+                                data-service="ed"
+                                data-project-id="{{ projeto.id_projeto }}"
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                    {% if not projeto.exist_ed %}btn-disabled{% endif %}"
+                                {% if not projeto.exist_ed %}disabled{% endif %}>
+                            <i class="uil uil-times"></i>
                         </button>
                     </div>
                 </div>
