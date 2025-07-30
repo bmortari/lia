@@ -529,7 +529,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                 'Você não tem permissão para editar este DFD.', 
                                 'error'
                             );
+                        } else if (response.status == 422) {
+                            exibirAlerta(
+                                'Erro ao Salvar',
+                                'Verifique se há campos em branco na lista de itens e exclua-os antes de tentar salvar novamente.',
+                                'error'
+                            );
                         } else {
+                            const errorData = await response.json().catch(() => ({}));
                             exibirAlerta(
                                 'Erro ao Salvar', 
                                 `Erro ${response.status}: ${errorData.detail || 'Erro ao salvar no banco.'}`, 
