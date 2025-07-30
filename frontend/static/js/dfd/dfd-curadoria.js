@@ -377,13 +377,13 @@ document.addEventListener('DOMContentLoaded', function () {
         descriptionInput.type = 'text';
         descriptionInput.value = item.descricao || '';
         descriptionInput.placeholder = 'Descrição do item';
-        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md item-description';
+        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.value = item.quantidade || '';
         quantityInput.placeholder = 'Qtd.';
-        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md item-quantity';
+        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]';
         quantityInput.min = '1';
 
         const deleteBtn = document.createElement('button');
