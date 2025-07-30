@@ -68,22 +68,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 const descricaoInput = row.querySelector('.item-description');
                 const quantidadeInput = row.querySelector('.item-quantity');
                 
-                const descricao = descricaoInput?.value?.trim() || null;
-                const quantidade = quantidadeInput?.value ? parseInt(quantidadeInput.value) : null;
-                
-                quantidadeItens.push({
-                    id_do_item: index + 1,
-                    descricao: descricao,
-                    quantidade: quantidade
-                });
+                const descricao = descricaoInput?.value?.trim();
+                const quantidadeStr = quantidadeInput?.value?.trim();
+
+                // Adiciona o item à lista apenas se a descrição e a quantidade forem fornecidas
+                if (descricao && quantidadeStr) {
+                    const quantidade = parseInt(quantidadeStr, 10);
+                    if (!isNaN(quantidade)) {
+                        quantidadeItens.push({
+                            id_do_item: index + 1,
+                            descricao: descricao,
+                            quantidade: quantidade
+                        });
+                    }
+                }
             });
         }
         
-        return quantidadeItens.length > 0 ? quantidadeItens : [{
-            id_do_item: 1,
-            descricao: null,
-            quantidade: null
-        }];
+        // Retorna a lista de itens. Se estiver vazia, a validação do formulário irá lidar com isso.
+        return quantidadeItens;
     }
 
     // Mapeamento das opções estratégicas
