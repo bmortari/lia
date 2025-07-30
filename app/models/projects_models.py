@@ -14,6 +14,10 @@ class TipoProjetoEnum(str, enum.Enum):
     OUTROS = "OUTROS"
 
 class Projeto(Base):
+    """
+    Modelo principal - todos os artefatos se relacionam apenas com Projeto.
+    Os artefatos são independentes entre si.
+    """
     __tablename__ = "projeto"
     __table_args__ = {"schema": "core"}
 
@@ -31,7 +35,16 @@ class Projeto(Base):
     exist_mr = Column(Boolean, nullable=False, default=False, comment="Indica se existe MR vinculado ao projeto")
     exist_tr = Column(Boolean, nullable=False, default=False, comment="Indica se existe TR vinculado ao projeto")
     exist_ed = Column(Boolean, nullable=False, default=False, comment="Indica se existe ED vinculado ao projeto")
+    exist_pgr = Column(Boolean, nullable=False, default=False, comment="Indica se existe PGR vinculado ao projeto")
+    exist_solucao = Column(Boolean, nullable=False, default=False, comment="Indica se existe Solução vinculada ao projeto")
     
-    dfds = relationship("app.models.dfd_models.DFD", back_populates="projeto", cascade="all, delete-orphan")
-    pdps = relationship("app.models.pdp_models.PDP", back_populates="projeto", cascade="all, delete-orphan")
-    #etps = relationship("app.models.pdp_models.ETP", back_populates="projeto", cascade="all, delete-orphan")
+    # RELACIONAMENTOS CENTRALIZADOS
+    # Todos os artefatos se relacionam APENAS com Projeto
+    # Os artefatos são independentes entre si
+    # Usando string references para evitar problemas de importação circular
+    
+    dfds = relationship("DFD", back_populates="projeto", cascade="all, delete-orphan")
+    pdps = relationship("PDP", back_populates="projeto", cascade="all, delete-orphan")
+    etps = relationship("ETP", back_populates="projeto", cascade="all, delete-orphan")
+    pgrs = relationship("PGR", back_populates="projeto", cascade="all, delete-orphan")
+    solucoes = relationship("SolucaoIdentificada", back_populates="projeto", cascade="all, delete-orphan")

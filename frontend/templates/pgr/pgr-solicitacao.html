@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plano de Gerenciamento de Riscos - TRE-AC</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+        
+        .solution-card {
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: slideInUp 0.6s ease forwards;
+        }
+        .solution-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Spinning animation for loading */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-icon {
+            display: inline-block;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .btn-custom {
+            background-color: #dc2626;
+        }
+        .btn-custom:hover {
+            background-color: #b91c1c;
+        }
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.3);
+        }
+        
+        .checkbox-custom:checked {
+            background-color: #dc2626;
+            border-color: #dc2626;
+        }
+        .checkbox-custom:focus {
+            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
+        }
+         
+        #voltar-inicio {
+            color: #dc2626;
+            border-color: #dc2626;
+            background-color: transparent;
+        }
+        #voltar-inicio:focus {
+            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.3);
+            outline: none;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        }
+        
+        .risk-level-high {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        }
+        
+        .risk-level-medium {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .risk-level-low {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-8 max-w-7xl">
+
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Plano de Gerenciamento de Riscos</h1>
+                    <p class="text-gray-600 mt-2">Análise de riscos baseada nas soluções identificadas</p>
+                </div>
+                <button id="voltar-inicio" class="flex items-center text-red-600 hover:text-red-800 transition-colors border border-current px-4 py-2 rounded-lg">
+                    <i class="uil uil-arrow-left mr-2"></i>
+                    Voltar ao início
+                </button>
+            </div>
+        </div>
+
+        <!-- Soluções Identificadas -->
+        <div id="solucoes-section" class="mb-8 hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="uil uil-shield-exclamation mr-3 text-red-600"></i>
+                    Soluções para Análise de Riscos
+                </h2>
+                <p class="text-gray-600 mt-2">Selecione as soluções para análise detalhada de riscos:</p>
+            </div>
+            
+            <div id="solucoes-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+                <!-- Cards serão inseridos aqui pelo JavaScript -->
+            </div>
+        </div>
+
+        <!-- Formulário de Análise de Riscos -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-bold text-gray-900">Configurar Análise de Riscos</h3>
+                <div class="text-sm text-gray-500">
+                    <i class="uil uil-analysis mr-1"></i>
+                    Defina parâmetros para análise detalhada
+                </div>
+            </div>
+
+            <form id="pgr-form">
+                <div class="space-y-6">
+                    
+                    <!-- Prompt do Usuário -->
+                    <div>
+                        <label for="prompt-usuario" class="block text-sm font-medium text-gray-900 mb-3">
+                            <i class="uil uil-comment-alt-question mr-1"></i>
+                            Orientações para Análise de Riscos
+                        </label>
+                        <div class="relative">
+                            <textarea 
+                                id="prompt-usuario" 
+                                name="prompt-usuario" 
+                                rows="6"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-4 resize-none" 
+                                placeholder="Descreva aspectos específicos que devem ser considerados na análise de riscos, como contexto organizacional, restrições, prioridades, ou áreas de especial atenção..."
+                            ></textarea>
+                        </div>
+                        <p class="mt-2 text-sm text-gray-500">
+                            💡 Exemplo: "Focar em riscos de segurança da informação e conformidade legal. Considerar capacidade limitada da equipe técnica interna."
+                        </p>
+                    </div>
+
+                    <!-- Parâmetros de Análise -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Tipos de Risco a Focar -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-3">
+                                <i class="uil uil-layers mr-1"></i>
+                                Categorias de Risco Prioritárias
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="tecnico" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500" checked>
+                                    <span class="ml-3 text-sm text-gray-700">Técnico</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="operacional" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500" checked>
+                                    <span class="ml-3 text-sm text-gray-700">Operacional</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="financeiro" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500" checked>
+                                    <span class="ml-3 text-sm text-gray-700">Financeiro</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="legal" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500" checked>
+                                    <span class="ml-3 text-sm text-gray-700">Legal/Regulatório</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" value="estrategico" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <span class="ml-3 text-sm text-gray-700">Estratégico</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Nível de Detalhamento -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-3">
+                                <i class="uil uil-focus-target mr-1"></i>
+                                Nível de Detalhamento
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="nivel-detalhamento" value="basico" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
+                                    <span class="ml-3 text-sm text-gray-700">Básico - Principais riscos</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="nivel-detalhamento" value="completo" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500" checked>
+                                    <span class="ml-3 text-sm text-gray-700">Completo - Análise detalhada</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="nivel-detalhamento" value="executivo" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
+                                    <span class="ml-3 text-sm text-gray-700">Executivo - Resumo estratégico</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Gerar PGR -->
+                    <div class="flex justify-center pt-4">
+                        <button type="submit" id="gerar-pgr" class="w-full md:w-auto flex items-center justify-center text-white btn-custom font-medium rounded-lg text-lg px-8 py-4 transition-colors hover:shadow-lg">
+                            <i class="uil uil-shield-check mr-2"></i>
+                            Gerar Plano de Gerenciamento de Riscos
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Aviso se não há soluções -->
+        <div id="sem-solucoes-aviso" class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 hidden">
+            <div class="flex items-center mb-4">
+                <i class="uil uil-exclamation-triangle text-yellow-600 text-2xl mr-3"></i>
+                <h3 class="text-lg font-medium text-yellow-800">Soluções Não Encontradas</h3>
+            </div>
+            <p class="text-yellow-700 mb-4">
+                Para gerar um Plano de Gerenciamento de Riscos, primeiro é necessário ter soluções identificadas no projeto.
+            </p>
+            <div class="bg-yellow-100 rounded-md p-3">
+                <p class="text-sm text-yellow-800">
+                    💡 <strong>Próximo passo:</strong> Execute primeiro a análise PDP para identificar soluções e depois retorne para gerar o PGR.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+            <div class="mb-4">
+                <i class="uil uil-shield-exclamation text-red-600 text-5xl animate-spin-icon"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Analisando Riscos</h3>
+            <p class="text-gray-600 mb-6">Identificando e categorizando riscos das soluções...</p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="btn-custom h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        window.analiseRiscos = {{ analise_riscos | tojson | safe }};
+        console.log('Análise de riscos:', window.analiseRiscos);
+    </script>
+    
+    <script src="/static/js/pgr/pgr-solicitacao.js" defer></script>
+</body>
+</html>

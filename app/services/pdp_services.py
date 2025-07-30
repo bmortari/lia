@@ -12,7 +12,7 @@ from datetime import datetime, date
 from pydantic import BaseModel, Field
 from app.models.projects_models import Projeto
 from app.models.pdp_models import PDP
-
+from app.models.solucao_models import SolucaoIdentificada
 
 import json 
 import os
@@ -141,6 +141,9 @@ async def create_pdp_service(pdp_in: PDPCreate, db: AsyncSession, current_user: 
             print(f"Nenhum PDP foi criado. Atualizando 'exist_pdp' para False no projeto ID: {project_id}")
             projeto.exist_pdp = False
 
+        # <<< NOVA CORREÇÃO: Salvar soluções identificadas baseadas na análise da IA >>>
+        await salvar_solucoes_identificadas(project_id, pdp_in, contexto, db, current_user)
+
         await db.commit()
         
         pdps_response = []
@@ -156,6 +159,81 @@ async def create_pdp_service(pdp_in: PDPCreate, db: AsyncSession, current_user: 
         await db.rollback()
         print(f"Erro geral na criação do PDP: {e}")
         raise e
+
+
+async def salvar_solucoes_identificadas(project_id: int, pdp_in: PDPCreate, contexto: Dict, db: AsyncSession, current_user: RemoteUser):
+    """
+    Salva soluções identificadas baseadas nos dados de entrada do PDP
+    """
+    try:
+        # Remove soluções existentes para este projeto
+        print(f"Removendo soluções existentes para o projeto ID: {project_id}")
+        await db.execute(delete(SolucaoIdentificada).where(SolucaoIdentificada.id_projeto == project_id))
+        
+        # Cria soluções baseadas nos dados de entrada
+        solucoes = []
+        
+        # Solução principal baseada na descrição
+        solucao_principal = {
+            "nome": f"Solução Principal - {contexto.get('objeto_contratacao', 'Contratação')}",
+            "descricao": pdp_in.descricao,
+            "palavras_chave": pdp_in.palavras_chave or [],
+            "complexidade_estimada": "Média",
+            "tipo": "principal",
+            "analise_riscos": []
+        }
+        solucoes.append(solucao_principal)
+        
+        # Soluções complementares baseadas nas palavras-chave
+        if pdp_in.palavras_chave and len(pdp_in.palavras_chave) > 1:
+            for i, palavra in enumerate(pdp_in.palavras_chave[1:3]):  # Máximo 2 soluções complementares
+                solucao_complementar = {
+                    "nome": f"Solução {palavra.capitalize()}",
+                    "descricao": f"Abordagem especializada focada em {palavra}",
+                    "palavras_chave": [palavra],
+                    "complexidade_estimada": "Baixa" if i == 0 else "Média",
+                    "tipo": "complementar",
+                    "analise_riscos": []
+                }
+                solucoes.append(solucao_complementar)
+        
+        # Solução econômica
+        solucao_economica = {
+            "nome": "Solução Econômica",
+            "descricao": "Alternativa de menor custo mantendo a qualidade necessária",
+            "palavras_chave": ["básico", "economia"] + (pdp_in.palavras_chave[:1] if pdp_in.palavras_chave else []),
+            "complexidade_estimada": "Baixa",
+            "tipo": "economica",
+            "analise_riscos": []
+        }
+        solucoes.append(solucao_economica)
+        
+        # Salva cada solução no banco
+        for i, solucao_data in enumerate(solucoes):
+            try:
+                nova_solucao = SolucaoIdentificada(
+                    id_projeto=project_id,
+                    nome=solucao_data["nome"],
+                    descricao=solucao_data["descricao"],
+                    palavras_chave=solucao_data["palavras_chave"],
+                    complexidade_estimada=solucao_data["complexidade_estimada"],
+                    tipo=solucao_data["tipo"],
+                    analise_riscos=solucao_data["analise_riscos"],
+                    usuario_criacao=current_user.username if hasattr(current_user, 'username') else 'sistema'
+                )
+                db.add(nova_solucao)
+                print(f"DEBUG: Solução {i+1} criada: {solucao_data['nome']}")
+                
+            except Exception as e:
+                print(f"DEBUG: Erro ao criar solução {i+1}: {e}")
+                continue
+        
+        await db.flush()
+        print(f"DEBUG: {len(solucoes)} soluções salvas com sucesso para projeto {project_id}")
+        
+    except Exception as e:
+        print(f"Erro ao salvar soluções identificadas: {e}")
+        # Não levanta exceção para não quebrar o fluxo principal
 
 
 # ... (O resto do arquivo permanece o mesmo)

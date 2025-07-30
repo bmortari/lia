@@ -1,203 +1,218 @@
-// Event listener para o botão DFD
+// projeto-servicos.js - Versão com PGR
 document.addEventListener('DOMContentLoaded', () => {
-    const btnGerarDFD = document.getElementById('gera_dfd');
-    const btnGerarPDP = document.getElementById('gera_pdp');
-    const btnGerarMR = document.getElementById('gera_mr');
-
-    // Verifica se os botões existem antes de adicionar event listeners
-    if (btnGerarDFD && !btnGerarDFD.disabled) {
-        btnGerarDFD.addEventListener('click', () => {
-            const currentUrl = window.location.href;
-            const newUrl = currentUrl.endsWith('/')
-                ? currentUrl + 'criar_dfd'
-                : currentUrl + '/criar_dfd';
-            window.location.href = newUrl;
-        });
+    console.log('📄 projeto-servicos.js carregado (versão PGR)');
+    
+    // Extrair ID do projeto da URL
+    function getProjectId() {
+        const pathname = window.location.pathname;
+        const matches = pathname.match(/\/projetos\/(\d+)/);
+        return matches ? matches[1] : null;
     }
-
-    if (btnGerarPDP && !btnGerarPDP.disabled) {
-        btnGerarPDP.addEventListener('click', () => {
-            const currentUrl = window.location.href;
-            const newUrl = currentUrl.endsWith('/')
-                ? currentUrl + 'criar_pdp'
-                : currentUrl + '/criar_pdp';
-            window.location.href = newUrl;
-        });
+    
+    const projectId = getProjectId();
+    console.log('🔍 ID do projeto extraído:', projectId);
+    
+    if (!projectId) {
+        console.error('❌ ID do projeto não encontrado na URL');
+        return;
     }
-
-    if (btnGerarMR && !btnGerarMR.disabled) {
-        btnGerarMR.addEventListener('click', () => {
-            const currentUrl = window.location.href;
-            const newUrl = currentUrl.endsWith('/')
-                ? currentUrl + 'criar_mr'
-                : currentUrl + '/criar_mr';
-            window.location.href = newUrl;
-        });
-    }
-
-    // Event listener para o botão "Voltar ao Início"
-    const btnVoltarInicio = document.getElementById('logo-lia');
-    if (btnVoltarInicio) {
-        btnVoltarInicio.addEventListener('click', () => {
-            const url = new URL(window.location.href);
-            window.location.href = url.origin;
-        });
-    }
-
-    // Event listeners para botões de editar, visualizar e deletar
+    
+    // === MAPEAMENTO DE ROTAS ===
+    const serviceRoutes = {
+        'dfd': {
+            create: `/projetos/${projectId}/criar_dfd`,
+            edit: `/projetos/${projectId}/confere_dfd`,
+            view: `/projetos/${projectId}/visualizacao_dfd`,
+            delete: `/projetos/${projectId}/dfd`
+        },
+        'pdp': {
+            create: `/projetos/${projectId}/criar_pdp`,
+            edit: `/projetos/${projectId}/criar_pdp`,
+            view: `/projetos/${projectId}/visualizacao_pdp`,
+            delete: `/projetos/${projectId}/pdp`
+        },
+        'pgr': {
+            // PGR (Plano de Gerenciamento de Riscos)
+            create: `/projetos/${projectId}/criar_pgr`,
+            edit: `/projetos/${projectId}/criar_pgr`,
+            view: `/projetos/${projectId}/visualizacao_pgr`,
+            delete: `/projetos/${projectId}/pgr`
+        },
+        'etp': {
+            create: `/projetos/${projectId}/criar_etp`,
+            edit: `/projetos/${projectId}/criar_etp`,
+            view: `/projetos/${projectId}/visualizacao_etp`,
+            delete: `/projetos/${projectId}/etp`
+        },
+        'tr': {
+            create: `/projetos/${projectId}/criar_tr`,
+            edit: `/projetos/${projectId}/criar_tr`,
+            view: `/projetos/${projectId}/visualizacao_tr`,
+            delete: `/projetos/${projectId}/tr`
+        },
+        'ed': {
+            create: `/projetos/${projectId}/criar_ed`,
+            edit: `/projetos/${projectId}/criar_ed`,
+            view: `/projetos/${projectId}/visualizacao_ed`,
+            delete: `/projetos/${projectId}/ed`
+        }
+    };
+    
+    // === SERVIÇOS DISPONÍVEIS ===
+    const availableServices = ['dfd', 'pdp', 'pgr']; // PGR agora está disponível
+    
+    // === EVENT LISTENERS PARA BOTÕES DE GERAÇÃO ===
+    const generateButtons = {
+        'gera_dfd': 'dfd',
+        'gera_pdp': 'pdp', 
+        'gera_pgr': 'pgr',  // ✅ Agora usando PGR diretamente
+        'gera_etp': 'etp',
+        'gera_tr': 'tr',
+        'gera_ed': 'ed'
+    };
+    
+    // Adicionar event listeners para botões de geração
+    Object.entries(generateButtons).forEach(([buttonId, service]) => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            // Remove event listeners existentes
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            // Adiciona novo event listener apenas se não estiver desabilitado
+            if (!newButton.disabled && !newButton.classList.contains('btn-disabled')) {
+                newButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const route = serviceRoutes[service]?.create;
+                    if (route) {
+                        console.log(`🚀 Redirecionando para: ${route}`);
+                        window.location.href = route;
+                    } else {
+                        console.warn(`⚠️ Rota não encontrada para serviço: ${service}`);
+                        showToast(`Serviço ${service.toUpperCase()} em desenvolvimento`, 'warning');
+                    }
+                });
+                
+                console.log(`✅ Event listener adicionado para ${buttonId} -> ${service}`);
+            } else {
+                console.log(`⏸️ Botão ${buttonId} está desabilitado`);
+            }
+        } else {
+            console.warn(`⚠️ Botão ${buttonId} não encontrado`);
+        }
+    });
+    
+    // === EVENT LISTENERS PARA BOTÕES DE AÇÃO ===
     const actionButtons = document.querySelectorAll('button[data-action]');
-    actionButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
+    console.log(`🔘 Encontrados ${actionButtons.length} botões de ação`);
+    
+    actionButtons.forEach((button, index) => {
+        // Remove event listeners existentes clonando o elemento
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        newButton.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            // Se o botão está desabilitado, não fazer nada
-            if (button.disabled || button.classList.contains('btn-disabled')) {
-                console.log('Botão desabilitado clicado');
+            // Verifica se está desabilitado
+            if (this.disabled || this.classList.contains('btn-disabled')) {
+                console.log('🚫 Botão desabilitado clicado');
                 return false;
             }
             
-            const action = button.getAttribute('data-action');
-            const service = button.getAttribute('data-service');
-            const projectId = button.getAttribute('data-project-id');
+            const action = this.getAttribute('data-action');
+            const service = this.getAttribute('data-service');
+            const projectIdFromButton = this.getAttribute('data-project-id');
             
-            console.log(`Action: ${action}, Service: ${service}, Project: ${projectId}`);
+            console.log(`🎯 Ação: ${action}, Serviço: ${service}, Projeto: ${projectIdFromButton}`);
             
-            // Verifica se é ação de delete
+            // Ação de delete
             if (action === 'delete') {
-                showDeleteConfirmation(projectId, service);
+                showDeleteConfirmation(service, projectIdFromButton || projectId);
                 return;
             }
             
-            // Verifica se o serviço está disponível
-            if (!isServiceAvailable(service) && action !== 'view') {
+            // Verificar se serviço está disponível (exceto para view)
+            if (!availableServices.includes(service) && action !== 'view') {
                 showServiceNotAvailable(service.toUpperCase());
                 return;
             }
             
-            // Monta a URL baseada no serviço e ação
-            let url = `/projetos/${projectId}`;
-            
-            if (action === 'edit') {
-                // Rotas para edição
-                switch (service) {
-                    case 'dfd':
-                        url += '/confere_dfd';
-                        break;
-                    case 'pdp':
-                        url += '/criar_pdp';
-                        break;
-                    case 'etp':
-                        url += '/criar_etp';
-                        break;
-                    case 'mr':
-                        url += '/criar_mr';
-                        break;
-                    case 'tr':
-                        url += '/criar_tr';
-                        break;
-                    case 'ed':
-                        url += '/criar_ed';
-                        break;
-                    default:
-                        console.error('Serviço não reconhecido:', service);
-                        return;
-                }
-            } else if (action === 'view') {
-                // Rotas para visualização
-                switch (service) {
-                    case 'dfd':
-                        url += '/visualizacao_dfd';
-                        break;
-                    case 'pdp':
-                        url += '/visualizacao_pdp';
-                        break;
-                    case 'etp':
-                        url += '/visualizacao_etp';
-                        break;
-                    case 'mr':
-                        url += '/visualizacao_mr';
-                        break;
-                    case 'tr':
-                        url += '/visualizacao_tr';
-                        break;
-                    case 'ed':
-                        url += '/visualizacao_ed';
-                        break;
-                    default:
-                        console.error('Serviço não reconhecido:', service);
-                        return;
-                }
+            // Buscar rota correspondente
+            const route = serviceRoutes[service]?.[action];
+            if (route) {
+                console.log(`🚀 Redirecionando para: ${route}`);
+                window.location.href = route;
+            } else {
+                console.warn(`⚠️ Rota não encontrada: ${service}.${action}`);
+                showToast(`Ação ${action} para ${service.toUpperCase()} em desenvolvimento`, 'warning');
             }
-            
-            // Redireciona para a URL construída
-            window.location.href = url;
         });
+        
+        console.log(`✅ Event listener ${index + 1} configurado`);
     });
-
-    // Inicializar estado dos cards baseado nos dados do projeto
-    initializeCardStates();
-
-    // Adiciona tooltips para botões desabilitados
-    updateTooltips();
-
-    // Event listeners para botões de serviços em desenvolvimento
-    const devButtons = document.querySelectorAll('.btn-custom-dev');
-    devButtons.forEach(button => {
-        if (!button.disabled) {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const cardElement = button.closest('[data-card-type]');
-                const cardType = cardElement?.getAttribute('data-card-type');
-                if (cardType) {
-                    showServiceNotAvailable(cardType.toUpperCase());
-                }
-            });
-        }
-    });
-
-    // Event listeners para o modal de confirmação de delete
+    
+    // === EVENT LISTENER PARA LOGO ===
+    const logoLia = document.getElementById('logo-lia');
+    if (logoLia) {
+        logoLia.addEventListener('click', function() {
+            console.log('🏠 Redirecionando para página inicial');
+            window.location.href = '/';
+        });
+    }
+    
+    // === CONFIGURAR MODAL DE DELETE ===
     setupDeleteModal();
+    
+    // === INICIALIZAÇÃO ===
+    initializeCardStates();
+    updateTooltips();
+    
+    console.log('✅ projeto-servicos.js inicializado com sucesso');
+    console.log('🗺️ Rotas mapeadas:', serviceRoutes);
 });
 
-// Função para configurar o modal de delete
+// === FUNÇÕES DO MODAL DE DELETE ===
 function setupDeleteModal() {
-    const cancelBtn = document.getElementById('cancelDelete');
     const modal = document.getElementById('deleteModal');
+    const cancelBtn = document.getElementById('cancelDelete');
     
     if (cancelBtn) {
-        cancelBtn.addEventListener('click', (e) => {
+        cancelBtn.addEventListener('click', function(e) {
             e.preventDefault();
             hideDeleteConfirmation();
         });
     }
     
-    // Fecha modal ao clicar fora dele
+    // Fechar modal clicando fora
     if (modal) {
-        modal.addEventListener('click', (e) => {
+        modal.addEventListener('click', function(e) {
             if (e.target === modal) {
                 hideDeleteConfirmation();
             }
         });
     }
     
-    // Fecha modal com ESC
-    document.addEventListener('keydown', (e) => {
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
             hideDeleteConfirmation();
         }
     });
+    
+    console.log('🗑️ Modal de delete configurado');
 }
 
-// Função para mostrar modal de confirmação de delete
-function showDeleteConfirmation(projectId, service) {
-    console.log(`Mostrando confirmação de delete para projeto ${projectId}, serviço ${service}`);
+function showDeleteConfirmation(service, projectId) {
+    console.log(`🗑️ Mostrando confirmação de delete para ${service} no projeto ${projectId}`);
     
     const modal = document.getElementById('deleteModal');
     const confirmBtn = document.getElementById('confirmDelete');
     
     if (!modal || !confirmBtn) {
-        console.error('Modal ou botão de confirmação não encontrado');
+        console.error('❌ Modal ou botão de confirmação não encontrado');
         return;
     }
     
@@ -206,34 +221,29 @@ function showDeleteConfirmation(projectId, service) {
     confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
     
     // Adiciona novo event listener
-    newConfirmBtn.addEventListener('click', (e) => {
+    newConfirmBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        executeDelete(projectId, service);
+        executeDelete(service, projectId);
     });
     
     // Mostra o modal
     modal.classList.remove('hidden');
-    
-    // Impede scroll do body
     document.body.style.overflow = 'hidden';
     
-    console.log('Modal de confirmação exibido');
+    console.log('✅ Modal de confirmação exibido');
 }
 
-// Função para esconder modal de confirmação
 function hideDeleteConfirmation() {
     const modal = document.getElementById('deleteModal');
     if (modal) {
         modal.classList.add('hidden');
-        
-        // Restaura scroll do body
         document.body.style.overflow = '';
     }
+    console.log('❌ Modal de confirmação escondido');
 }
 
-// Função para executar o delete
-async function executeDelete(projectId, service) {
-    console.log(`Executando delete para projeto ${projectId}, serviço ${service}`);
+async function executeDelete(service, projectId) {
+    console.log(`🗑️ Executando delete para ${service} no projeto ${projectId}`);
     
     try {
         // Mostra loading no botão
@@ -243,21 +253,30 @@ async function executeDelete(projectId, service) {
             confirmBtn.disabled = true;
         }
         
+        // Define a URL de delete baseada no serviço
+        let deleteUrl = `/projetos/${projectId}/${service}`;
+        
+        // Para PGR, usa endpoint específico para deletar todos os PGRs do projeto
+        if (service === 'pgr') {
+            deleteUrl = `/projetos/${projectId}/pgr`;
+        }
+        
         // Faz a requisição de delete
-        const response = await fetch(`/projetos/${projectId}/${service}`, {
+        const response = await fetch(deleteUrl, {
             method: 'DELETE',
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'application/json',
-                'remote-user': 'user.test', // REMOVER O HARDCODING AO COLOCAR EM PRODUÇÃO
-                'remote-groups': 'TI,OUTROS' // REMOVER O HARDCODING AO COLOCAR EM PRODUÇÃO
+                'remote-user': 'user.test', // TODO: Substituir por autenticação real
+                'remote-groups': 'TI,OUTROS' // TODO: Substituir por autenticação real
             }
         });
         
         if (response.ok) {
-            console.log(`${service.toUpperCase()} deletado com sucesso`);
+            const result = await response.json();
+            console.log(`✅ ${service.toUpperCase()} deletado com sucesso:`, result);
             
-            // Sucesso - atualiza a interface
+            // Atualiza a interface
             updateCardState(service, false);
             hideDeleteConfirmation();
             
@@ -270,8 +289,8 @@ async function executeDelete(projectId, service) {
         }
         
     } catch (error) {
-        console.error('Erro ao deletar:', error);
-        alert(`Erro ao deletar ${service.toUpperCase()}: ` + error.message);
+        console.error(`❌ Erro ao deletar ${service}:`, error);
+        showToast(`Erro ao deletar ${service.toUpperCase()}: ${error.message}`, 'error');
         
         // Restaura botão
         const confirmBtn = document.getElementById('confirmDelete');
@@ -282,9 +301,8 @@ async function executeDelete(projectId, service) {
     }
 }
 
-// Função para mostrar mensagem de sucesso
+// === FUNÇÕES DE INTERFACE ===
 function showSuccessMessage(message) {
-    // Cria elemento de notificação
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300';
     notification.innerHTML = `
@@ -307,7 +325,61 @@ function showSuccessMessage(message) {
     }, 3000);
 }
 
-// Função para inicializar o estado visual dos cards
+function showToast(message, type = 'info') {
+    // Remove toasts existentes
+    const existingToasts = document.querySelectorAll('.toast-message');
+    existingToasts.forEach(toast => toast.remove());
+    
+    const toast = document.createElement('div');
+    let bgClass = 'bg-blue-500';
+    let iconClass = 'uil-info-circle';
+    
+    switch(type) {
+        case 'success':
+            bgClass = 'bg-green-500';
+            iconClass = 'uil-check-circle';
+            break;
+        case 'warning':
+            bgClass = 'bg-yellow-500';
+            iconClass = 'uil-exclamation-triangle';
+            break;
+        case 'error':
+            bgClass = 'bg-red-500';
+            iconClass = 'uil-times-circle';
+            break;
+    }
+    
+    toast.className = `toast-message fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg text-white ${bgClass} transition-all duration-300 max-w-sm`;
+    
+    toast.innerHTML = `
+        <div class="flex items-start">
+            <i class="uil ${iconClass} mr-3 mt-0.5 flex-shrink-0"></i>
+            <div class="flex-1">
+                <p class="text-sm font-medium">${message}</p>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-3 text-white hover:text-gray-200">
+                <i class="uil uil-times text-sm"></i>
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Remove após 5 segundos
+    setTimeout(() => {
+        if (toast.parentNode) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// === FUNÇÕES DE ESTADO DOS CARDS ===
 function initializeCardStates() {
     const cards = document.querySelectorAll('[data-card-type]');
     cards.forEach(card => {
@@ -322,7 +394,6 @@ function initializeCardStates() {
     });
 }
 
-// Função para atualizar tooltips
 function updateTooltips() {
     const editButtons = document.querySelectorAll('button[title="Editar documento"]');
     const viewButtons = document.querySelectorAll('button[title="Visualizar documento"]');
@@ -347,7 +418,6 @@ function updateTooltips() {
     });
 }
 
-// Função para atualizar o estado visual de um card específico
 function updateCardVisualState(cardType, hasArtifact) {
     const cardElement = document.querySelector(`[data-card-type="${cardType}"]`);
     if (!cardElement) return;
@@ -357,7 +427,7 @@ function updateCardVisualState(cardType, hasArtifact) {
     const statusElement = cardElement.querySelector('.artifact-status');
 
     if (hasArtifact) {
-        // Card com artefato - usando destaque turquesa/verde
+        // Card com artefato
         if (!card.classList.contains('card-with-artifact')) {
             card.classList.remove('card-without-artifact');
             card.classList.add('card-with-artifact');
@@ -376,7 +446,7 @@ function updateCardVisualState(cardType, hasArtifact) {
             statusElement.classList.add('artifact-exists');
         }
     } else {
-        // Card sem artefato - visual apagado
+        // Card sem artefato
         if (!card.classList.contains('card-without-artifact')) {
             card.classList.remove('card-with-artifact');
             card.classList.add('card-without-artifact');
@@ -397,19 +467,16 @@ function updateCardVisualState(cardType, hasArtifact) {
     }
 }
 
-// Função para atualizar o estado de um card (pode ser chamada via AJAX)
+// Função global para atualizar estado de um card
 window.updateCardState = function(cardType, hasArtifact) {
-    console.log(`Atualizando estado do card ${cardType} para hasArtifact: ${hasArtifact}`);
+    console.log(`🔄 Atualizando estado do card ${cardType} para hasArtifact: ${hasArtifact}`);
     
     const cardElement = document.querySelector(`[data-card-type="${cardType}"]`);
     if (!cardElement) {
-        console.error(`Card do tipo ${cardType} não encontrado`);
+        console.error(`❌ Card do tipo ${cardType} não encontrado`);
         return;
     }
 
-    const card = cardElement.querySelector('.w-full.max-w-xs');
-    const icon = cardElement.querySelector('.text-6xl');
-    const statusElement = cardElement.querySelector('.artifact-status');
     const generateButton = cardElement.querySelector('button[id^="gera_"], button:first-of-type');
     const editButton = cardElement.querySelector('button[data-action="edit"]');
     const viewButton = cardElement.querySelector('button[data-action="view"]');
@@ -419,119 +486,65 @@ window.updateCardState = function(cardType, hasArtifact) {
     updateCardVisualState(cardType, hasArtifact);
 
     if (hasArtifact) {
-        // Atualiza botão de gerar
+        // Habilita todos os botões quando artefato existe
         if (generateButton) {
             generateButton.textContent = 'Já Criado';
             generateButton.disabled = true;
-            if (!generateButton.classList.contains('btn-disabled')) {
-                generateButton.classList.add('btn-disabled');
+            generateButton.classList.add('btn-disabled');
+        }
+        
+        [editButton, viewButton, deleteButton].forEach(button => {
+            if (button) {
+                button.disabled = false;
+                button.classList.remove('btn-disabled');
             }
-        }
+        });
         
-        // Habilita botões de editar e visualizar
-        if (editButton) {
-            editButton.disabled = false;
-            editButton.classList.remove('btn-disabled');
-            editButton.title = 'Editar documento';
-        }
-        
-        if (viewButton) {
-            viewButton.disabled = false;
-            viewButton.classList.remove('btn-disabled');
-            viewButton.title = 'Visualizar documento';
-        }
-        
-        // Habilita botão de deletar
-        if (deleteButton) {
-            deleteButton.disabled = false;
-            deleteButton.classList.remove('btn-disabled');
-            deleteButton.title = 'Deletar documento';
-            
-            // Força a cor vermelha do botão delete
-            if (!deleteButton.classList.contains('btn-danger')) {
-                deleteButton.classList.add('btn-danger');
-            }
-            
-            console.log(`Botão de delete habilitado para ${cardType}`);
-        }
     } else {
-        // Atualiza botão de gerar
+        // Desabilita botões quando artefato não existe
         if (generateButton) {
             const isAvailable = isServiceAvailable(cardType);
             generateButton.textContent = isAvailable ? 'Gerar' : 'Em Desenvolvimento';
-            generateButton.disabled = !isServiceAvailable(cardType);
-            generateButton.classList.remove('btn-disabled');
-            
-            // Atualiza classe do botão baseado na disponibilidade
-            if (isAvailable) {
-                generateButton.classList.remove('btn-custom-dev');
-                if (!generateButton.classList.contains('btn-custom')) {
-                    generateButton.classList.add('btn-custom');
-                }
-            } else {
-                generateButton.classList.remove('btn-custom');
-                if (!generateButton.classList.contains('btn-custom-dev')) {
-                    generateButton.classList.add('btn-custom-dev');
-                }
-            }
+            generateButton.disabled = !isAvailable;
+            generateButton.classList.toggle('btn-disabled', !isAvailable);
         }
         
-        // Desabilita botões de editar e visualizar
-        if (editButton) {
-            editButton.disabled = true;
-            if (!editButton.classList.contains('btn-disabled')) {
-                editButton.classList.add('btn-disabled');
+        [editButton, viewButton, deleteButton].forEach(button => {
+            if (button) {
+                button.disabled = true;
+                button.classList.add('btn-disabled');
             }
-            editButton.title = 'Crie o artefato primeiro para poder editá-lo';
-        }
-        
-        if (viewButton) {
-            viewButton.disabled = true;
-            if (!viewButton.classList.contains('btn-disabled')) {
-                viewButton.classList.add('btn-disabled');
-            }
-            viewButton.title = 'Crie o artefato primeiro para poder visualizá-lo';
-        }
-        
-        // Desabilita botão de deletar
-        if (deleteButton) {
-            deleteButton.disabled = true;
-            if (!deleteButton.classList.contains('btn-disabled')) {
-                deleteButton.classList.add('btn-disabled');
-            }
-            deleteButton.title = 'Crie o artefato primeiro para poder deletá-lo';
-            
-            console.log(`Botão de delete desabilitado para ${cardType}`);
-        }
+        });
     }
 };
 
-// Função auxiliar para verificar se um serviço está disponível
+// Função para verificar se um serviço está disponível
 window.isServiceAvailable = function(service) {
-    const availableServices = ['dfd', 'pdp', 'mr'];
+    const availableServices = ['dfd', 'pdp', 'pgr']; // PGR está disponível
     return availableServices.includes(service);
 };
 
-// Função para mostrar notificação quando um serviço não está disponível
+// Função para mostrar notificação de serviço indisponível
 window.showServiceNotAvailable = function(serviceName) {
     const serviceNames = {
         'ETP': 'Estudo Técnico Preliminar',
         'TR': 'Termo de Referência',
-        'ED': 'Edital'
+        'ED': 'Edital',
+        'PGR': 'Plano de Gerenciamento de Riscos'
     };
     
     const fullName = serviceNames[serviceName] || serviceName;
-    alert(`O serviço ${fullName} ainda está em desenvolvimento.`);
+    showToast(`O serviço ${fullName} ainda está em desenvolvimento.`, 'warning');
 };
 
-// Função para atualizar todos os cards (útil após atualizações via AJAX)
+// Função para atualizar todos os cards
 window.refreshAllCards = function(projectData) {
     if (!projectData) return;
     
     updateCardState('dfd', projectData.exist_dfd || false);
     updateCardState('pdp', projectData.exist_pdp || false);
+    updateCardState('pgr', projectData.exist_pgr || false); // ✅ Agora usa PGR
     updateCardState('etp', projectData.exist_etp || false);
-    updateCardState('mr', projectData.exist_mr || false);
     updateCardState('tr', projectData.exist_tr || false);
     updateCardState('ed', projectData.exist_ed || false);
 };

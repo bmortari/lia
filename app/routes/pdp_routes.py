@@ -54,7 +54,7 @@ async def criar_pdp_page(
     """
     Carrega a página de criação de PDP, faz análise inicial assíncrona e
     salva as soluções identificadas.
-    MODIFICADO: Não cria mais PDP com valores hard-coded aqui.
+    CORRIGIDO: Agora salva as soluções identificadas corretamente usando id_projeto
     """
     stmt = select(Projeto).where(Projeto.id_projeto == projeto_id)
     result = await db.execute(stmt)
@@ -67,59 +67,51 @@ async def criar_pdp_page(
     try:
         analise_inicial = await inicializar_analise_projeto(projeto_id, db)
 
-        # Salva apenas as soluções identificadas
+        # Salva as soluções identificadas usando id_projeto
         if analise_inicial.get("status") == "sucesso":
-            # Verifica se já existe um PDP para este projeto
-            stmt_pdp = select(PDP).where(PDP.id_projeto == projeto_id)
-            result_pdp = await db.execute(stmt_pdp)
-            pdp_existente = result_pdp.scalar_one_or_none()
             
-            # Se não existe PDP, não cria aqui - será criado no POST /create_pdp
-            # Apenas salva as soluções se já existe um PDP
-            if pdp_existente:
-                pdp_para_solucoes = pdp_existente
-                
-                # Remove soluções existentes para este PDP
-                stmt_delete = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_pdp == pdp_para_solucoes.id)
-                await db.execute(stmt_delete)
+            # Remove soluções existentes para este projeto
+            print(f"DEBUG: Removendo soluções existentes para o projeto ID: {projeto_id}")
+            stmt_delete = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_projeto == projeto_id)
+            await db.execute(stmt_delete)
 
-                # Adiciona as novas soluções
-                solucoes_ia = analise_inicial.get("analise_inicial", {}).get("tipos_solucao", [])
-                
-                print(f"DEBUG: Tentando salvar {len(solucoes_ia)} soluções para PDP ID: {pdp_para_solucoes.id}")
-                
-                for i, solucao_data in enumerate(solucoes_ia):
-                    try:
-                        # Verificações de segurança para evitar valores None
-                        nome = solucao_data.get("nome") or f"Solução {i+1}"
-                        descricao = solucao_data.get("descricao") or "Sem descrição"
-                        palavras_chave = solucao_data.get("palavras_chave") or []
-                        complexidade = solucao_data.get("complexidade_estimada") or "Média"
-                        tipo = solucao_data.get("tipo") or "complementar"
-                        analise_riscos = solucao_data.get("analise_riscos") or []
-                        
-                        print(f"DEBUG: Criando solução {i+1}: {nome}")
-                        
-                        nova_solucao = SolucaoIdentificada(
-                            id_pdp=pdp_para_solucoes.id,
-                            nome=nome,
-                            descricao=descricao,
-                            palavras_chave=palavras_chave,
-                            complexidade_estimada=complexidade,
-                            tipo=tipo,
-                            analise_riscos=analise_riscos,
-                            usuario_criacao="sistema"
-                        )
-                        db.add(nova_solucao)
-                        print(f"DEBUG: Solução {i+1} adicionada com sucesso")
-                        
-                    except Exception as e:
-                        print(f"DEBUG: Erro ao criar solução {i+1}: {e}")
-                        continue
-                
-                await db.commit()
-            else:
-                print("DEBUG: Nenhum PDP existente encontrado. Soluções serão salvas quando o PDP for criado.")
+            # Adiciona as novas soluções
+            solucoes_ia = analise_inicial.get("analise_inicial", {}).get("tipos_solucao", [])
+            
+            print(f"DEBUG: Tentando salvar {len(solucoes_ia)} soluções para projeto ID: {projeto_id}")
+            
+            for i, solucao_data in enumerate(solucoes_ia):
+                try:
+                    # Verificações de segurança para evitar valores None
+                    nome = solucao_data.get("nome") or f"Solução {i+1}"
+                    descricao = solucao_data.get("descricao") or "Sem descrição"
+                    palavras_chave = solucao_data.get("palavras_chave") or []
+                    complexidade = solucao_data.get("complexidade_estimada") or "Média"
+                    tipo = solucao_data.get("tipo") or "complementar"
+                    analise_riscos = solucao_data.get("analise_riscos") or []
+                    
+                    print(f"DEBUG: Criando solução {i+1}: {nome}")
+                    
+                    # CORRIGIDO: Usando id_projeto em vez de id_pdp
+                    nova_solucao = SolucaoIdentificada(
+                        id_projeto=projeto_id,
+                        nome=nome,
+                        descricao=descricao,
+                        palavras_chave=palavras_chave,
+                        complexidade_estimada=complexidade,
+                        tipo=tipo,
+                        analise_riscos=analise_riscos,
+                        usuario_criacao="sistema"
+                    )
+                    db.add(nova_solucao)
+                    print(f"DEBUG: Solução {i+1} adicionada com sucesso")
+                    
+                except Exception as e:
+                    print(f"DEBUG: Erro ao criar solução {i+1}: {e}")
+                    continue
+            
+            await db.commit()
+            print(f"DEBUG: {len(solucoes_ia)} soluções salvas com sucesso para projeto {projeto_id}")
 
     except Exception as e:
         await db.rollback()
@@ -295,9 +287,11 @@ async def delete_pdp(
         if not pdp:
             raise HTTPException(status_code=404, detail="PDP não encontrado")
         
-        # Remove soluções relacionadas primeiro
-        stmt_delete_solucoes = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_pdp == pdp_id)
-        await db.execute(stmt_delete_solucoes)
+        # CORRIGIDO: Remove soluções relacionadas ao projeto (não ao PDP)
+        # Como SolucaoIdentificada está relacionada diretamente ao projeto,
+        # pode manter as soluções mesmo quando um PDP específico é deletado
+        # stmt_delete_solucoes = delete(SolucaoIdentificada).where(SolucaoIdentificada.id_projeto == projeto_id)
+        # await db.execute(stmt_delete_solucoes)
         
         # Remove o PDP
         await db.delete(pdp)
@@ -308,3 +302,40 @@ async def delete_pdp(
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar PDP: {str(e)}")
+
+
+# NOVO: Endpoint para buscar soluções identificadas
+@router.get("/projetos/{projeto_id}/solucoes")
+async def get_solucoes_by_project(
+    projeto_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Endpoint para buscar soluções identificadas de um projeto
+    """
+    try:
+        stmt = select(SolucaoIdentificada).where(SolucaoIdentificada.id_projeto == projeto_id)
+        result = await db.execute(stmt)
+        solucoes = result.scalars().all()
+        
+        solucoes_response = []
+        for solucao in solucoes:
+            solucao_dict = {
+                "id_solucao": solucao.id_solucao,
+                "id_projeto": solucao.id_projeto,
+                "nome": solucao.nome,
+                "descricao": solucao.descricao,
+                "palavras_chave": solucao.palavras_chave,
+                "complexidade_estimada": solucao.complexidade_estimada,
+                "tipo": solucao.tipo,
+                "analise_riscos": solucao.analise_riscos,
+                "usuario_criacao": solucao.usuario_criacao,
+                "data_criacao": solucao.data_criacao.isoformat() if solucao.data_criacao else None
+            }
+            solucoes_response.append(solucao_dict)
+        
+        return solucoes_response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao buscar soluções: {str(e)}")
