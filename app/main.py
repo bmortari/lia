@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import demo_data_routes, projects_routes, home_routes, dfd_routes, pdp_routes, pgr_routes
+from app.routes import demo_data_routes, projects_routes, home_routes, dfd_routes, pdp_routes, pgr_routes, etp_routes
 from app.database import init_async_db
 from contextlib import asynccontextmanager
 
@@ -35,3 +35,4 @@ app.include_router(projects_routes.router)
 app.include_router(dfd_routes.router)
 app.include_router(pdp_routes.router)
 app.include_router(pgr_routes.router)
+app.include_router(etp_routes.router)

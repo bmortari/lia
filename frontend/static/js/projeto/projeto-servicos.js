@@ -1,6 +1,6 @@
-// projeto-servicos.js - Versão com PGR
+// projeto-servicos.js - Versão com PGR e ETP
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📄 projeto-servicos.js carregado (versão PGR)');
+    console.log('📄 projeto-servicos.js carregado (versão PGR + ETP)');
     
     // Extrair ID do projeto da URL
     function getProjectId() {
@@ -39,8 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
             delete: `/projetos/${projectId}/pgr`
         },
         'etp': {
+            // ETP (Estudo Técnico Preliminar) - ADICIONADO
             create: `/projetos/${projectId}/criar_etp`,
-            edit: `/projetos/${projectId}/criar_etp`,
+            edit: `/projetos/${projectId}/confere_etp`,
             view: `/projetos/${projectId}/visualizacao_etp`,
             delete: `/projetos/${projectId}/etp`
         },
@@ -59,14 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // === SERVIÇOS DISPONÍVEIS ===
-    const availableServices = ['dfd', 'pdp', 'pgr']; // PGR agora está disponível
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp']; // ✅ ETP ADICIONADO
     
     // === EVENT LISTENERS PARA BOTÕES DE GERAÇÃO ===
     const generateButtons = {
         'gera_dfd': 'dfd',
         'gera_pdp': 'pdp', 
-        'gera_pgr': 'pgr',  // ✅ Agora usando PGR diretamente
-        'gera_etp': 'etp',
+        'gera_pgr': 'pgr',
+        'gera_etp': 'etp',  // ✅ ETP HABILITADO
         'gera_tr': 'tr',
         'gera_ed': 'ed'
     };
@@ -79,8 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
             
-            // Adiciona novo event listener apenas se não estiver desabilitado
-            if (!newButton.disabled && !newButton.classList.contains('btn-disabled')) {
+            // Adiciona novo event listener apenas se não estiver desabilitado e o serviço estiver disponível
+            const isServiceAvailable = availableServices.includes(service);
+            
+            if (!newButton.disabled && !newButton.classList.contains('btn-disabled') && isServiceAvailable) {
                 newButton.addEventListener('click', function(e) {
                     e.preventDefault();
                     
@@ -96,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 console.log(`✅ Event listener adicionado para ${buttonId} -> ${service}`);
             } else {
-                console.log(`⏸️ Botão ${buttonId} está desabilitado`);
+                console.log(`⏸️ Botão ${buttonId} está desabilitado ou serviço não disponível`);
             }
         } else {
             console.warn(`⚠️ Botão ${buttonId} não encontrado`);
@@ -172,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     console.log('✅ projeto-servicos.js inicializado com sucesso');
     console.log('🗺️ Rotas mapeadas:', serviceRoutes);
+    console.log('🔧 Serviços disponíveis:', availableServices);
 });
 
 // === FUNÇÕES DO MODAL DE DELETE ===
@@ -256,9 +260,9 @@ async function executeDelete(service, projectId) {
         // Define a URL de delete baseada no serviço
         let deleteUrl = `/projetos/${projectId}/${service}`;
         
-        // Para PGR, usa endpoint específico para deletar todos os PGRs do projeto
-        if (service === 'pgr') {
-            deleteUrl = `/projetos/${projectId}/pgr`;
+        // Para PGR e ETP, usa endpoint específico para deletar todos do projeto
+        if (service === 'pgr' || service === 'etp') {
+            deleteUrl = `/projetos/${projectId}/${service}`;
         }
         
         // Faz a requisição de delete
@@ -507,6 +511,15 @@ window.updateCardState = function(cardType, hasArtifact) {
             generateButton.textContent = isAvailable ? 'Gerar' : 'Em Desenvolvimento';
             generateButton.disabled = !isAvailable;
             generateButton.classList.toggle('btn-disabled', !isAvailable);
+            
+            // Atualiza classes CSS para botões disponíveis vs em desenvolvimento
+            if (isAvailable) {
+                generateButton.classList.remove('btn-custom-dev');
+                generateButton.classList.add('btn-custom');
+            } else {
+                generateButton.classList.remove('btn-custom');
+                generateButton.classList.add('btn-custom-dev');
+            }
         }
         
         [editButton, viewButton, deleteButton].forEach(button => {
@@ -520,7 +533,7 @@ window.updateCardState = function(cardType, hasArtifact) {
 
 // Função para verificar se um serviço está disponível
 window.isServiceAvailable = function(service) {
-    const availableServices = ['dfd', 'pdp', 'pgr']; // PGR está disponível
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp']; // ✅ ETP incluído
     return availableServices.includes(service);
 };
 
@@ -543,8 +556,8 @@ window.refreshAllCards = function(projectData) {
     
     updateCardState('dfd', projectData.exist_dfd || false);
     updateCardState('pdp', projectData.exist_pdp || false);
-    updateCardState('pgr', projectData.exist_pgr || false); // ✅ Agora usa PGR
-    updateCardState('etp', projectData.exist_etp || false);
+    updateCardState('pgr', projectData.exist_pgr || false);
+    updateCardState('etp', projectData.exist_etp || false); // ✅ ETP incluído
     updateCardState('tr', projectData.exist_tr || false);
     updateCardState('ed', projectData.exist_ed || false);
 };

@@ -454,10 +454,10 @@
                 </div>
             </div>
 
-            <!-- E.T.P. Card -->
+            <!-- E.T.P. Card - Versão Corrigida -->
             <div class="flex flex-col items-center" data-card-type="etp">
                 <div class="w-full max-w-xs p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300
-                     {% if projeto.exist_etp %}card-with-artifact{% else %}card-without-artifact{% endif %}">
+                    {% if projeto.exist_etp %}card-with-artifact{% else %}card-without-artifact{% endif %}">
                     
                     <div class="text-center mb-2">
                         {% if projeto.exist_etp %}
@@ -474,16 +474,17 @@
                     </div>
                     
                     <div class="flex justify-center text-6xl mb-3
-                         {% if projeto.exist_etp %}icon-custom{% else %}icon-custom-gray{% endif %}">
+                        {% if projeto.exist_etp %}icon-custom{% else %}icon-custom-gray{% endif %}">
                         <i class="uil uil-analysis"></i>
                     </div>
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">E. T. P.</h5>
-                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Estudo Técnico Preliminar.</p>
+                    <p class="text-center text-sm text-gray-600 mb-4 h-12">Estudo Técnico Preliminar</p>
                     
-                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
-                                   {% if projeto.exist_etp %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
+                    <button id="gera_etp" 
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                                {% if projeto.exist_etp %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
                             {% if projeto.exist_etp %}disabled{% endif %}>
-                        {% if projeto.exist_etp %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                        {% if projeto.exist_etp %}Já Criado{% else %}Gerar{% endif %}
                     </button>
                     
                     <div class="flex gap-2">
@@ -493,7 +494,7 @@
                                 data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
                                 class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
-                                       {% if not projeto.exist_etp %}btn-disabled{% endif %}"
+                                    {% if not projeto.exist_etp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
                         </button>
@@ -503,7 +504,7 @@
                                 data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
                                 class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
-                                       {% if not projeto.exist_etp %}btn-disabled{% endif %}"
+                                    {% if not projeto.exist_etp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
                         </button>

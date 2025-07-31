@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E.T.P. - Solicitação</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Flowbite CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+        
+        /* Custom styling for the tooltip content */
+        #tooltip-info h3 {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 0.5rem;
+        }
+        #tooltip-info ol {
+            list-style-type: decimal;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        #tooltip-info li {
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Spinning animation for the icon */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin-icon {
+            display: inline-block;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .btn-custom {
+            background-color: #0097B2;
+            color: #fff;
+            border: none;
+        }
+        .btn-custom:hover {
+            background-color: #007d96;
+        }
+        .btn-custom:focus {
+            box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+            outline: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-available {
+            background-color: #e6f7ff;
+            color: #005c73;
+        }
+        
+        .status-missing {
+            background-color: #fef2f2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 h-screen flex items-center justify-center">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-8 max-w-6xl">
+
+        <form id="etp-solicitacao-form">
+            <!-- Main Content Grid -->
+            <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Section: Form -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Project and Type Info -->
+                <div class="space-y-6">
+                    <div>
+                        <label for="project-name" class="block mb-2 text-sm font-medium text-gray-900">PROJETO</label>
+                        <input type="text" id="project-name" value="{{ projeto.nome }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
+                    </div>
+                    <div>
+                        <label for="item-type" class="block mb-2 text-sm font-medium text-gray-900">TIPO</label>
+                        <input type="text" id="item-type" value="{{ projeto.tipo }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
+                    </div>
+                </div>
+
+                <!-- Solicitation Text Area -->
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                     <div class="flex items-center justify-between mb-2">
+                        <label for="solicitation" class="block text-sm font-medium text-gray-900">Orientações para o Estudo Técnico Preliminar:</label>
+                        <button data-tooltip-target="tooltip-info" type="button" class="text-gray-400 hover:text-gray-600">
+                           <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                           </svg>
+                           <span class="sr-only">Info</span>
+                        </button>
+                        <div id="tooltip-info" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
+                            <h3>Como Orientar o ETP:</h3>
+                            <ol>
+                                <li>Detalhe aspectos técnicos específicos que devem ser considerados</li>
+                                <li>Informe requisitos especiais ou restrições técnicas</li>
+                                <li>Mencione critérios de sustentabilidade importantes</li>
+                                <li>Destaque aspectos de risco que merecem atenção especial</li>
+                                <li>Oriente sobre valores ou parâmetros específicos</li>
+                            </ol>
+                            <p>A IA integrará automaticamente os dados do DFD, PDP e PGR para criar um ETP completo e fundamentado.</p>
+                            <div class="tooltip-arrow" data-popper-arrow></div>
+                        </div>
+                     </div>
+                     <textarea id="solicitation" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" placeholder="Descreva orientações específicas para o Estudo Técnico Preliminar (ETP). A IA utilizará automaticamente os dados já criados do DFD, PDP e PGR para gerar um documento técnico completo..."></textarea>
+                     <div class="flex justify-end mt-4">
+                        <button type="submit" id="send-button" class="btn-custom text-white font-medium rounded-lg text-sm px-8 py-2.5">
+                            Gerar ETP
+                        </button>
+                     </div>
+                </div>
+            </div>
+
+            <!-- Right Section: Artefatos Disponíveis -->
+            <div class="flex flex-col">
+                <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col max-h-[30rem]">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Artefatos Disponíveis</h3>
+                    
+                    <!-- Status dos Artefatos -->
+                    <div id="artefatos-status" class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="uil uil-file-search-alt text-xl mr-2 text-blue-600"></i>
+                                <span class="font-medium">D.F.D.</span>
+                            </div>
+                            <span id="status-dfd" class="status-badge status-missing">
+                                <i class="uil uil-times-circle mr-1"></i>
+                                Não encontrado
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="uil uil-bill text-xl mr-2 text-green-600"></i>
+                                <span class="font-medium">P.D.P.</span>
+                            </div>
+                            <span id="status-pdp" class="status-badge status-missing">
+                                <i class="uil uil-times-circle mr-1"></i>
+                                Não encontrado
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="uil uil-shield-exclamation text-xl mr-2 text-orange-600"></i>
+                                <span class="font-medium">P.G.R.</span>
+                            </div>
+                            <span id="status-pgr" class="status-badge status-missing">
+                                <i class="uil uil-times-circle mr-1"></i>
+                                Não encontrado
+                            </span>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center">
+                                <i class="uil uil-lightbulb-alt text-xl mr-2 text-purple-600"></i>
+                                <span class="font-medium">Soluções</span>
+                            </div>
+                            <span id="status-solucoes" class="status-badge status-missing">
+                                <i class="uil uil-times-circle mr-1"></i>
+                                Não encontrado
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Resumo da Análise -->
+                    <div id="resumo-analise" class="border-t border-gray-200 pt-4 overflow-y-auto">
+                        <h4 class="font-semibold text-gray-900 mb-2">Análise Prévia</h4>
+                        <div id="conteudo-analise" class="text-sm text-gray-600">
+                            <p>Carregando análise dos artefatos disponíveis...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </form>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+            <!-- Spinning Gear Icon -->
+            <div class="mb-4">
+                <i class="uil uil-analysis text-blue-600 text-5xl animate-spin-icon"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Gerando E.T.P.</h3>
+            <p class="text-gray-600 mb-6">Integrando dados do DFD, PDP e PGR. Aguarde alguns minutos.</p>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/etp/etp-solicitacao.js" defer></script>
+</body>
+</html>

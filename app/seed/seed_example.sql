@@ -13,10 +13,10 @@ DELETE FROM core.projeto;
 
 -- Projeto 1: Sistema de Gestão de Contratos
 INSERT INTO core.projeto (
-    nome, 
-    descricao, 
-    tipo, 
-    user_created, 
+    nome,
+    descricao,
+    tipo,
+    user_created,
     dt_created,
     exist_dfd,
     exist_pdp,
@@ -42,10 +42,10 @@ INSERT INTO core.projeto (
 
 -- Projeto 2: Reforma do Auditório Principal
 INSERT INTO core.projeto (
-    nome, 
-    descricao, 
-    tipo, 
-    user_created, 
+    nome,
+    descricao,
+    tipo,
+    user_created,
     dt_created,
     exist_dfd,
     exist_pdp,
@@ -472,144 +472,144 @@ INSERT INTO core.etp (
 -- ========================================
 
 -- PGR para Projeto 1
--- INSERT INTO core.pgr (
---     id_projeto,
---     id_solucao,
---     usuario,
---     data_criacao,
---     objeto,
---     risco
--- ) VALUES (
---     (SELECT id_projeto FROM core.projeto WHERE nome = 'Sistema de Gestão de Contratos'),
---     (SELECT id_solucao FROM core.solucao_identificada WHERE nome = 'Plataforma Web de Gestão de Contratos'),
---     'user.demo',
---     CURRENT_TIMESTAMP,
---     'Desenvolvimento de Sistema de Gestão de Contratos',
---     '{
---         "riscos_identificados": [
---             {
---                 "id": 1,
---                 "categoria": "TECNICO",
---                 "descricao": "Dificuldades na integração com sistemas legados",
---                 "probabilidade": "MEDIA",
---                 "impacto": "ALTO",
---                 "nivel_risco": "ALTO",
---                 "mitigacao": "Realizar análise detalhada dos sistemas existentes e criar APIs de integração",
---                 "responsavel": "Equipe Técnica",
---                 "prazo": "30 dias"
---             },
---             {
---                 "id": 2,
---                 "categoria": "CRONOGRAMA",
---                 "descricao": "Atraso na entrega do projeto",
---                 "probabilidade": "MEDIA",
---                 "impacto": "MEDIO",
---                 "nivel_risco": "MEDIO",
---                 "mitigacao": "Implementar metodologia ágil com entregas incrementais",
---                 "responsavel": "Gerente de Projeto",
---                 "prazo": "Contínuo"
---             },
---             {
---                 "id": 3,
---                 "categoria": "OPERACIONAL",
---                 "descricao": "Resistência dos usuários ao novo sistema",
---                 "probabilidade": "ALTA",
---                 "impacto": "MEDIO",
---                 "nivel_risco": "ALTO",
---                 "mitigacao": "Programa intensivo de treinamento e comunicação",
---                 "responsavel": "Equipe de Mudança",
---                 "prazo": "60 dias"
---             }
---         ],
---         "matriz_probabilidade_impacto": {
---             "muito_baixo": {"probabilidade": "0-10%", "impacto": "Insignificante"},
---             "baixo": {"probabilidade": "11-30%", "impacto": "Menor"},
---             "medio": {"probabilidade": "31-60%", "impacto": "Moderado"},
---             "alto": {"probabilidade": "61-80%", "impacto": "Maior"},
---             "muito_alto": {"probabilidade": "81-100%", "impacto": "Catastrófico"}
---         },
---         "plano_monitoramento": {
---             "frequencia_revisao": "Quinzenal",
---             "responsavel_geral": "João Silva",
---             "comite_riscos": ["João Silva", "Maria Santos", "Pedro Costa"],
---             "ferramentas": ["Dashboard de riscos", "Reuniões de acompanhamento"]
---         }
---     }'
--- );
+INSERT INTO core.pgr (
+    id_projeto,
+    id_solucao,
+    usuario,
+    data_criacao,
+    objeto,
+    risco
+) VALUES (
+    (SELECT id_projeto FROM core.projeto WHERE nome = 'Sistema de Gestão de Contratos'),
+    (SELECT id_solucao FROM core.solucao_identificada WHERE nome = 'Plataforma Web de Gestão de Contratos'),
+    'user.demo',
+    CURRENT_TIMESTAMP,
+    'Desenvolvimento de Sistema de Gestão de Contratos',
+    '{
+        "riscos_identificados": [
+            {
+                "id": 1,
+                "categoria": "TECNICO",
+                "descricao": "Dificuldades na integração com sistemas legados",
+                "probabilidade": "MEDIA",
+                "impacto": "ALTO",
+                "nivel_risco": "ALTO",
+                "mitigacao": "Realizar análise detalhada dos sistemas existentes e criar APIs de integração",
+                "responsavel": "Equipe Técnica",
+                "prazo": "30 dias"
+            },
+            {
+                "id": 2,
+                "categoria": "CRONOGRAMA",
+                "descricao": "Atraso na entrega do projeto",
+                "probabilidade": "MEDIA",
+                "impacto": "MEDIO",
+                "nivel_risco": "MEDIO",
+                "mitigacao": "Implementar metodologia ágil com entregas incrementais",
+                "responsavel": "Gerente de Projeto",
+                "prazo": "Contínuo"
+            },
+            {
+                "id": 3,
+                "categoria": "OPERACIONAL",
+                "descricao": "Resistência dos usuários ao novo sistema",
+                "probabilidade": "ALTA",
+                "impacto": "MEDIO",
+                "nivel_risco": "ALTO",
+                "mitigacao": "Programa intensivo de treinamento e comunicação",
+                "responsavel": "Equipe de Mudança",
+                "prazo": "60 dias"
+            }
+        ],
+        "matriz_probabilidade_impacto": {
+            "muito_baixo": {"probabilidade": "0-10%", "impacto": "Insignificante"},
+            "baixo": {"probabilidade": "11-30%", "impacto": "Menor"},
+            "medio": {"probabilidade": "31-60%", "impacto": "Moderado"},
+            "alto": {"probabilidade": "61-80%", "impacto": "Maior"},
+            "muito_alto": {"probabilidade": "81-100%", "impacto": "Catastrófico"}
+        },
+        "plano_monitoramento": {
+            "frequencia_revisao": "Quinzenal",
+            "responsavel_geral": "João Silva",
+            "comite_riscos": ["João Silva", "Maria Santos", "Pedro Costa"],
+            "ferramentas": ["Dashboard de riscos", "Reuniões de acompanhamento"]
+        }
+    }'
+);
 
 -- -- PGR para Projeto 2
--- INSERT INTO core.pgr (
---     id_projeto,
---     id_solucao,
---     usuario,
---     data_criacao,
---     objeto,
---     risco
--- ) VALUES (
---     (SELECT id_projeto FROM core.projeto WHERE nome = 'Reforma do Auditório Principal'),
---     (SELECT id_solucao FROM core.solucao_identificada WHERE nome = 'Reforma Completa com Tecnologia Integrada'),
---     'user.demo',
---     CURRENT_TIMESTAMP,
---     'Reforma do Auditório Principal com Modernização',
---     '{
---         "riscos_identificados": [
---             {
---                 "id": 1,
---                 "categoria": "ESTRUTURAL",
---                 "descricao": "Descoberta de problemas estruturais não previstos",
---                 "probabilidade": "MEDIA",
---                 "impacto": "ALTO",
---                 "nivel_risco": "ALTO",
---                 "mitigacao": "Realizar sondagem detalhada antes do início da obra",
---                 "responsavel": "Engenheiro Responsável",
---                 "prazo": "15 dias"
---             },
---             {
---                 "id": 2,
---                 "categoria": "FORNECIMENTO",
---                 "descricao": "Atraso na entrega de equipamentos audiovisuais",
---                 "probabilidade": "MEDIA",
---                 "impacto": "MEDIO",
---                 "nivel_risco": "MEDIO",
---                 "mitigacao": "Contratar fornecedor com estoque disponível e prazo garantido",
---                 "responsavel": "Coordenador de Suprimentos",
---                 "prazo": "Antes da contratação"
---             },
---             {
---                 "id": 3,
---                 "categoria": "AMBIENTAL",
---                 "descricao": "Impacto de ruído nas atividades acadêmicas",
---                 "probabilidade": "ALTA",
---                 "impacto": "BAIXO",
---                 "nivel_risco": "MEDIO",
---                 "mitigacao": "Programar trabalhos ruidosos fora do horário de aulas",
---                 "responsavel": "Coordenador da Obra",
---                 "prazo": "Diário"
---             },
---             {
---                 "id": 4,
---                 "categoria": "ORCAMENTARIO",
---                 "descricao": "Variação de preços de materiais durante a execução",
---                 "probabilidade": "MEDIA",
---                 "impacto": "MEDIO",
---                 "nivel_risco": "MEDIO",
---                 "mitigacao": "Incluir cláusula de reajuste baseada em índices oficiais",
---                 "responsavel": "Gestor do Contrato",
---                 "prazo": "Na elaboração do contrato"
---             }
---         ],
---         "matriz_probabilidade_impacto": {
---             "muito_baixo": {"probabilidade": "0-10%", "impacto": "Sem impacto significativo"},
---             "baixo": {"probabilidade": "11-30%", "impacto": "Pequenos ajustes"},
---             "medio": {"probabilidade": "31-60%", "impacto": "Replanejamento necessário"},
---             "alto": {"probabilidade": "61-80%", "impacto": "Grandes alterações"},
---             "muito_alto": {"probabilidade": "81-100%", "impacto": "Inviabilização do projeto"}
---         },
---         "plano_monitoramento": {
---             "frequencia_revisao": "Semanal",
---             "responsavel_geral": "Ana Oliveira",
---             "comite_riscos": ["Ana Oliveira", "Carlos Mendes", "Lucia Ferreira"],
---             "ferramentas": ["Inspeções de campo", "Relatórios de progresso", "Reuniões de obra"]
---         }
---     }'
--- );
+INSERT INTO core.pgr (
+    id_projeto,
+    id_solucao,
+    usuario,
+    data_criacao,
+    objeto,
+    risco
+) VALUES (
+    (SELECT id_projeto FROM core.projeto WHERE nome = 'Reforma do Auditório Principal'),
+    (SELECT id_solucao FROM core.solucao_identificada WHERE nome = 'Reforma Completa com Tecnologia Integrada'),
+    'user.demo',
+    CURRENT_TIMESTAMP,
+    'Reforma do Auditório Principal com Modernização',
+    '{
+        "riscos_identificados": [
+            {
+                "id": 1,
+                "categoria": "ESTRUTURAL",
+                "descricao": "Descoberta de problemas estruturais não previstos",
+                "probabilidade": "MEDIA",
+                "impacto": "ALTO",
+                "nivel_risco": "ALTO",
+                "mitigacao": "Realizar sondagem detalhada antes do início da obra",
+                "responsavel": "Engenheiro Responsável",
+                "prazo": "15 dias"
+            },
+            {
+                "id": 2,
+                "categoria": "FORNECIMENTO",
+                "descricao": "Atraso na entrega de equipamentos audiovisuais",
+                "probabilidade": "MEDIA",
+                "impacto": "MEDIO",
+                "nivel_risco": "MEDIO",
+                "mitigacao": "Contratar fornecedor com estoque disponível e prazo garantido",
+                "responsavel": "Coordenador de Suprimentos",
+                "prazo": "Antes da contratação"
+            },
+            {
+                "id": 3,
+                "categoria": "AMBIENTAL",
+                "descricao": "Impacto de ruído nas atividades acadêmicas",
+                "probabilidade": "ALTA",
+                "impacto": "BAIXO",
+                "nivel_risco": "MEDIO",
+                "mitigacao": "Programar trabalhos ruidosos fora do horário de aulas",
+                "responsavel": "Coordenador da Obra",
+                "prazo": "Diário"
+            },
+            {
+                "id": 4,
+                "categoria": "ORCAMENTARIO",
+                "descricao": "Variação de preços de materiais durante a execução",
+                "probabilidade": "MEDIA",
+                "impacto": "MEDIO",
+                "nivel_risco": "MEDIO",
+                "mitigacao": "Incluir cláusula de reajuste baseada em índices oficiais",
+                "responsavel": "Gestor do Contrato",
+                "prazo": "Na elaboração do contrato"
+            }
+        ],
+        "matriz_probabilidade_impacto": {
+            "muito_baixo": {"probabilidade": "0-10%", "impacto": "Sem impacto significativo"},
+            "baixo": {"probabilidade": "11-30%", "impacto": "Pequenos ajustes"},
+            "medio": {"probabilidade": "31-60%", "impacto": "Replanejamento necessário"},
+            "alto": {"probabilidade": "61-80%", "impacto": "Grandes alterações"},
+            "muito_alto": {"probabilidade": "81-100%", "impacto": "Inviabilização do projeto"}
+        },
+        "plano_monitoramento": {
+            "frequencia_revisao": "Semanal",
+            "responsavel_geral": "Ana Oliveira",
+            "comite_riscos": ["Ana Oliveira", "Carlos Mendes", "Lucia Ferreira"],
+            "ferramentas": ["Inspeções de campo", "Relatórios de progresso", "Reuniões de obra"]
+        }
+    }'
+);
