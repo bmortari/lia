@@ -30,13 +30,14 @@ class Projeto(Base):
 
     # Colunas booleanas para controle de artefatos existentes
     exist_dfd = Column(Boolean, nullable=False, default=False, comment="Indica se existe DFD vinculado ao projeto")
+    exist_solucao = Column(Boolean, nullable=False, default=False, comment="Indica se existe Solução vinculada ao projeto")
     exist_pdp = Column(Boolean, nullable=False, default=False, comment="Indica se existe PDP vinculado ao projeto")
+    exist_pgr = Column(Boolean, nullable=False, default=False, comment="Indica se existe PGR vinculado ao projeto")
     exist_etp = Column(Boolean, nullable=False, default=False, comment="Indica se existe ETP vinculado ao projeto")
-    exist_mr = Column(Boolean, nullable=False, default=False, comment="Indica se existe MR vinculado ao projeto")
     exist_tr = Column(Boolean, nullable=False, default=False, comment="Indica se existe TR vinculado ao projeto")
     exist_ed = Column(Boolean, nullable=False, default=False, comment="Indica se existe ED vinculado ao projeto")
-    exist_pgr = Column(Boolean, nullable=False, default=False, comment="Indica se existe PGR vinculado ao projeto")
-    exist_solucao = Column(Boolean, nullable=False, default=False, comment="Indica se existe Solução vinculada ao projeto")
+
+    
     
     # RELACIONAMENTOS CENTRALIZADOS
     # Todos os artefatos se relacionam APENAS com Projeto
@@ -44,7 +45,8 @@ class Projeto(Base):
     # Usando string references para evitar problemas de importação circular
     
     dfds = relationship("DFD", back_populates="projeto", cascade="all, delete-orphan")
+    solucoes = relationship("SolucaoIdentificada", back_populates="projeto", cascade="all, delete-orphan")
     pdps = relationship("PDP", back_populates="projeto", cascade="all, delete-orphan")
     etps = relationship("ETP", back_populates="projeto", cascade="all, delete-orphan")
     pgrs = relationship("PGR", back_populates="projeto", cascade="all, delete-orphan")
-    solucoes = relationship("SolucaoIdentificada", back_populates="projeto", cascade="all, delete-orphan")
+    

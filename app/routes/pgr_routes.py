@@ -14,6 +14,7 @@ from app.models.pgr_models import PGR
 from app.models.solucao_models import SolucaoIdentificada
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 import json
 import logging
@@ -27,10 +28,18 @@ templates_pgr = Jinja2Templates(directory="frontend/templates/pgr")
 # Logging para debug
 logger = logging.getLogger(__name__)
 
+
+class PGRUpdate(BaseModel):
+    """Schema para atualização de PGR"""
+    objeto: str = None
+    risco: Dict[str, Any] = None
+
+
 @router.get("/test-pgr")
 async def test_pgr():
     """Rota de teste para verificar se PGR está funcionando"""
     return {"message": "PGR Router funcionando!", "status": "ok"}
+
 
 @router.post("/projetos/{project_id}/create_pgr", response_model=List[PGRRead], status_code=201)
 async def create_pgr(
@@ -169,7 +178,7 @@ async def confere_pgr_page(
         return templates_pgr.TemplateResponse("pgr-curadoria.html", {
             "request": request,
             "projeto": projeto,
-            "pgr_data_json": json.dumps(formatted_data)
+            "pgr_data_json": json.dumps(formatted_data, ensure_ascii=False)
         })
         
     except HTTPException:
@@ -244,6 +253,59 @@ async def get_pgr_by_project(
     except Exception as e:
         logger.error(f"❌ Erro ao buscar PGRs: {e}")
         raise HTTPException(status_code=500, detail=f"Erro ao buscar PGRs: {str(e)}")
+
+
+@router.patch("/projetos/{projeto_id}/pgr/{pgr_id}")
+async def update_pgr(
+    projeto_id: int,
+    pgr_id: int,
+    pgr_update: PGRUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    API para atualizar um PGR específico
+    """
+    logger.info(f"✏️ Atualizando PGR {pgr_id} do projeto {projeto_id}")
+    try:
+        # Buscar o PGR
+        stmt = select(PGR).where(PGR.id_pgr == pgr_id, PGR.id_projeto == projeto_id)
+        result = await db.execute(stmt)
+        pgr = result.scalar_one_or_none()
+        
+        if not pgr:
+            raise HTTPException(status_code=404, detail="PGR não encontrado")
+        
+        # Atualizar apenas os campos fornecidos
+        update_data = pgr_update.dict(exclude_unset=True)
+        
+        for field, value in update_data.items():
+            if hasattr(pgr, field) and value is not None:
+                setattr(pgr, field, value)
+        
+        await db.commit()
+        await db.refresh(pgr)
+        
+        logger.info(f"✅ PGR {pgr_id} atualizado com sucesso")
+        
+        # Retornar dados atualizados
+        return {
+            "id_pgr": pgr.id_pgr,
+            "id_projeto": pgr.id_projeto,
+            "id_solucao": pgr.id_solucao,
+            "objeto": pgr.objeto,
+            "risco": pgr.risco,
+            "usuario_criacao": pgr.usuario_criacao,
+            "data_criacao": pgr.data_criacao.isoformat() if pgr.data_criacao else None,
+            "message": "PGR atualizado com sucesso"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"❌ Erro ao atualizar PGR: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao atualizar PGR: {str(e)}")
 
 
 @router.delete("/projetos/{projeto_id}/pgr/{pgr_id}")

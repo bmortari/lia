@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curadoria de PGR</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
+    <style>
+        /* Estilo para desabilitar o textarea/input */
+        .editable-content:disabled {
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            color: #334155;
+            cursor: not-allowed;
+        }
+        
+        /* Estilo para campos não editáveis */
+        .readonly-content {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+            cursor: not-allowed;
+        }
+
+        /* Scrollbar customizada para seções longas */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f3f4f6;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="min-h-screen py-8 px-4">
+
+        <!-- Cabeçalho Principal -->
+        <div class="text-center mb-12">
+            <div class="mb-6">
+                <i class="las la-shield-alt text-6xl text-red-600 mb-4"></i>
+                <h1 class="text-4xl font-bold text-gray-900 mb-2">Curadoria de PGR</h1>
+                <p class="text-xl text-gray-600">Plano de Gerenciamento de Riscos</p>
+                {% if projeto %}
+                    <p class="text-lg text-gray-500 mt-2">Projeto: {{ projeto.nome }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if not pgr_data_json or pgr_data_json == "[]" %}
+        <div class="max-w-6xl mx-auto mb-6">
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div class="flex items-center">
+                    <i class="las la-exclamation-triangle text-yellow-600 text-2xl mr-3"></i>
+                    <p class="text-yellow-800">Nenhum PGR encontrado para este projeto.</p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+
+        <div class="max-w-6xl mx-auto">
+            <!-- Seletor de PGR (se houver múltiplos) -->
+            <div id="pgr-selector" class="mb-6 bg-white border border-gray-200 rounded-lg shadow-sm p-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <i class="las la-list text-2xl text-gray-600 mr-3"></i>
+                        <h2 class="text-lg font-semibold text-gray-900">PGRs Disponíveis</h2>
+                    </div>
+                    <select id="pgr-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                        <!-- Opções serão preenchidas via JavaScript -->
+                    </select>
+                </div>
+            </div>
+
+            <div id="pgr-content" class="space-y-6">
+
+                <!-- 1. Informações Gerais do PGR -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="las la-info-circle text-2xl text-gray-600 mr-3"></i>
+                            <h2 class="text-xl font-semibold text-gray-900">Informações Gerais</h2>
+                        </div>
+                        
+                        <!-- Objeto do Contrato -->
+                        <div class="mb-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Objeto do Contrato</label>
+                                <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="objeto-contrato">
+                                    <i class="las la-edit mr-1"></i>Editar
+                                </button>
+                            </div>
+                            <textarea id="objeto-contrato" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="3" disabled></textarea>
+                        </div>
+
+                        <!-- Metadados -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm bg-gray-50 p-4 rounded-lg">
+                            <div>
+                                <span class="font-medium text-gray-700">ID PGR:</span>
+                                <span id="pgr-id" class="text-gray-600"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Criado por:</span>
+                                <span id="usuario-criacao" class="text-gray-600"></span>
+                            </div>
+                            <div>
+                                <span class="font-medium text-gray-700">Data de criação:</span>
+                                <span id="data-criacao" class="text-gray-600"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Resumo da Análise -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center">
+                                <i class="las la-clipboard-list text-2xl text-gray-600 mr-3"></i>
+                                <h2 class="text-xl font-semibold text-gray-900">Resumo da Análise</h2>
+                            </div>
+                            <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="resumo-analise">
+                                <i class="las la-edit mr-1"></i>Editar
+                            </button>
+                        </div>
+                        <textarea id="resumo-analise" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled></textarea>
+                    </div>
+                </div>
+
+                <!-- 3. Metodologia Aplicada -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center">
+                                <i class="las la-cogs text-2xl text-gray-600 mr-3"></i>
+                                <h2 class="text-xl font-semibold text-gray-900">Metodologia Aplicada</h2>
+                            </div>
+                            <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="metodologia-aplicada">
+                                <i class="las la-edit mr-1"></i>Editar
+                            </button>
+                        </div>
+                        <textarea id="metodologia-aplicada" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="3" disabled></textarea>
+                    </div>
+                </div>
+
+                <!-- 4. Riscos por Solução -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="las la-exclamation-triangle text-2xl text-gray-600 mr-3"></i>
+                            <h2 class="text-xl font-semibold text-gray-900">Análise de Riscos por Solução</h2>
+                        </div>
+                        <div id="riscos-container" class="space-y-4 max-h-96 overflow-y-auto custom-scroll">
+                            <!-- Conteúdo será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Análise Comparativa -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="las la-balance-scale text-2xl text-gray-600 mr-3"></i>
+                            <h2 class="text-xl font-semibold text-gray-900">Análise Comparativa</h2>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="block text-sm font-medium text-gray-700">Solução de Menor Risco</label>
+                                    <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="solucao-menor-risco">
+                                        <i class="las la-edit mr-1"></i>Editar
+                                    </button>
+                                </div>
+                                <input type="text" id="solucao-menor-risco" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" disabled>
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="block text-sm font-medium text-gray-700">Solução de Maior Risco</label>
+                                    <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="solucao-maior-risco">
+                                        <i class="las la-edit mr-1"></i>Editar
+                                    </button>
+                                </div>
+                                <input type="text" id="solucao-maior-risco" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" disabled>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <label class="block text-sm font-medium text-gray-700">Recomendação Final</label>
+                                <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="recomendacao-final">
+                                    <i class="las la-edit mr-1"></i>Editar
+                                </button>
+                            </div>
+                            <textarea id="recomendacao-final" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="3" disabled></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Plano Geral de Riscos -->
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <i class="las la-sitemap text-2xl text-gray-600 mr-3"></i>
+                            <h2 class="text-xl font-semibold text-gray-900">Plano Geral de Riscos</h2>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <!-- Estrutura de Governança -->
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="block text-sm font-medium text-gray-700">Estrutura de Governança</label>
+                                    <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="estrutura-governanca">
+                                        <i class="las la-edit mr-1"></i>Editar
+                                    </button>
+                                </div>
+                                <textarea id="estrutura-governanca" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="2" disabled></textarea>
+                            </div>
+
+                            <!-- Periodicidade de Revisão -->
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <label class="block text-sm font-medium text-gray-700">Periodicidade de Revisão</label>
+                                    <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center" data-target="periodicidade-revisao">
+                                        <i class="las la-edit mr-1"></i>Editar
+                                    </button>
+                                </div>
+                                <input type="text" id="periodicidade-revisao" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Botões de Ação -->
+        <div class="max-w-6xl mx-auto mt-8 mb-8">
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <!-- Botão Salvar Alterações (Primário) -->
+                <button type="button" id="btn-salvar-alteracoes" class="inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                    <i class="las la-save text-lg mr-2"></i>
+                    Salvar alterações
+                </button>
+                
+                <!-- Botão Visualizar Resultado -->
+                <button type="button" onclick="window.location.href = window.location.href.replace('confere_pgr', 'visualizacao_pgr')" class="inline-flex items-center justify-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">
+                    <i class="las la-eye text-lg mr-2"></i>
+                    Visualizar resultado
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script>
+        // Dados do servidor passados via template
+        window.pgrData = JSON.parse('{{ pgr_data_json|safe }}');
+        window.projectId = {{ projeto.id_projeto if projeto else 'null' }};
+    </script>
+    <script src="/static/js/pgr/pgr-curadoria.js"></script>
+</body>
+</html>

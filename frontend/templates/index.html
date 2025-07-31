@@ -60,16 +60,32 @@
             box-shadow: 0 0 0 4px rgba(145, 146, 151, 0.3);
         }
 
+        .btn-demo {
+            background-color: #28a745;
+            color: white;
+            border: none;
+        }
+
+        .btn-demo:hover {
+            background-color: #218838;
+        }
+
+        .btn-demo:focus {
+            box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-demo:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
         .container-projetos {
             border: 2px solid #0097B2;
-            /* Altura fixa um pouco maior */
             height: 580px;
             max-height: 580px;
-            /* Garante que não vai expandir */
             flex-shrink: 0;
         }
 
-        /* Garantir que a lista de projetos tenha scroll */
         #lista-projetos {
             max-height: 420px;
             overflow-y: auto;
@@ -101,7 +117,6 @@
             object-fit: contain;
         }
 
-        /* Garantir alinhamento dos containers */
         .grid-wrapper {
             align-items: flex-start;
             max-height: 100vh;
@@ -113,7 +128,96 @@
             justify-content: space-between;
             min-height: 580px;
         }
+
+        /* Estilos para notificações */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .notification.success {
+            background-color: #28a745;
+        }
+
+        .notification.error {
+            background-color: #dc3545;
+        }
+
+        .notification.info {
+            background-color: #17a2b8;
+        }
+
+        .notification.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Loading animation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
       
+        /* Debug info */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+            z-index: 999;
+            max-width: 300px;
+        }
+
+        .debug-commands {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #555;
+            font-size: 11px;
+        }
     </style>
 </head>
 <body>
@@ -131,13 +235,31 @@
                         <p class="text-2xl w-128 max-w-xl mb-6 pb-8">
                           O LIA é a plataforma que simplifica a geração de documentos licitatórios. Mais eficiência. Mais segurança. Mais inovação.
                         </p>
-                        <div class="flex gap-4 mb-8">
-                            <button type="button" class="btn-manual cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                        <div class="btn-group mb-8">
+                            <button type="button" class="btn-manual cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                                 Manual
                             </button>
-                            <button type="button" id="iniciar_projeto" class="btn-custom cursor-pointer text-white font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 focus:outline-none">
+                            <button type="button" id="iniciar_projeto" class="btn-custom cursor-pointer text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                                 Iniciar projeto
                             </button>
+                            <button type="button" id="carregar_dados_demo" class="btn-demo cursor-pointer font-medium rounded-lg text-sm px-4 py-2.5 focus:outline-none">
+                                <span id="demo-btn-text">📦 Dados Demo</span>
+                                <span id="demo-loading" class="hidden">
+                                    <span class="loading-spinner"></span>Carregando...
+                                </span>
+                            </button>
+                        </div>
+                        
+                        <!-- Info para desenvolvedores -->
+                        <div class="debug-info" id="debug-info" style="display: none;">
+                            <div>
+                                <strong>Debug Info:</strong><br>
+                                Ctrl+Shift+V: Verificar arquivo seed<br>
+                                Ctrl+Shift+C: Verificar comandos SQL
+                            </div>
+                            <div class="debug-commands" id="debug-commands" style="display: none;">
+                                <!-- Comandos SQL serão mostrados aqui -->
+                            </div>
                         </div>
                     </div>
                     
@@ -159,6 +281,10 @@
                     </div>
                     <ul id="lista-projetos" class="space-y-3 gap-2 flex-grow">
                         <!-- Itens do projeto serão inseridos aqui dinamicamente -->
+                        <li class="text-gray-500 text-center py-4">
+                            <div class="loading-spinner" style="border-color: #6b7280; border-top-color: transparent; margin: 0 auto 8px;"></div>
+                            Carregando projetos...
+                        </li>
                     </ul>
                     <div class="text-center mt-4 flex-shrink-0">
                         <a href="listar_projetos" class="inline-flex items-center text-sm font-normal text-gray-500 hover:underline">
@@ -172,9 +298,40 @@
     
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            const url = window.location.origin;
+        // Variável global para armazenar info de debug
+        let debugInfo = {};
 
+        // Mostrar debug info em desenvolvimento
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            document.getElementById('debug-info').style.display = 'block';
+        }
+
+        // Função para mostrar notificações melhorada
+        function showNotification(message, type = 'info', duration = 5000) {
+            // Remover notificações existentes
+            const existingNotifications = document.querySelectorAll('.notification');
+            existingNotifications.forEach(n => n.remove());
+
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+
+            console.log(`[${type.toUpperCase()}] ${message.replace(/<br>/g, ' | ')}`);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => {
+                    if (document.body.contains(notification)) {
+                        document.body.removeChild(notification);
+                    }
+                }, 300);
+            }, duration);
+        }
+
+        // Função para carregar projetos
+        async function loadProjects() {
+            const url = window.location.origin;
             const projectList = document.getElementById('lista-projetos');
 
             const formatDate = (dateString) => {
@@ -201,10 +358,16 @@
                 const projects = await response.json();
                 projectList.innerHTML = '';
 
+                console.log(`📊 Projetos carregados: ${projects.length}`);
+
+                if (projects.length === 0) {
+                    projectList.innerHTML = '<li class="text-gray-500 text-center py-4">Nenhum projeto encontrado.<br><small>Clique em "Dados Demo" para carregar exemplos</small></li>';
+                    return;
+                }
+
                 projects.sort((a, b) => new Date(b.dt_created) - new Date(a.dt_created));
 
                 projects.forEach(project => {
-                    console.log(project);
                     const listItem = document.createElement('li');
                     listItem.className = 'flex flex-col';
                     listItem.innerHTML = `
@@ -217,27 +380,234 @@
                 });
 
             } catch (error) {
-                console.error('Falha ao carregar projetos:', error);
-                projectList.innerHTML = '<li class="text-red-500">Não foi possível carregar os projetos.</li>';
+                console.error('❌ Falha ao carregar projetos:', error);
+                projectList.innerHTML = '<li class="text-red-500 text-center py-4">Não foi possível carregar os projetos.</li>';
+            }
+        }
+
+        // Função melhorada para verificar arquivo seed
+        async function verificarArquivoSeed() {
+            const url = window.location.origin;
+            try {
+                console.log('🔍 Verificando arquivo seed...');
+                
+                const response = await fetch(`${url}/verificar-arquivo-seed`, {
+                    method: 'GET',
+                    headers: {
+                        'accept': 'application/json',
+                        'remote-user': 'user.test',
+                        'remote-groups': 'TI,OUTROS'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao verificar arquivo seed');
+                }
+
+                const result = await response.json();
+                debugInfo = result;
+                console.log('📄 Info do arquivo seed:', result);
+                
+                if (!result.arquivo_existe) {
+                    showNotification('❌ Arquivo seed_example.sql não encontrado!', 'error');
+                    return false;
+                }
+                
+                if (result.tamanho_bytes === 0) {
+                    showNotification('⚠️ Arquivo seed_example.sql está vazio!', 'warning');
+                    return false;
+                }
+
+                const infoMsg = [
+                    `✅ Arquivo encontrado`,
+                    `📏 Tamanho: ${result.tamanho_bytes} bytes`,
+                    `🛠️ Comandos SQL: ${result.total_comandos_sql || 0}`
+                ].join('<br>');
+                
+                showNotification(infoMsg, 'info', 4000);
+
+                // Mostrar comandos SQL no debug se disponível
+                if (result.comandos_preview && result.comandos_preview.length > 0) {
+                    const debugCommands = document.getElementById('debug-commands');
+                    debugCommands.innerHTML = `
+                        <strong>Comandos SQL encontrados (${result.total_comandos_sql}):</strong><br>
+                        ${result.comandos_preview.map((cmd, i) => `${i+1}. ${cmd}`).join('<br>')}
+                    `;
+                    debugCommands.style.display = 'block';
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Erro ao verificar arquivo seed:', error);
+                showNotification(`❌ Erro ao verificar arquivo: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        // Função melhorada para carregar dados demo
+        async function loadDemoData() {
+            const url = window.location.origin;
+            const demoBtn = document.getElementById('carregar_dados_demo');
+            const btnText = document.getElementById('demo-btn-text');
+            const loadingText = document.getElementById('demo-loading');
+
+            console.log('🚀 Iniciando carregamento de dados demo...');
+
+            // Primeiro, verificar se o arquivo existe
+            const arquivoOk = await verificarArquivoSeed();
+            if (!arquivoOk) {
+                console.log('❌ Arquivo seed não está OK, cancelando carregamento');
+                return;
             }
 
-            // ✅ Mover para dentro do DOMContentLoaded
+            // Desabilitar botão e mostrar loading
+            demoBtn.disabled = true;
+            btnText.classList.add('hidden');
+            loadingText.classList.remove('hidden');
+
+            try {
+                console.log('📡 Enviando requisição para popular dados...');
+                
+                const response = await fetch(`${url}/popular-dados-demo`, {
+                    method: 'POST',
+                    headers: {
+                        'accept': 'application/json',
+                        'remote-user': 'user.test',
+                        'remote-groups': 'TI,OUTROS'
+                    }
+                });
+
+                const result = await response.json();
+                console.log('📊 Resultado do carregamento:', result);
+
+                if (!response.ok) {
+                    throw new Error(result.detail || 'Erro ao carregar dados demo');
+                }
+
+                if (result.status === 'ja_populado') {
+                    showNotification(`ℹ️ ${result.message} (${result.projetos_existentes} projetos)`, 'info');
+                } else {
+                    const detalhes = [
+                        `✅ ${result.message}`,
+                        `📊 Projetos: ${result.total_projetos}`,
+                        `📝 Comandos executados: ${result.comandos_executados}`,
+                        result.insert_commands ? `➕ INSERTs: ${result.insert_commands}` : '',
+                        result.update_commands ? `🔄 UPDATEs: ${result.update_commands}` : '',
+                        result.delete_commands ? `🗑️ DELETEs: ${result.delete_commands}` : ''
+                    ].filter(Boolean).join('<br>');
+                    
+                    showNotification(detalhes, 'success', 8000);
+                }
+                
+                // Recarregar a lista de projetos
+                console.log('🔄 Recarregando lista de projetos...');
+                setTimeout(async () => {
+                    await loadProjects();
+                }, 1000);
+
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados demo:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+            } finally {
+                // Reabilitar botão
+                demoBtn.disabled = false;
+                btnText.classList.remove('hidden');
+                loadingText.classList.add('hidden');
+            }
+        }
+
+        // Função para limpar dados demo (para debug)
+        async function limparDadosDemo() {
+            if (!confirm('Tem certeza que deseja limpar todos os dados demo?')) {
+                return;
+            }
+            
+            const url = window.location.origin;
+            try {
+                console.log('🗑️ Limpando dados demo...');
+                
+                const response = await fetch(`${url}/limpar-dados-demo`, {
+                    method: 'DELETE',
+                    headers: {
+                        'accept': 'application/json',
+                        'remote-user': 'user.test',
+                        'remote-groups': 'TI,OUTROS'
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.detail || 'Erro ao limpar dados demo');
+                }
+
+                console.log('✅ Dados limpos:', result);
+                showNotification('🗑️ Dados demo limpos com sucesso!', 'success');
+                await loadProjects();
+
+            } catch (error) {
+                console.error('❌ Erro ao limpar dados demo:', error);
+                showNotification(`❌ Erro: ${error.message}`, 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 Aplicação iniciada');
+            
+            // Carregar projetos inicialmente
+            await loadProjects();
+
+            // Event listener para iniciar projeto
             const iniciarBtn = document.getElementById('iniciar_projeto');
             if (iniciarBtn) {
                 iniciarBtn.addEventListener('click', () => {
-                    // Método mais direto - remove hash da string original primeiro
                     let baseUrl = window.location.href.split('#')[0];
-                    
                     const url = new URL(baseUrl);
-                    
-                    // Adiciona o endpoint
                     url.pathname = url.pathname.endsWith('/') 
                         ? url.pathname + 'criar_projeto'
                         : url.pathname + '/criar_projeto';
-                    
                     window.location.href = url.href;
                 });
             }
+
+            // Event listener para carregar dados demo
+            const demoBtn = document.getElementById('carregar_dados_demo');
+            if (demoBtn) {
+                demoBtn.addEventListener('click', loadDemoData);
+            }
+
+            // Adicionar botão de debug para limpar dados (apenas em desenvolvimento)
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                const debugBtn = document.createElement('button');
+                debugBtn.innerHTML = '🗑️ Limpar Demo';
+                debugBtn.className = 'btn-demo cursor-pointer font-medium rounded-lg text-sm px-4 py-2.5 focus:outline-none';
+                debugBtn.style.backgroundColor = '#dc3545';
+                debugBtn.addEventListener('click', limparDadosDemo);
+                
+                const btnGroup = document.querySelector('.btn-group');
+                if (btnGroup) {
+                    btnGroup.appendChild(debugBtn);
+                }
+            }
+
+            // Event listeners para debug
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey) {
+                    if (e.key === 'V') {
+                        e.preventDefault();
+                        verificarArquivoSeed();
+                    } else if (e.key === 'C') {
+                        e.preventDefault();
+                        console.log('🐛 Debug Info:', debugInfo);
+                        if (debugInfo.comandos_preview) {
+                            console.log('📝 Comandos SQL:', debugInfo.comandos_preview);
+                        }
+                    }
+                }
+            });
+
+            console.log('✅ Aplicação carregada com sucesso');
         });
     </script>
 </body>
