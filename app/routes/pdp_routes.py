@@ -178,6 +178,8 @@ async def confere_pdp_page(
     formatted_data = []
     for record in pdp_records:
         contract_data = {
+            "id": record.id,
+            "id_projeto": record.id_projeto,
             "orgao_contratante": record.orgao_contratante,
             "processo_pregao": record.processo_pregao,
             "empresa_adjudicada": record.empresa_adjudicada,
@@ -185,7 +187,6 @@ async def confere_pdp_page(
             "objeto": record.objeto,
             # Garante que as datas sejam strings no formato YYYY-MM-DD
             "data_vigencia_inicio": record.data_vigencia_inicio.isoformat() if record.data_vigencia_inicio else None,
-            "data_vigencia_fim": record.data_vigencia_fim.isoformat() if record.data_vigencia_fim else None,
             "tipo_fonte": record.tipo_fonte,
             # Mapeia a estrutura de 'tabela_itens' para a que o JS espera
             "tabela_itens": [
