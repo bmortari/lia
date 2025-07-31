@@ -748,51 +748,171 @@ function testarDadosSimplificados() {
         }, 5000);
     }
     
-    // Inicializar filtros e outros event listeners
-    inicializarFiltros();
+    // --- LÓGICA DOS FILTROS ---
 
-    // Adiciona o listener para o botão Voltar
-    const backButton = document.getElementById('voltar-inicio');
-    backButton.addEventListener('click', () => {
-        const projetoId = extrairProjetoId();
-        if (projetoId) {
-            window.location.href = `${window.location.origin}/projetos/${projetoId}/`;
+    // Dados dos filtros dinâmicos
+    const UFS = [
+        'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 
+        'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 
+        'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+    ];
+
+    const ESFERAS = {
+        'distrital': 'Distrital',
+        'estadual': 'Estadual',
+        'federal': 'Federal',
+        'municipal': 'Municipal'
+    };
+
+    const MODALIDADES = {
+        'concorrencia_eletronica': 'Concorrência Eletrônica',
+        'concorrencia_presencial': 'Concorrência Presencial',
+        'credenciamento': 'Credenciamento',
+        'dispensa': 'Dispensa',
+        'inexigibilidade': 'Inexigibilidade',
+        'leilao_eletronico': 'Leilão Eletrônico',
+        'leilao_presencial': 'Leilão Presencial',
+        'pre_qualificacao': 'Pré-qualificação',
+        'pregao_eletronico': 'Pregão Eletrônico',
+        'pregao_presencial': 'Pregão Presencial'
+    };
+
+    // Função para popular filtros dinâmicos (UFs e Modalidades)
+    function popularFiltros() {
+        const esferaContainer = document.getElementById('esfera-options-modal');
+        const ufContainer = document.getElementById('uf-options-modal');
+        const modalidadeContainer = document.getElementById('modalidade-options-modal');
+
+        if (esferaContainer) {
+            for (const [valor, nome] of Object.entries(ESFERAS)) {
+                const checkboxHTML = `
+                    <label class="flex items-center">
+                        <input type="checkbox" value="${valor}" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm text-gray-700">${nome}</span>
+                    </label>
+                `;
+                esferaContainer.insertAdjacentHTML('beforeend', checkboxHTML);
+            }
         }
-    });
-    
+
+        if (ufContainer) {
+            UFS.forEach(uf => {
+                const checkboxHTML = `
+                    <label class="flex items-center">
+                        <input type="checkbox" value="${uf}" class="checkbox-custom uf-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm text-gray-700">${uf}</span>
+                    </label>
+                `;
+                ufContainer.insertAdjacentHTML('beforeend', checkboxHTML);
+            });
+        }
+
+        if (modalidadeContainer) {
+            for (const [valor, nome] of Object.entries(MODALIDADES)) {
+                const checkboxHTML = `
+                    <label class="flex items-center">
+                        <input type="checkbox" value="${valor}" class="checkbox-custom modalidade-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <span class="ml-3 text-sm text-gray-700">${nome}</span>
+                    </label>
+                `;
+                modalidadeContainer.insertAdjacentHTML('beforeend', checkboxHTML);
+            }
+        }
+    }
+
+    // Função para configurar os listeners de um grupo de checkboxes
+    function setupCheckboxListeners(tipo) {
+        const selectAllCheckbox = document.getElementById(`${tipo}-all`);
+        const optionCheckboxes = document.querySelectorAll(`.${tipo}-option`);
+        
+        if (!selectAllCheckbox || optionCheckboxes.length === 0) return;
+
+        // Listener para o "Selecionar Todos"
+        selectAllCheckbox.addEventListener('change', function() {
+            optionCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            atualizarContadorFiltro(tipo);
+        });
+
+        // Listeners para as opções individuais
+        optionCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const total = optionCheckboxes.length;
+                const checkedCount = document.querySelectorAll(`.${tipo}-option:checked`).length;
+
+                if (checkedCount === total) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedCount === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                }
+                atualizarContadorFiltro(tipo);
+            });
+        });
+    }
+
+    // Inicializar filtros e outros event listeners
     function inicializarFiltros() {
-        // Event listeners para os modais de filtro
+        // Popula os filtros dinâmicos
+        popularFiltros();
+
         const filtros = ['esfera', 'uf', 'modalidade'];
         
         filtros.forEach(filtro => {
-            const btn = document.getElementById('filter-' + filtro + '-btn');
-            const modal = document.getElementById('filter-' + filtro + '-modal');
-            const closeBtn = document.getElementById('close-' + filtro + '-modal');
-            const cancelBtn = document.getElementById('cancel-' + filtro);
-            const applyBtn = document.getElementById('apply-' + filtro);
+            const btn = document.getElementById(`filter-${filtro}-btn`);
+            const modal = document.getElementById(`filter-${filtro}-modal`);
+            const closeBtn = document.getElementById(`close-${filtro}-modal`);
+            const cancelBtn = document.getElementById(`cancel-${filtro}`);
+            const applyBtn = document.getElementById(`apply-${filtro}`);
             
+            // Guarda o estado original dos checkboxes para o botão "Cancelar"
+            let originalState = [];
+
             if (btn && modal) {
                 btn.addEventListener('click', () => {
+                    // Salva o estado atual antes de abrir o modal
+                    originalState = Array.from(document.querySelectorAll(`.${filtro}-option`)).map(cb => cb.checked);
                     modal.classList.remove('hidden');
                 });
                 
-                [closeBtn, cancelBtn].forEach(btn => {
-                    if (btn) {
-                        btn.addEventListener('click', () => {
-                            modal.classList.add('hidden');
+                const closeModal = () => modal.classList.add('hidden');
+
+                if (closeBtn) closeBtn.addEventListener('click', closeModal);
+                
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', () => {
+                        // Restaura o estado original ao cancelar
+                        document.querySelectorAll(`.${filtro}-option`).forEach((cb, index) => {
+                            cb.checked = originalState[index];
                         });
-                    }
-                });
+                        // Atualiza o contador e o estado do "Selecionar Todos"
+                        setupCheckboxListeners(filtro); 
+                        atualizarContadorFiltro(filtro);
+                        closeModal();
+                    });
+                }
                 
                 if (applyBtn) {
                     applyBtn.addEventListener('click', () => {
-                        modal.classList.add('hidden');
-                        atualizarContadorFiltro(filtro);
+                        // Apenas fecha o modal, o contador já foi atualizado
+                        closeModal();
                     });
                 }
             }
+            
+            // Configura os listeners para "Selecionar Todos" e opções
+            setupCheckboxListeners(filtro);
+            // Atualiza a contagem inicial
+            atualizarContadorFiltro(filtro);
         });
     }
+
+    inicializarFiltros();
     
     function atualizarContadorFiltro(tipo) {
         const checkboxes = document.querySelectorAll('.' + tipo + '-option:checked');
