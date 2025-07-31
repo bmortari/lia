@@ -7,8 +7,8 @@ from datetime import datetime, date
 
 from app.database import get_db
 from app.dependencies import get_current_remote_user, RemoteUser
-from app.services.pdp_services import create_pdp_service, inicializar_analise_projeto
-from app.schemas.pdp_schemas import PDPCreate, PDPRead
+from app.services.pdp_services import create_pdp_service, inicializar_analise_projeto, update_pdp_for_project
+from app.schemas.pdp_schemas import PDPCreate, PDPRead, PDPUpdate
 from app.models.projects_models import Projeto
 from app.models.pdp_models import PDP
 from app.models.solucao_models import SolucaoIdentificada
@@ -267,6 +267,34 @@ async def get_pdp_by_project(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar PDPs: {str(e)}")
+
+
+@router.patch("/projetos/{projeto_id}/pdp/{pdp_id}", response_model=PDPRead, status_code=200)
+async def patch_pdp(
+    projeto_id: int,
+    pdp_id: int,
+    pdp_upd: PDPUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Endpoint para atualizar um PDP específico
+    """
+    try:
+        pdp_atualizado = await update_pdp_for_project(
+            project_id=projeto_id,
+            pdp_id=pdp_id,
+            pdp_upd=pdp_upd,
+            db=db,
+            current_user=current_user
+        )
+        
+        return pdp_atualizado
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("/projetos/{projeto_id}/pdp/{pdp_id}")
