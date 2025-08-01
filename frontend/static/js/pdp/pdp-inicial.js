@@ -619,18 +619,18 @@ function testarDadosSimplificados() {
             let progresso = 0;
             const progressBar = document.getElementById('progress-bar');
             const intervalo = setInterval(() => {
-                progresso += Math.random() * 15;
+                progresso += 1;
                 if (progresso > 90) progresso = 90;
                 
                 if (progressBar) {
                     progressBar.style.width = progresso + '%';
                 }
-            }, 500);
+            }, 900);
             
-            // Para o progresso após 30 segundos
+            // Para o progresso após aproximadamente 3 minutos
             setTimeout(() => {
                 clearInterval(intervalo);
-            }, 30000);
+            }, 180000);
         }
     }
     

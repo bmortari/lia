@@ -272,6 +272,7 @@ function viewPDPDetails(pdpId) {
 }
 
 // Função para pesquisar preços
+
 async function searchPrices(searchData) {
     const loadingOverlay = document.getElementById('loading-overlay');
     const progressBar = document.getElementById('progress-bar');
@@ -286,13 +287,13 @@ async function searchPrices(searchData) {
         // Mostrar loading
         loadingOverlay.classList.remove('hidden');
         
-        // Simular progresso
+        // Simulação de progresso para 3 minutos (180 segundos)
         let progress = 0;
         const progressInterval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress > 95) progress = 95;
+            progress += 0.53; // 95% ÷ 180 segundos ≈ 0.53% por segundo
             progressBar.style.width = `${progress}%`;
-        }, 200);
+            if (progress >= 95) clearInterval(progressInterval);
+        }, 1000); // Atualiza a cada 1 segundo
 
         console.log('Enviando dados para API:', searchData);
 
@@ -308,7 +309,7 @@ async function searchPrices(searchData) {
             body: JSON.stringify(searchData)
         });
 
-        // Parar o progresso e completar a barra
+        // Quando a resposta chegar, parar o progresso e completar a barra
         clearInterval(progressInterval);
         progressBar.style.width = '100%';
 
