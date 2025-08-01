@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="flex flex-col space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Unidade Medida</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${item.unidade_medida || ''}" data-field="unidade_medida" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
+                                    <input type="text" value="${item.unidade || ''}" data-field="unidade_medida" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
                                     <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
