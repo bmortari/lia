@@ -131,9 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const updatedItem = {
                 ...originalItem, // Keep original fields not being edited
-                descricao_item: itemEl.querySelector('[data-field="descricao_item"]').value,
-                marca_modelo: itemEl.querySelector('[data-field="marca_modelo"]').value,
-                unidade_medida: itemEl.querySelector('[data-field="unidade_medida"]').value,
+                descricao: itemEl.querySelector('[data-field="descricao"]').value,
+                marca_referencia: itemEl.querySelector('[data-field="marca_referencia"]').value,
+                unidade: itemEl.querySelector('[data-field="unidade"]').value,
                 quantidade: parseFloat(itemEl.querySelector('[data-field="quantidade"]').value) || 0,
                 valor_unitario: parseFloat(itemEl.querySelector('[data-field="valor_unitario"]').value.replace(',', '.')) || 0
             };
@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="flex flex-col space-y-1 md:col-span-10">
                                 <label class="block text-sm font-medium text-gray-700">Descrição</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${item.descricao_item || ''}" data-field="descricao_item" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
+                                    <input type="text" value="${item.descricao || ''}" data-field="descricao" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
                                     <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex flex-col space-y-1">
                             <label class="block text-sm font-medium text-gray-700">Marca/Modelo</label>
                             <div class="flex items-center space-x-3">
-                                <input type="text" value="${item.marca_modelo || ''}" data-field="marca_modelo" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
+                                <input type="text" value="${item.marca_referencia || ''}" data-field="marca_referencia" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
                                 <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                             </div>
                         </div>
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="flex flex-col space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Unidade Medida</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${item.unidade || ''}" data-field="unidade_medida" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
+                                    <input type="text" value="${item.unidade || ''}" data-field="unidade" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
                                     <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>

@@ -434,9 +434,9 @@ function generatePDF(jsonData) {
 
                         return {
                             item: String(item.item || index + 1),
-                            nome: item.descricao || item.descricao_item || "N/A",
-                            marca: item.marca_modelo || item.marca_referencia || "N/A",
-                            unidade: item.unidade || item.unidade_medida || "N/A",
+                            nome: item.descricao || "N/A",
+                            marca: item.marca_referencia || "N/A",
+                            unidade: item.unidade || "N/A",
                             quantidade: String(quantidade),
                             valorUnitario: `R$ ${formatCurrency(valorUnitario)}`,
                             valorTotal: `R$ ${formatCurrency(valorTotal)}`

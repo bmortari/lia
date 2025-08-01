@@ -197,9 +197,9 @@ async def confere_pdp_page(
             "tabela_itens": [
                 {
                     "item": item.get("item"),
-                    "descricao_item": item.get("descricao"),  # DE: "descricao" -> PARA: "descricao_item"
-                    "marca_modelo": item.get("marca_referencia", "Não especificado"), # DE: "marca_referencia" -> PARA: "marca_modelo"
-                    "unidade_medida": item.get("unidade"), # DE: "unidade" -> PARA: "unidade_medida"
+                    "descricao": item.get("descricao"), 
+                    "marca_referencia": item.get("marca_referencia", "Não especificado"),
+                    "unidade": item.get("unidade"), 
                     "quantidade": item.get("quantidade"),
                     "valor_unitario": item.get("valor_unitario")
                 } for item in (record.tabela_itens or [])
