@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'pdp': {
             create: `/projetos/${projectId}/criar_pdp`,
-            edit: `/projetos/${projectId}/criar_pdp`,
+            edit: `/projetos/${projectId}/confere_pdp`,
             view: `/projetos/${projectId}/visualizacao_pdp`,
             delete: `/projetos/${projectId}/pdp`
         },
