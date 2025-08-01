@@ -93,7 +93,12 @@
                             <i class="uil uil-file-search-alt mr-2 text-blue-600"></i>
                             Pré-visualização do Documento
                         </h3>
-                        <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">P.D.P.</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">P.D.P.</span>
+                            <button id="voltar-curadoria" type="button" class="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-1 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center">
+                                <i class="uil uil-edit mr-1"></i>Voltar à curadoria
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="pdfContainer" class="flex-1 relative min-h-0">
@@ -115,13 +120,16 @@
 
             <!-- Botões de Ação -->
             <div class="flex justify-center items-center space-x-6 flex-shrink-0">
+                <button id="voltar-inicio" type="button" class="text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <i class="uil uil-arrow-left mr-2"></i>
+                    Voltar ao início
+                </button>
                 <button id="downloadButton" type="button" class="group inline-flex items-center text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 focus:outline-none hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 font-semibold rounded-xl text-sm px-6 py-3 transition-all duration-200 transform hover:scale-105">
                     <i class="uil uil-download-alt mr-2 group-hover:animate-bounce"></i>
-                    Baixar Relatório
+                    Baixar Documento
                 </button>
-                <button id="saveButton" type="button" class="group inline-flex items-center text-white btn-custom font-semibold rounded-xl text-sm px-6 py-3 transition-all duration-200 transform hover:scale-105 shadow-lg">
-                    <i class="uil uil-save mr-2 group-hover:animate-pulse"></i>
-                    Salvar no Banco
+                <button id="voltar-curadoria" type="button" class="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-1 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center">
+                    <i class="uil uil-edit mr-1"></i>Voltar à curadoria
                 </button>
             </div>
 
@@ -131,6 +139,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
 <script src="/static/js/pdp/pdp-resultado.js"></script>
 </body>
 </html>
