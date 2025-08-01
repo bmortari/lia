@@ -260,8 +260,8 @@ async function executeDelete(service, projectId) {
         // Define a URL de delete baseada no serviço
         let deleteUrl = `/projetos/${projectId}/${service}`;
         
-        // Para PGR e ETP, usa endpoint específico para deletar todos do projeto
-        if (service === 'pgr' || service === 'etp') {
+        // Para PGR, ETP e PDP, usa endpoint específico para deletar todos do projeto
+        if (service === 'pgr' || service === 'etp' || service === 'pdp') {
             deleteUrl = `/projetos/${projectId}/${service}`;
         }
         

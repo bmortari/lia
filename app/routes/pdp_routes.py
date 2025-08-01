@@ -16,11 +16,15 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 import json
+import logging
 from app.models.pdp_models import PDP
 
 router = APIRouter(tags=["PDP"])
 
 templates_pdp = Jinja2Templates(directory="frontend/templates/pdp")
+
+# Logging para debug
+logger = logging.getLogger(__name__)
 
 
 @router.post("/projetos/{project_id}/create_pdp", response_model=List[PDPRead], status_code=201)
@@ -331,6 +335,46 @@ async def delete_pdp(
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar PDP: {str(e)}")
+
+
+@router.delete("/projetos/{projectId}/pdp")
+async def delete_all_pdp_from_project(
+    projectId: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user),
+):
+    """
+    Delete all PDP from project
+    """
+    logger.info(f"🗑️ Deletando todos os PDPs do projeto {projectId}")
+    try:
+        # Remove todos os PDPs do projeto
+        stmt = delete(PDP).where(PDP.id_projeto == projectId)
+        result = await db.execute(stmt)
+
+        # Atualiza flag no projeto
+        stmt_projeto = select(Projeto).where(Projeto.id_projeto == projectId)
+        result_projeto = await db.execute(stmt_projeto)
+        projeto = result_projeto.scalar_one_or_none()
+
+        if projeto:
+            projeto.exist_pdp = False  # Atualiza a flag exist_pdp
+
+        await db.commit()
+
+        deleted_count = result.rowcount
+        logger.info(f"✅ {deleted_count} PDPs deletados do projeto {projectId}")
+
+        return {
+            "message": f"Todos os PDPs do projeto deletados com sucesso",
+            "deleted_count": deleted_count,
+        }
+
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"❌ Erro ao deletar PDPs do projeto: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar PDPs: {str(e)}")
+
 
 
 # NOVO: Endpoint para buscar soluções identificadas
