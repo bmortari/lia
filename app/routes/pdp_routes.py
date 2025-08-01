@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
+from sqlalchemy.orm import selectinload
 from typing import List, Dict, Any
 from datetime import datetime, date
 
@@ -229,9 +230,18 @@ async def visualizacao_pdp_page(
     if not projeto:
         raise HTTPException(status_code=404, detail="Projeto não encontrado")
     
+    pdp_stmt = (
+        select(PDP)
+        .options(selectinload(PDP.projeto))
+        .where(PDP.id_projeto == projeto_id)
+    )
+    pdp_result = await db.execute(pdp_stmt)
+    pdp = pdp_result.scalars().first()
+    
     return templates_pdp.TemplateResponse("pdp-resultado.html", {
         "request": request,
-        "projeto": projeto
+        "projeto": projeto,
+        "pdp": pdp
     })
 
 

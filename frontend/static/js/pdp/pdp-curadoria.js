@@ -605,6 +605,16 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.warn('Botão "Salvar alterações" não encontrado na página');
         }
+
+        // EVENT LISTENER: Configurar o botão "Visualizar resultado"
+        const botaoVisualizar = document.getElementById('btn-visualizar-resultado');
+        if (botaoVisualizar) {
+            botaoVisualizar.addEventListener('click', () => {
+                window.location.href = window.location.href.replace('confere_pdp', 'visualizacao_pdp');
+            });
+        } else {
+            console.warn('Botão "Visualizar resultado" não encontrado na página');
+        }
     };
 
     /**
