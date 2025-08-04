@@ -79,15 +79,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para criar um card de solução para análise de riscos
     function criarCardSolucao(solucao, index) {
-        const cores = {
-            'principal': 'risk-level-high',
-            'complementar': 'risk-level-medium', 
-            'economica': 'risk-level-low',
-            'modular': 'risk-level-medium',
-            'completo': 'risk-level-high'
+        const gradientes = {
+            'principal':    'from-red-600 to-red-800',
+            'complementar': 'from-orange-500 to-orange-600',
+            'economica':    'from-green-500 to-green-600',
+            'modular':      'from-purple-500 to-purple-700',
+            'completo':     'from-indigo-500 to-indigo-700'
         };
         
-        const gradiente = cores[solucao.tipo] || 'risk-level-medium';
+        const gradienteClasses = gradientes[solucao.tipo] || 'from-gray-500 to-gray-600';
         const isPrincipal = solucao.tipo === 'principal';
         
         // Badge do tipo de solução
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const { icon: iconeComplexidade, color: corIcone } = getIconeComplexidade(solucao.complexidade_estimada);
         
         return '<div class="solution-card bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer h-64 flex flex-col" data-solucao-id="' + solucao.id_solucao + '" style="animation-delay: ' + (index * 100) + 'ms;">' +
-            '<div class="h-2 bg-gradient-to-r ' + gradiente + '"></div>' +
+            '<div class="h-2 bg-gradient-to-r ' + gradienteClasses + '"></div>' +
             '<div class="flex-1 p-4 flex flex-col">' +
                 '<div class="flex items-start justify-between mb-3">' +
                     '<div class="flex items-center flex-1 min-w-0">' +
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             '<input type="checkbox" class="solucao-checkbox w-3 h-3 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500" value="' + solucao.id_solucao + '" checked>' +
                         '</div>' +
                     '</div>' +
-                    '<button class="analisar-solucao-btn w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r ' + gradiente + ' rounded-lg hover:shadow-md transition-all duration-200" data-solucao-id="' + solucao.id_solucao + '" onclick="event.stopPropagation()" title="Incluir esta solução na análise de riscos">' +
+                    '<button class="analisar-solucao-btn w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r ' + gradienteClasses + ' rounded-lg hover:shadow-md transition-all duration-200" data-solucao-id="' + solucao.id_solucao + '" onclick="event.stopPropagation()" title="Incluir esta solução na análise de riscos">' +
                         '<i class="uil uil-shield-exclamation mr-1"></i>' +
                         'Analisar Riscos' +
                     '</button>' +
