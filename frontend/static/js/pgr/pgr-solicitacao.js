@@ -125,16 +125,16 @@ document.addEventListener('DOMContentLoaded', function() {
             '</div>';
         }
         
-        // Ícone baseado na complexidade
-        const iconeComplexidade = getIconeComplexidade(solucao.complexidade_estimada);
+        // Ícone e cor baseados na complexidade
+        const { icon: iconeComplexidade, color: corIcone } = getIconeComplexidade(solucao.complexidade_estimada);
         
         return '<div class="solution-card bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer h-64 flex flex-col" data-solucao-id="' + solucao.id_solucao + '" style="animation-delay: ' + (index * 100) + 'ms;">' +
             '<div class="h-2 bg-gradient-to-r ' + gradiente + '"></div>' +
             '<div class="flex-1 p-4 flex flex-col">' +
                 '<div class="flex items-start justify-between mb-3">' +
                     '<div class="flex items-center flex-1 min-w-0">' +
-                        '<div class="w-8 h-8 bg-gradient-to-br ' + gradiente + ' rounded-lg flex items-center justify-center mr-3 flex-shrink-0">' +
-                            '<i class="uil ' + iconeComplexidade + ' text-white text-sm"></i>' +
+                        '<div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">' +
+                            '<i class="uil ' + iconeComplexidade + ' ' + corIcone + ' text-xl"></i>' +
                         '</div>' +
                         '<div class="flex-1 min-w-0">' +
                             '<h3 class="text-sm font-bold text-gray-900 truncate" title="' + escapeHtml(solucao.nome) + '">' + escapeHtml(solucao.nome) + '</h3>' +
@@ -361,12 +361,16 @@ Priorize riscos que possam afetar o cronograma, qualidade ou aderência aos requ
     
     // Funções auxiliares
     function getIconeComplexidade(complexidade) {
-        const icones = {
-            'Baixa': 'uil-check-circle',
-            'Média': 'uil-exclamation-circle',
-            'Alta': 'uil-times-circle'
+        const normalizedComplexidade = complexidade ?
+            complexidade.charAt(0).toUpperCase() + complexidade.slice(1).toLowerCase() : '';
+
+        const iconData = {
+            'Baixa': { icon: 'uil-check-circle', color: 'text-green-600' },
+            'Média': { icon: 'uil-exclamation-circle', color: 'text-yellow-600' },
+            'Alta':  { icon: 'uil-times-circle', color: 'text-red-600' }
         };
-        return icones[complexidade] || 'uil-question-circle';
+
+        return iconData[normalizedComplexidade] || { icon: 'uil-question-circle', color: 'text-gray-500' };
     }
     
     function getTipoBadge(tipo) {
