@@ -37,18 +37,27 @@ async def create_pgr_service(pgr_in: PGRCreate, db: AsyncSession, current_user: 
         await db.flush()
 
         # Busca soluções identificadas do projeto
-        solucoes = await buscar_solucoes_projeto(project_id, db)
-        if not solucoes:
+        solucoes_todas = await buscar_solucoes_projeto(project_id, db)
+        if not solucoes_todas:
             raise ValueError("Nenhuma solução identificada encontrada para este projeto.")
 
+        # Filtra as soluções com base na seleção do usuário
+        solucoes_selecionadas = solucoes_todas
+        if pgr_in.solucoes_selecionadas:
+            ids_selecionados = set(pgr_in.solucoes_selecionadas)
+            solucoes_selecionadas = [s for s in solucoes_todas if s.id_solucao in ids_selecionados]
+
+        if not solucoes_selecionadas:
+            raise ValueError("Nenhuma das soluções selecionadas foi encontrada.")
+
         # Análise de riscos usando IA
-        analise_riscos = await analisar_riscos_ia(pgr_in.prompt_usuario, contexto, solucoes)
+        analise_riscos = await analisar_riscos_ia(pgr_in.prompt_usuario, contexto, solucoes_selecionadas)
         print("Análise de riscos da IA:", json.dumps(analise_riscos, indent=2, ensure_ascii=False))
 
         pgrs_criados = []
         
         # Cria PGR para cada solução com riscos identificados
-        for solucao, riscos_solucao in zip(solucoes, analise_riscos.get("riscos_por_solucao", [])):
+        for solucao, riscos_solucao in zip(solucoes_selecionadas, analise_riscos.get("riscos_por_solucao", [])):
             try:
                 novo_pgr = PGR(
                     id_projeto=project_id,

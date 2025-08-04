@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cria cards para cada solução
         solucoes.forEach((solucao, index) => {
+            console.log(`Conteúdo da Solução ${index + 1}:`, solucao);
             const cardHTML = criarCardSolucao(solucao, index);
             solucoesContainer.insertAdjacentHTML('beforeend', cardHTML);
         });
@@ -282,6 +283,7 @@ Priorize riscos que possam afetar o cronograma, qualidade ou aderência aos requ
             
             // Coleta dados do formulário
             const categoriasSelecionadas = Array.from(document.querySelectorAll('.categoria-risco:checked')).map(cb => cb.value);
+            console.log('Checkboxes de categorias de risco selecionadas:', categoriasSelecionadas);
             const nivelDetalhamento = document.querySelector('input[name="nivel-detalhamento"]:checked')?.value || 'completo';
             
             const formData = {
