@@ -188,13 +188,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('.solucao-checkbox').forEach(cb => {
                     cb.checked = cb.value === solucaoId;
                 });
+
+                atualizarContadorSelecionadas();
                 
-                // Destaca o formulário
-                const form = document.getElementById('pgr-form');
-                form.classList.add('ring-2', 'ring-red-500', 'border-red-500');
-                setTimeout(() => {
-                    form.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
-                }, 2000);
+                // // Destaca o formulário
+                // const form = document.getElementById('pgr-form');
+                // form.classList.add('ring-2', 'ring-red-500', 'border-red-500');
+                // setTimeout(() => {
+                //     form.classList.remove('ring-2', 'ring-red-500', 'border-red-500');
+                // }, 2000);
                 
                 mostrarToast('Solução selecionada para análise de riscos!', 'info');
             });
