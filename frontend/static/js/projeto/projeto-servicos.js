@@ -273,10 +273,10 @@ function hideDeleteConfirmation() {
 
 async function executeDelete(service, projectId) {
     console.log(`🗑️ Executando delete para ${service} no projeto ${projectId}`);
-    
+    const confirmBtn = document.getElementById('confirmDelete');
+
     try {
         // Mostra loading no botão
-        const confirmBtn = document.getElementById('confirmDelete');
         if (confirmBtn) {
             confirmBtn.textContent = 'Deletando...';
             confirmBtn.disabled = true;
@@ -323,9 +323,8 @@ async function executeDelete(service, projectId) {
     } catch (error) {
         console.error(`❌ Erro ao deletar ${service}:`, error);
         showToast(`Erro ao deletar ${service.toUpperCase()}: ${error.message}`, 'error');
-        
-        // Restaura botão
-        const confirmBtn = document.getElementById('confirmDelete');
+    } finally {
+        // Restaura o botão de confirmação em qualquer caso (sucesso ou erro)
         if (confirmBtn) {
             confirmBtn.textContent = 'Sim, deletar';
             confirmBtn.disabled = false;
