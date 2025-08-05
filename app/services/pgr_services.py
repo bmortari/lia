@@ -51,7 +51,7 @@ async def create_pgr_service(pgr_in: PGRCreate, db: AsyncSession, current_user: 
             raise ValueError("Nenhuma das soluções selecionadas foi encontrada.")
 
         # Análise de riscos usando IA
-        analise_riscos = await analisar_riscos_ia(pgr_in.prompt_usuario, contexto, solucoes_selecionadas)
+        analise_riscos = await analisar_riscos_ia(pgr_in, contexto, solucoes_selecionadas)
         print("Análise de riscos da IA:", json.dumps(analise_riscos, indent=2, ensure_ascii=False))
 
         pgrs_criados = []
@@ -145,13 +145,13 @@ async def buscar_dfd_por_id(project_id: int, db: AsyncSession) -> Optional[Dict[
         return None
 
 
-async def analisar_riscos_ia(prompt_usuario: str, contexto: Dict, solucoes: List[SolucaoIdentificada]) -> Dict:
+async def analisar_riscos_ia(pgr_in: PGRCreate, contexto: Dict, solucoes: List[SolucaoIdentificada]) -> Dict:
     """
     Analisa riscos das soluções usando IA
     """
     try:
         client = get_genai_client()
-        model = "gemini-2.0-flash"
+        model = "gemini-2.5-flash"
         
         # Preparar dados das soluções para análise
         solucoes_dados = []
@@ -167,6 +167,23 @@ async def analisar_riscos_ia(prompt_usuario: str, contexto: Dict, solucoes: List
             }
             solucoes_dados.append(solucao_dict)
 
+        # Refinar o prompt com base nas categorias de risco selecionadas
+        instrucoes_adicionais = ""
+        if pgr_in.parametros_analise and pgr_in.parametros_analise.get("categorias_risco"): 
+            categorias = pgr_in.parametros_analise.get("categorias_risco")
+            mapa_instrucoes = {
+                "tecnico": "Analise detalhadamente os riscos técnicos, incluindo complexidade de implementação, integração com sistemas legados, e escalabilidade da solução.",
+                "financeiro": "Foque nos riscos financeiros, como estouro de orçamento, custos de manutenção não previstos e o retorno sobre o investimento (ROI).",
+                "operacional": "Considere os riscos operacionais, como a necessidade de treinamento da equipe, impacto nos fluxos de trabalho atuais e a usabilidade da solução.",
+                "legal": "Avalie os riscos legais e de conformidade, como adequação à LGPD, direitos de propriedade intelectual e conformidade com as normas do setor público.",
+                "estrategico": "Avalie os riscos estratégicos, como o alinhamento com os objetivos de longo prazo da organização, a imagem pública da instituição e a sustentabilidade da solução."
+            }
+            instrucoes_foco = "\n".join(
+                [mapa_instrucoes[cat] for cat in categorias if cat in mapa_instrucoes]
+            )
+            if instrucoes_foco:
+                instrucoes_adicionais = f"\nFOCO DA ANÁLISE (solicitado pelo usuário):\n{instrucoes_foco}\n"
+
         prompt_completo = f"""
         Você é um especialista em gestão de riscos em contratações públicas. Analise as soluções identificadas para este projeto e identifique riscos detalhados para cada uma.
 
@@ -176,10 +193,12 @@ async def analisar_riscos_ia(prompt_usuario: str, contexto: Dict, solucoes: List
         - Unidade Demandante: {contexto.get('unidade_demandante', 'Não informada')}
 
         SOLICITAÇÃO DO USUÁRIO:
-        {prompt_usuario}
+        {pgr_in.prompt_usuario}
+        {instrucoes_adicionais}
 
         SOLUÇÕES IDENTIFICADAS:
         {json.dumps(solucoes_dados, indent=2, ensure_ascii=False)}
+```
 
         Para cada solução, identifique e analise os riscos seguindo esta estrutura JSON:
         {{
@@ -257,6 +276,11 @@ async def analisar_riscos_ia(prompt_usuario: str, contexto: Dict, solucoes: List
         - Inclua aspectos legais, técnicos, operacionais e financeiros
         """
 
+        # Log do prompt completo para depuração
+        print("--- PROMPT COMPLETO ENVIADO PARA A IA ---")
+        print(prompt_completo)
+        print("------------------------------------------")
+
         generate_content_config = types.GenerateContentConfig(
             response_mime_type="application/json"
         )
@@ -267,6 +291,11 @@ async def analisar_riscos_ia(prompt_usuario: str, contexto: Dict, solucoes: List
             contents=contents,
             config=generate_content_config
         )
+
+        # Log da resposta bruta da IA para depuração
+        print("--- RESPOSTA DA IA (TEXTO BRUTO) ---")
+        print(response.text)
+        print("------------------------------------")
         
         resposta_json = json.loads(response.text)
         
