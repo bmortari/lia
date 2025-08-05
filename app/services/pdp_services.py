@@ -1,6 +1,6 @@
 from app.services.pdp_search_services import PNCPSearcher
 from app.services.prompts.pdp_prompts import prompt_sistema
-from app.schemas.pdp_schemas import PpModel, PDPCreate, PDPRead
+from app.schemas.pdp_schemas import PpModel, PDPCreate, PDPRead, PDPUpdate
 from app.client import get_genai_client
 from app.dependencies import RemoteUser
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +13,8 @@ from pydantic import BaseModel, Field
 from app.models.projects_models import Projeto
 from app.models.pdp_models import PDP
 from app.models.solucao_models import SolucaoIdentificada
+from fastapi import HTTPException
+from sqlalchemy.orm import selectinload
 
 import json 
 import os
@@ -571,3 +573,34 @@ async def inicializar_analise_projeto(projeto_id: int, db: AsyncSession) -> Dict
             "erro": str(e),
             "timestamp": datetime.now().isoformat()
         }
+
+async def update_pdp_for_project(project_id: int, pdp_id: int, pdp_upd: PDPUpdate, db: AsyncSession, current_user: RemoteUser) -> PDP:
+    # 1) Busca o PDP existente
+    stmt = (
+        select(PDP)
+        .options(selectinload(PDP.projeto))
+        .where(PDP.id_projeto == project_id, PDP.id == pdp_id)
+    )
+    result = await db.execute(stmt)
+    pdp: PDP | None = result.scalars().first()
+    
+    if not pdp:
+        raise HTTPException(status_code=404, detail="PDP não encontrado para este projeto.")
+    
+    if pdp.user_created != current_user.username and pdp.projeto.user_created != current_user.username:
+        raise HTTPException(status_code=403, detail="Você não tem permissão para alterar este PDP.")
+
+    # 2) Para cada campo opcional, verifica e atualiza
+    update_data = pdp_upd.model_dump(exclude_unset=True)
+    
+    for key, value in update_data.items():
+        setattr(pdp, key, value)
+
+    # 3) Persiste mudanças
+    try:
+        await db.commit()
+        await db.refresh(pdp)
+        return pdp
+    except Exception:
+        await db.rollback()
+        raise

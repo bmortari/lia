@@ -2,13 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import delete
+from sqlalchemy.orm import selectinload
 from typing import List, Dict, Any
 from datetime import datetime, date
 
 from app.database import get_db
 from app.dependencies import get_current_remote_user, RemoteUser
-from app.services.pdp_services import create_pdp_service, inicializar_analise_projeto
-from app.schemas.pdp_schemas import PDPCreate, PDPRead
+from app.services.pdp_services import create_pdp_service, inicializar_analise_projeto, update_pdp_for_project
+from app.schemas.pdp_schemas import PDPCreate, PDPRead, PDPUpdate
 from app.models.projects_models import Projeto
 from app.models.pdp_models import PDP
 from app.models.solucao_models import SolucaoIdentificada
@@ -16,11 +17,15 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 
 import json
+import logging
 from app.models.pdp_models import PDP
 
 router = APIRouter(tags=["PDP"])
 
 templates_pdp = Jinja2Templates(directory="frontend/templates/pdp")
+
+# Logging para debug
+logger = logging.getLogger(__name__)
 
 
 @router.post("/projetos/{project_id}/create_pdp", response_model=List[PDPRead], status_code=201)
@@ -178,6 +183,8 @@ async def confere_pdp_page(
     formatted_data = []
     for record in pdp_records:
         contract_data = {
+            "id": record.id,
+            "id_projeto": record.id_projeto,
             "orgao_contratante": record.orgao_contratante,
             "processo_pregao": record.processo_pregao,
             "empresa_adjudicada": record.empresa_adjudicada,
@@ -185,15 +192,14 @@ async def confere_pdp_page(
             "objeto": record.objeto,
             # Garante que as datas sejam strings no formato YYYY-MM-DD
             "data_vigencia_inicio": record.data_vigencia_inicio.isoformat() if record.data_vigencia_inicio else None,
-            "data_vigencia_fim": record.data_vigencia_fim.isoformat() if record.data_vigencia_fim else None,
             "tipo_fonte": record.tipo_fonte,
             # Mapeia a estrutura de 'tabela_itens' para a que o JS espera
             "tabela_itens": [
                 {
                     "item": item.get("item"),
-                    "descricao_item": item.get("descricao"),  # DE: "descricao" -> PARA: "descricao_item"
-                    "marca_modelo": item.get("marca_referencia", "Não especificado"), # DE: "marca_referencia" -> PARA: "marca_modelo"
-                    "unidade_medida": item.get("unidade"), # DE: "unidade" -> PARA: "unidade_medida"
+                    "descricao": item.get("descricao"), 
+                    "marca_referencia": item.get("marca_referencia", "Não especificado"),
+                    "unidade": item.get("unidade"), 
                     "quantidade": item.get("quantidade"),
                     "valor_unitario": item.get("valor_unitario")
                 } for item in (record.tabela_itens or [])
@@ -224,9 +230,18 @@ async def visualizacao_pdp_page(
     if not projeto:
         raise HTTPException(status_code=404, detail="Projeto não encontrado")
     
+    pdp_stmt = (
+        select(PDP)
+        .options(selectinload(PDP.projeto))
+        .where(PDP.id_projeto == projeto_id)
+    )
+    pdp_result = await db.execute(pdp_stmt)
+    pdp = pdp_result.scalars().first()
+    
     return templates_pdp.TemplateResponse("pdp-resultado.html", {
         "request": request,
-        "projeto": projeto
+        "projeto": projeto,
+        "pdp": pdp
     })
 
 
@@ -269,6 +284,34 @@ async def get_pdp_by_project(
         raise HTTPException(status_code=500, detail=f"Erro ao buscar PDPs: {str(e)}")
 
 
+@router.patch("/projetos/{projeto_id}/pdp/{pdp_id}", response_model=PDPRead, status_code=200)
+async def patch_pdp(
+    projeto_id: int,
+    pdp_id: int,
+    pdp_upd: PDPUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Endpoint para atualizar um PDP específico
+    """
+    try:
+        pdp_atualizado = await update_pdp_for_project(
+            project_id=projeto_id,
+            pdp_id=pdp_id,
+            pdp_upd=pdp_upd,
+            db=db,
+            current_user=current_user
+        )
+        
+        return pdp_atualizado
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.delete("/projetos/{projeto_id}/pdp/{pdp_id}")
 async def delete_pdp(
     projeto_id: int,
@@ -302,6 +345,46 @@ async def delete_pdp(
     except Exception as e:
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Erro ao deletar PDP: {str(e)}")
+
+
+@router.delete("/projetos/{projectId}/pdp")
+async def delete_all_pdp_from_project(
+    projectId: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user),
+):
+    """
+    Delete all PDP from project
+    """
+    logger.info(f"🗑️ Deletando todos os PDPs do projeto {projectId}")
+    try:
+        # Remove todos os PDPs do projeto
+        stmt = delete(PDP).where(PDP.id_projeto == projectId)
+        result = await db.execute(stmt)
+
+        # Atualiza flag no projeto
+        stmt_projeto = select(Projeto).where(Projeto.id_projeto == projectId)
+        result_projeto = await db.execute(stmt_projeto)
+        projeto = result_projeto.scalar_one_or_none()
+
+        if projeto:
+            projeto.exist_pdp = False  # Atualiza a flag exist_pdp
+
+        await db.commit()
+
+        deleted_count = result.rowcount
+        logger.info(f"✅ {deleted_count} PDPs deletados do projeto {projectId}")
+
+        return {
+            "message": f"Todos os PDPs do projeto deletados com sucesso",
+            "deleted_count": deleted_count,
+        }
+
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"❌ Erro ao deletar PDPs do projeto: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar PDPs: {str(e)}")
+
 
 
 # NOVO: Endpoint para buscar soluções identificadas

@@ -1,3 +1,69 @@
+// Função para configurar os botões de geração
+function setupGenerateButtons() {
+    console.log('🔄 Configurando botões de geração...');
+
+    function getProjectId() {
+        const pathname = window.location.pathname;
+        const matches = pathname.match(/\/projetos\/(\d+)/);
+        return matches ? matches[1] : null;
+    }
+
+    const projectId = getProjectId();
+    if (!projectId) {
+        console.error('❌ ID do projeto não encontrado na URL ao configurar botões.');
+        return;
+    }
+
+    const serviceRoutes = {
+        'dfd': { create: `/projetos/${projectId}/criar_dfd` },
+        'pdp': { create: `/projetos/${projectId}/criar_pdp` },
+        'pgr': { create: `/projetos/${projectId}/criar_pgr` },
+        'etp': { create: `/projetos/${projectId}/criar_etp` },
+        'tr':  { create: `/projetos/${projectId}/criar_tr` },
+        'ed':  { create: `/projetos/${projectId}/criar_ed` }
+    };
+
+    const generateButtons = {
+        'gera_dfd': 'dfd',
+        'gera_pdp': 'pdp',
+        'gera_pgr': 'pgr',
+        'gera_etp': 'etp',
+        'gera_tr': 'tr',
+        'gera_ed': 'ed'
+    };
+
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp'];
+
+    Object.entries(generateButtons).forEach(([buttonId, service]) => {
+        const button = document.getElementById(buttonId);
+        if (button) {
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+
+            const isServiceAvailable = availableServices.includes(service);
+
+            if (!newButton.disabled && !newButton.classList.contains('btn-disabled') && isServiceAvailable) {
+                newButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const route = serviceRoutes[service]?.create;
+                    if (route) {
+                        console.log(`🚀 Redirecionando para: ${route}`);
+                        window.location.href = route;
+                    } else {
+                        console.warn(`⚠️ Rota não encontrada para serviço: ${service}`);
+                        showToast(`Serviço ${service.toUpperCase()} em desenvolvimento`, 'warning');
+                    }
+                });
+                console.log(`✅ Event listener adicionado para ${buttonId} -> ${service}`);
+            } else {
+                console.log(`⏸️ Botão ${buttonId} está desabilitado ou serviço não disponível`);
+            }
+        } else {
+            console.warn(`⚠️ Botão ${buttonId} não encontrado`);
+        }
+    });
+}
+
 // projeto-servicos.js - Versão com PGR e ETP
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 projeto-servicos.js carregado (versão PGR + ETP)');
@@ -27,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'pdp': {
             create: `/projetos/${projectId}/criar_pdp`,
-            edit: `/projetos/${projectId}/criar_pdp`,
+            edit: `/projetos/${projectId}/confere_pdp`,
             view: `/projetos/${projectId}/visualizacao_pdp`,
             delete: `/projetos/${projectId}/pdp`
         },
@@ -63,48 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const availableServices = ['dfd', 'pdp', 'pgr', 'etp']; // ✅ ETP ADICIONADO
     
     // === EVENT LISTENERS PARA BOTÕES DE GERAÇÃO ===
-    const generateButtons = {
-        'gera_dfd': 'dfd',
-        'gera_pdp': 'pdp', 
-        'gera_pgr': 'pgr',
-        'gera_etp': 'etp',  // ✅ ETP HABILITADO
-        'gera_tr': 'tr',
-        'gera_ed': 'ed'
-    };
-    
-    // Adicionar event listeners para botões de geração
-    Object.entries(generateButtons).forEach(([buttonId, service]) => {
-        const button = document.getElementById(buttonId);
-        if (button) {
-            // Remove event listeners existentes
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            
-            // Adiciona novo event listener apenas se não estiver desabilitado e o serviço estiver disponível
-            const isServiceAvailable = availableServices.includes(service);
-            
-            if (!newButton.disabled && !newButton.classList.contains('btn-disabled') && isServiceAvailable) {
-                newButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const route = serviceRoutes[service]?.create;
-                    if (route) {
-                        console.log(`🚀 Redirecionando para: ${route}`);
-                        window.location.href = route;
-                    } else {
-                        console.warn(`⚠️ Rota não encontrada para serviço: ${service}`);
-                        showToast(`Serviço ${service.toUpperCase()} em desenvolvimento`, 'warning');
-                    }
-                });
-                
-                console.log(`✅ Event listener adicionado para ${buttonId} -> ${service}`);
-            } else {
-                console.log(`⏸️ Botão ${buttonId} está desabilitado ou serviço não disponível`);
-            }
-        } else {
-            console.warn(`⚠️ Botão ${buttonId} não encontrado`);
-        }
-    });
+    setupGenerateButtons();
     
     // === EVENT LISTENERS PARA BOTÕES DE AÇÃO ===
     const actionButtons = document.querySelectorAll('button[data-action]');
@@ -248,10 +273,10 @@ function hideDeleteConfirmation() {
 
 async function executeDelete(service, projectId) {
     console.log(`🗑️ Executando delete para ${service} no projeto ${projectId}`);
-    
+    const confirmBtn = document.getElementById('confirmDelete');
+
     try {
         // Mostra loading no botão
-        const confirmBtn = document.getElementById('confirmDelete');
         if (confirmBtn) {
             confirmBtn.textContent = 'Deletando...';
             confirmBtn.disabled = true;
@@ -260,8 +285,8 @@ async function executeDelete(service, projectId) {
         // Define a URL de delete baseada no serviço
         let deleteUrl = `/projetos/${projectId}/${service}`;
         
-        // Para PGR e ETP, usa endpoint específico para deletar todos do projeto
-        if (service === 'pgr' || service === 'etp') {
+        // Para PGR, ETP e PDP, usa endpoint específico para deletar todos do projeto
+        if (service === 'pgr' || service === 'etp' || service === 'pdp') {
             deleteUrl = `/projetos/${projectId}/${service}`;
         }
         
@@ -286,6 +311,9 @@ async function executeDelete(service, projectId) {
             
             // Mostra mensagem de sucesso
             showSuccessMessage(`${service.toUpperCase()} deletado com sucesso!`);
+
+            // Reconfigura os botões de geração para reanexar o event listener
+            setupGenerateButtons();
             
         } else {
             const errorData = await response.json().catch(() => ({ detail: 'Erro desconhecido' }));
@@ -295,9 +323,8 @@ async function executeDelete(service, projectId) {
     } catch (error) {
         console.error(`❌ Erro ao deletar ${service}:`, error);
         showToast(`Erro ao deletar ${service.toUpperCase()}: ${error.message}`, 'error');
-        
-        // Restaura botão
-        const confirmBtn = document.getElementById('confirmDelete');
+    } finally {
+        // Restaura o botão de confirmação em qualquer caso (sucesso ou erro)
         if (confirmBtn) {
             confirmBtn.textContent = 'Sim, deletar';
             confirmBtn.disabled = false;

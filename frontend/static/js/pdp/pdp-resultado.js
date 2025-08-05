@@ -4,13 +4,154 @@ const { jsPDF } = window.jspdf;
 // Configuração do endpoint
 const BASE_URL = window.location.origin;
 
+// ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
+function obterTokenAutenticacao() {
+    // Tenta buscar token em várias fontes
+    const tokenLocalStorage = localStorage.getItem('access_token') || localStorage.getItem('token');
+    const tokenSessionStorage = sessionStorage.getItem('access_token') || sessionStorage.getItem('token');
+    
+    // Função para buscar cookie por nome
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+    
+    const tokenCookie = getCookie('access_token') || getCookie('token') || getCookie('auth_token');
+    
+    return tokenLocalStorage || tokenSessionStorage || tokenCookie;
+}
 
-// Função para carregar dados do localStorage
+// ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
+async function fazerRequisicaoAutenticada(url, options = {}) {
+    const token = obterTokenAutenticacao();
+    
+    // Configuração base da requisição
+    const requestConfig = {
+        ...options,
+        credentials: 'include', // Inclui cookies automaticamente
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            ...options.headers
+        }
+    };
+    
+    // Se tiver token, adiciona ao header Authorization
+    if (token) {
+        requestConfig.headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    console.log('Fazendo requisição com config:', requestConfig);
+    
+    try {
+        const response = await fetch(url, requestConfig);
+        
+        // Se retornar 401, tenta sem token (talvez use só cookies)
+        if (response.status === 401 && token) {
+            console.log('Tentativa com token falhou, tentando só com cookies...');
+            delete requestConfig.headers['Authorization'];
+            return await fetch(url, requestConfig);
+        }
+        
+        return response;
+        
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        throw error;
+    }
+}
+
+// Função para extrair project_id da URL
+function getProjectIdFromUrl() {
+    const url = window.location.pathname;
+    const match = url.match(/\/projetos\/(\d+)\//);
+    return match ? match[1] : null;
+}
+
+// ✅ NOVA FUNÇÃO: Buscar dados do PDP no banco de dados
+async function buscarDadosPDP() {
+    try {
+        const projectId = getProjectIdFromUrl();
+        
+        if (!projectId) {
+            throw new Error('ID do projeto não encontrado na URL');
+        }
+        
+        console.log('Buscando PDP para o projeto:', projectId);
+        
+        const response = await fazerRequisicaoAutenticada(`/projetos/${projectId}/pdp`, {
+            method: 'GET',
+            headers: {
+                'remote-user': 'user.test',
+                'remote-groups': 'TI,OUTROS'
+            }
+        });
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                throw new Error('PDP não encontrado para este projeto');
+            } else if (response.status === 401) {
+                throw new Error('Você não está autenticado. Por favor, faça login novamente.');
+            } else if (response.status === 403) {
+                throw new Error('Você não tem permissão para visualizar este PDP.');
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(`Erro ${response.status}: ${errorData.detail || 'Erro ao buscar PDP'}`);
+            }
+        }
+        
+        const pdpData = await response.json();
+        console.log('PDP carregado do banco:', pdpData);
+        
+        // Converter os dados do banco para o formato esperado pelo PDF
+        return converterDadosPDP(pdpData);
+        
+    } catch (error) {
+        console.error('Erro ao buscar dados do PDP:', error);
+        throw error;
+    }
+}
+
+// ✅ NOVA FUNÇÃO: Converter dados do banco para formato do JSON esperado
+function converterDadosPDP(pdpBancoArray) {
+    try {
+        if (!Array.isArray(pdpBancoArray) || pdpBancoArray.length === 0) {
+            throw new Error("Dados do PDP estão vazios ou em formato inválido.");
+        }
+
+        const firstItem = pdpBancoArray[0];
+
+        // Montar objeto final no formato esperado
+        const dadosConvertidos = {
+            objeto: firstItem.objeto || "Objeto não especificado",
+            fontes: pdpBancoArray.map(fonte => ({
+                orgao_contratante: fonte.orgao_contratante || "Órgão não especificado",
+                processo_pregao: fonte.processo_pregao || "Processo não especificado",
+                empresa_adjudicada: fonte.empresa_adjudicada || "Empresa não especificada",
+                cnpj_empresa: fonte.cnpj_empresa || "CNPJ não especificado",
+                data_vigencia_inicio: fonte.data_vigencia_inicio || "Data não especificada",
+                tipo_fonte: fonte.tipo_fonte || "Fonte não especificada",
+                tabela_itens: fonte.tabela_itens || []
+            }))
+        };
+        
+        console.log('Dados convertidos para o PDF:', dadosConvertidos);
+        return dadosConvertidos;
+        
+    } catch (error) {
+        console.error('Erro ao converter dados do PDP:', error);
+        throw new Error('Erro ao processar dados do PDP');
+    }
+}
+
+// Função para carregar dados do localStorage (mantida como fallback)
 function loadDataFromStorage() {
     try {
         const savedData = localStorage.getItem('pdpDados');
         if (!savedData) {
-            console.warn('Nenhum dado encontrado no localStorage para pdpDados');
+            console.warn('Nenhum dado encontrado no localStorage');
             return null;
         }
         
@@ -19,7 +160,6 @@ function loadDataFromStorage() {
         return parsedData;
     } catch (error) {
         console.error('Erro ao carregar dados do localStorage:', error);
-        showError('Erro ao carregar os dados salvos. Retorne à página de curadoria.');
         return null;
     }
 }
@@ -50,401 +190,440 @@ function showSuccess(message) {
     }
 }
 
-// Dados JSON de exemplo para fallback (caso não encontre dados no localStorage)
-const sampleJSON = {
-    "orgaos_contratantes": [
-        {
-            "orgao_contratante": "CAMARA MUNICIPAL DE DEP. IRUAN PINHEIRO",
-            "processo_pregao": "PREGÃO ELETRÔNICO 001/2024",
-            "empresa_adjudicada": "Soluções TI Ltda.",
-            "cnpj": "12.345.678/0001-99",
-            "objeto": "Aquisição de equipamentos de informática para modernização do plenário.",
-            "items": [
-                {
-                    "n_item": 1,
-                    "descricao": "Notebook Core i5, 8GB RAM, SSD 256GB",
-                    "marca_modelo": "Dell Inspiron",
-                    "unidade_medida": "Unidade",
-                    "quantidade": 15,
-                    "valor_unitario": 3500.00
-                },
-                {
-                    "n_item": 2,
-                    "descricao": "Monitor LED 24 polegadas",
-                    "marca_modelo": "LG UltraWide",
-                    "unidade_medida": "Unidade",
-                    "quantidade": 30,
-                    "valor_unitario": 850.50
-                }
-            ]
-        },
-        {
-            "orgao_contratante": "TRIBUNAL DE JUSTIÇA",
-            "processo_pregao": "CONCORRÊNCIA 008/2024",
-            "empresa_adjudicada": "Segurança Total S.A.",
-            "cnpj": "33.444.555/0001-66",
-            "objeto": "Contratação de serviços de segurança patrimonial para o fórum.",
-            "items": [
-                {
-                    "n_item": 1,
-                    "descricao": "Posto de vigilância 12h diurno",
-                    "marca_modelo": "N/A",
-                    "unidade_medida": "Posto/mês",
-                    "quantidade": 24,
-                    "valor_unitario": 4500.00
-                },
-                {
-                    "n_item": 2,
-                    "descricao": "Sistema de monitoramento CFTV",
-                    "marca_modelo": "Intelbras",
-                    "unidade_medida": "Sistema",
-                    "quantidade": 1,
-                    "valor_unitario": 15000.00
-                }
-            ]
-        }
-    ]
-};
+// Função para exibir loading
+function showLoading(message) {
+    const loadingStatus = document.getElementById('loadingStatus');
+    if (loadingStatus) {
+        loadingStatus.innerHTML = `
+            <div class="inline-flex items-center text-blue-700 bg-blue-50 border border-blue-200 font-medium rounded-lg text-sm px-4 py-2">
+                <i class="uil uil-spinner animate-spin mr-2"></i>
+                ${message}
+            </div>
+        `;
+    }
+}
 
 // Variável global para armazenar o PDF atual
 let currentPDF = null;
 
-// Função para quebrar texto no PDF
-function wrapText(text, maxWidth) {
-    const words = text.split(' ');
-    const lines = [];
-    let currentLine = '';
-
-    words.forEach(word => {
-        const testLine = currentLine + (currentLine ? ' ' : '') + word;
-        if (testLine.length > maxWidth) {
-            if (currentLine) {
-                lines.push(currentLine);
-                currentLine = word;
-            } else {
-                lines.push(word);
-            }
-        } else {
-            currentLine = testLine;
-        }
-    });
-
-    if (currentLine) {
-        lines.push(currentLine);
-    }
-
-    return lines;
-}
-
-// Função para gerar PDF a partir dos dados JSON
+// ✅ FUNÇÃO MELHORADA: Gerar PDF com design profissional
 function generatePDF(jsonData) {
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 15;
-    const lineHeight = 7;
-    const maxWidth = pageWidth - (margin * 2);
-    const textMaxWidth = 70;
-    let yPosition = 30;
+    return new Promise((resolve) => {
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 20;
+        const maxWidth = pageWidth - (margin * 2);
+        const lineHeight = 6;
+        
+        // Cores para o documento
+        const primaryColor = [0, 51, 102]; // Azul escuro
+        const blackColor = [0, 0, 0];       // Preto
+        const grayColor = [128, 128, 128]; // Cinza
+        const lightGrayColor = [240, 240, 240]; // Cinza claro
+        
+        const brasaoImg = new Image();
+        brasaoImg.src = '/static/assets/img/brasao_oficial_republica.png';
 
-    // Cabeçalho - Nome da instituição
-    doc.setFontSize(9);
-    doc.setFont("times", "normal");
-    doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 6;
-    
-    // Linha do endereço
-    doc.setFontSize(8);
-    doc.setFont("times", "normal");
-    doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 15;
+        // Função para adicionar cabeçalho em todas as páginas
+        function addHeader(isFirstPage = false) {
+            if (isFirstPage) {
+                // Cabeçalho da primeira página com brasão
+                let yPos = 15;
+                
+                const targetWidth = 40;
+                const aspectRatio = brasaoImg.height / brasaoImg.width;
+                const targetHeight = targetWidth * aspectRatio;
+                const xPosition = pageWidth / 2 - targetWidth / 2;
 
-    // Título do documento e número
-    doc.setFontSize(12);
-    doc.setFont("times", "bold");
-    const currentDate = new Date().toLocaleDateString('pt-BR');
-    const docTitle = `PDP - PESQUISA DE PREÇOS - ${currentDate}`;
-    doc.text(docTitle, pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 10;
-    
-    doc.setFontSize(11);
-    doc.text("RELATÓRIO COMPARATIVO DE PREÇOS", pageWidth/2, yPosition, { align: 'center' });
-    yPosition += 20;
+                doc.addImage(brasaoImg, 'PNG', xPosition, yPos, targetWidth, targetHeight);
+                yPos += targetHeight + 8;
 
-    // Função para criar tabela de comparação de preços
-    function createPriceComparisonTable(data, startY) {
-        const tableStartY = startY;
-        const colWidths = {
-            item: 15,
-            descricao: 60,
-            orgao: 40,
-            empresa: 40,
-            valor: 25,
-            total: 25
-        };
-        
-        let currentY = tableStartY;
-        
-        // Cabeçalho da tabela
-        doc.setFontSize(10);
-        doc.setFont("times", "bold");
-        
-        // Desenhar bordas do cabeçalho
-        doc.rect(margin, currentY, colWidths.item, 8);
-        doc.rect(margin + colWidths.item, currentY, colWidths.descricao, 8);
-        doc.rect(margin + colWidths.item + colWidths.descricao, currentY, colWidths.orgao, 8);
-        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao, currentY, colWidths.empresa, 8);
-        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa, currentY, colWidths.valor, 8);
-        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + colWidths.valor, currentY, colWidths.total, 8);
-        
-        // Texto do cabeçalho
-        doc.text("Item", margin + 2, currentY + 6);
-        doc.text("Descrição", margin + colWidths.item + 2, currentY + 6);
-        doc.text("Órgão", margin + colWidths.item + colWidths.descricao + 2, currentY + 6);
-        doc.text("Empresa", margin + colWidths.item + colWidths.descricao + colWidths.orgao + 2, currentY + 6);
-        doc.text("Valor Unit.", margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + 2, currentY + 6);
-        doc.text("Total", margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + colWidths.valor + 2, currentY + 6);
-        
-        currentY += 8;
-        
-        // Dados da tabela
-        doc.setFont("times", "normal");
-        doc.setFontSize(8);
-        
-        if (data.orgaos_contratantes && Array.isArray(data.orgaos_contratantes)) {
-            data.orgaos_contratantes.forEach((orgao, orgaoIndex) => {
-                if (orgao.items && Array.isArray(orgao.items)) {
-                    orgao.items.forEach((item, itemIndex) => {
-                        // Verificar se precisa de nova página
-                        if (currentY > 250) {
-                            doc.addPage();
-                            currentY = 30;
+                // ✅ ALTERAÇÃO: Cor do nome do tribunal e endereço para preto
+                doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+                doc.setFontSize(11);
+                doc.setFont("times", "bold");
+                doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, yPos, { align: 'center' });
+                yPos += 6;
+
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia", pageWidth / 2, yPos, { align: 'center' });
+                yPos += 4;
+                doc.text("CEP 69915-632 - Rio Branco - AC", pageWidth / 2, yPos, { align: 'center' });
+                yPos += 15;
+                
+                return yPos;
+            } else {
+                // Cabeçalho das páginas seguintes
+                doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE - RELATÓRIO DE PESQUISA DE PREÇOS", pageWidth / 2, 15, { align: 'center' });
+                
+                // Linha divisória
+                doc.setDrawColor(lightGrayColor[0], lightGrayColor[1], lightGrayColor[2]);
+                doc.line(margin, 20, pageWidth - margin, 20);
+                
+                return 30;
+            }
+        }
+
+        // Função para adicionar rodapé
+        function addFooter(pageNum) {
+            const footerY = pageHeight - 15;
+            
+            // Linha divisória
+            doc.setDrawColor(lightGrayColor[0], lightGrayColor[1], lightGrayColor[2]);
+            doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+            
+            // Data de geração
+            const currentDate = new Date().toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            doc.setTextColor(grayColor[0], grayColor[1], grayColor[2]);
+            doc.setFontSize(8);
+            doc.setFont("times", "normal");
+            doc.text(`Gerado em: ${currentDate}`, margin, footerY);
+            doc.text(`Página ${pageNum}`, pageWidth - margin, footerY, { align: 'right' });
+        }
+
+        // Função para verificar se precisa de nova página
+        function checkNewPage(yPos, requiredSpace) {
+            if (yPos + requiredSpace > pageHeight - 30) {
+                doc.addPage();
+                addFooter(doc.internal.getNumberOfPages() - 1);
+                return addHeader(false);
+            }
+            return yPos;
+        }
+
+        const proceedWithPdf = (yPosition) => {
+            let currentY = yPosition;
+            let pageNumber = 1;
+
+            // ✅ ALTERAÇÃO: Cor do Título principal para preto
+            doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+            doc.setFontSize(16);
+            doc.setFont("times", "bold");
+            doc.text("RELATÓRIO DE PESQUISA DE PREÇOS", pageWidth / 2, currentY, { align: 'center' });
+            currentY += 20;
+
+            // Caixa de informações gerais
+            doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.setFillColor(250, 250, 255);
+            doc.roundedRect(margin, currentY, maxWidth, 25, 3, 3, 'FD');
+            
+            currentY += 8;
+            // ✅ ALTERAÇÃO: Cor do título da seção para preto
+            doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("1. INFORMAÇÕES GERAIS", margin + 5, currentY);
+            
+            currentY += 8;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.setFont("times", "normal");
+            const objetoLines = doc.splitTextToSize(`Objeto: ${jsonData.objeto}`, maxWidth - 10);
+            doc.text(objetoLines, margin + 5, currentY);
+            currentY += (objetoLines.length * lineHeight) + 15;
+
+            // Seção de fontes de pesquisa
+            currentY = checkNewPage(currentY, 30);
+            
+            // ✅ ALTERAÇÃO: Cor do título da seção para preto
+            doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("2. FONTES DE PESQUISA", margin, currentY);
+            currentY += 12;
+
+            // Iterar pelas fontes
+            jsonData.fontes.forEach((fonte, index) => {
+                // Verificar se precisa de nova página para a fonte
+                currentY = checkNewPage(currentY, 80);
+
+                // Cabeçalho da fonte
+                doc.setFillColor(240, 248, 255);
+                doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+                doc.roundedRect(margin, currentY, maxWidth, 8, 2, 2, 'FD');
+                
+                // ✅ ALTERAÇÃO: Cor do título da fonte para preto
+                doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+                doc.setFontSize(11);
+                doc.setFont("times", "bold");
+                doc.text(`FONTE ${index + 1}`, margin + 5, currentY + 5);
+                currentY += 15;
+
+                // Informações da fonte em colunas
+                const colWidth = maxWidth / 2;
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+
+                // Coluna esquerda
+                doc.setFont("times", "bold");
+                doc.text("Empresa:", margin, currentY);
+                doc.setFont("times", "normal");
+                const empresaLines = doc.splitTextToSize(fonte.empresa_adjudicada, colWidth - 5);
+                doc.text(empresaLines, margin, currentY + 4);
+                
+                doc.setFont("times", "bold");
+                doc.text("Órgão Contratante:", margin, currentY + 12);
+                doc.setFont("times", "normal");
+                const orgaoLines = doc.splitTextToSize(fonte.orgao_contratante, colWidth - 5);
+                doc.text(orgaoLines, margin, currentY + 16);
+
+                // Coluna direita
+                doc.setFont("times", "bold");
+                doc.text("CNPJ:", margin + colWidth, currentY);
+                doc.setFont("times", "normal");
+                doc.text(fonte.cnpj_empresa, margin + colWidth, currentY + 4);
+                
+                doc.setFont("times", "bold");
+                doc.text("Processo/Pregão:", margin + colWidth, currentY + 12);
+                doc.setFont("times", "normal");
+                const processoLines = doc.splitTextToSize(fonte.processo_pregao, colWidth - 5);
+                doc.text(processoLines, margin + colWidth, currentY + 16);
+
+                currentY += 28;
+
+                // Informações adicionais
+                doc.setFont("times", "bold");
+                doc.text("Data de Vigência:", margin, currentY);
+                doc.setFont("times", "normal");
+                doc.text(fonte.data_vigencia_inicio, margin + 30, currentY);
+                
+                doc.setFont("times", "bold");
+                doc.text("Tipo de Fonte:", margin + colWidth, currentY);
+                doc.setFont("times", "normal");
+                doc.text(fonte.tipo_fonte, margin + colWidth + 30, currentY);
+                currentY += 15;
+
+                // Tabela de itens
+                if (fonte.tabela_itens && fonte.tabela_itens.length > 0) {
+                    currentY = checkNewPage(currentY, 50);
+                    
+                    // ✅ ALTERAÇÃO: Cor do título da tabela para preto
+                    doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+                    doc.setFontSize(10);
+                    doc.setFont("times", "bold");
+                    doc.text("ITENS PESQUISADOS:", margin, currentY);
+                    currentY += 10;
+
+                    // Definições da tabela
+                    const columns = [
+                        { header: 'Item', dataKey: 'item' },
+                        { header: 'Nome', dataKey: 'nome' },
+                        { header: 'Marca/Modelo', dataKey: 'marca' },
+                        { header: 'Unid.', dataKey: 'unidade' },
+                        { header: 'Qtd.', dataKey: 'quantidade' },
+                        { header: 'Valor Unit.', dataKey: 'valorUnitario' },
+                        { header: 'Valor Total', dataKey: 'valorTotal' }
+                    ];
+
+                    const rows = fonte.tabela_itens.map((item, index) => {
+                        const valorUnitario = item.valor_unitario || 0;
+                        const quantidade = item.quantidade || 0;
+                        const valorTotal = valorUnitario * quantidade;
+                        const formatCurrency = (value) => value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+                        return {
+                            item: String(item.item || index + 1),
+                            nome: item.descricao || "N/A",
+                            marca: item.marca_referencia || "N/A",
+                            unidade: item.unidade || "N/A",
+                            quantidade: String(quantidade),
+                            valorUnitario: `R$ ${formatCurrency(valorUnitario)}`,
+                            valorTotal: `R$ ${formatCurrency(valorTotal)}`
+                        };
+                    });
+
+                    // ✅ CORREÇÃO: Alinhamento da tabela respeitando as margens
+                    doc.autoTable({
+                        startY: currentY,
+                        margin: { left: margin, right: margin }, // Define margens da tabela
+                        tableWidth: 'auto', // Largura automática respeitando as margens
+                        head: [columns.map(col => col.header)],
+                        body: rows.map(row => Object.values(row)),
+                        theme: 'grid',
+                        styles: {
+                            font: 'times',
+                            fontSize: 8,
+                            cellPadding: 2,
+                            valign: 'middle',
+                            lineColor: [200, 200, 200],
+                            lineWidth: 0.5
+                        },
+                        headStyles: {
+                            fillColor: primaryColor,
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold',
+                            halign: 'center'
+                        },
+                        bodyStyles: {
+                            textColor: [0, 0, 0]
+                        },
+                        alternateRowStyles: {
+                            fillColor: [248, 248, 248]
+                        },
+                        columnStyles: {
+                            0: { cellWidth: 12, halign: 'center' }, // Item
+                            1: { cellWidth: 50 }, // Nome
+                            2: { cellWidth: 35 }, // Marca
+                            3: { cellWidth: 15, halign: 'center' }, // Unidade
+                            4: { cellWidth: 15, halign: 'center' }, // Quantidade
+                            5: { cellWidth: 22, halign: 'right' }, // Valor Unitário
+                            6: { cellWidth: 22, halign: 'right' } // Valor Total
+                        },
+                        didDrawPage: (data) => {
+                            // Atualiza currentY após desenhar a tabela
+                            currentY = data.cursor.y + 10;
                         }
-                        
-                        const rowHeight = 8;
-                        const total = item.quantidade * item.valor_unitario;
-                        
-                        // Desenhar bordas da linha
-                        doc.rect(margin, currentY, colWidths.item, rowHeight);
-                        doc.rect(margin + colWidths.item, currentY, colWidths.descricao, rowHeight);
-                        doc.rect(margin + colWidths.item + colWidths.descricao, currentY, colWidths.orgao, rowHeight);
-                        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao, currentY, colWidths.empresa, rowHeight);
-                        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa, currentY, colWidths.valor, rowHeight);
-                        doc.rect(margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + colWidths.valor, currentY, colWidths.total, rowHeight);
-                        
-                        // Texto da linha
-                        doc.text(String(item.n_item || (itemIndex + 1)), margin + 2, currentY + 6);
-                        
-                        // Quebrar descrição se necessário
-                        const descricaoLines = wrapText(item.descricao || '', 25);
-                        doc.text(descricaoLines[0] || '', margin + colWidths.item + 2, currentY + 6);
-                        
-                        // Quebrar nome do órgão se necessário
-                        const orgaoLines = wrapText(orgao.orgao_contratante || '', 18);
-                        doc.text(orgaoLines[0] || '', margin + colWidths.item + colWidths.descricao + 2, currentY + 6);
-                        
-                        // Quebrar nome da empresa se necessário
-                        const empresaLines = wrapText(orgao.empresa_adjudicada || '', 18);
-                        doc.text(empresaLines[0] || '', margin + colWidths.item + colWidths.descricao + colWidths.orgao + 2, currentY + 6);
-                        
-                        doc.text(`R$ ${(item.valor_unitario || 0).toFixed(2).replace('.', ',')}`, margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + 2, currentY + 6);
-                        doc.text(`R$ ${total.toFixed(2).replace('.', ',')}`, margin + colWidths.item + colWidths.descricao + colWidths.orgao + colWidths.empresa + colWidths.valor + 2, currentY + 6);
-                        
-                        currentY += rowHeight;
                     });
                 }
+
+                // Separador entre fontes
+                if (index < jsonData.fontes.length - 1) {
+                    currentY += 10;
+                    doc.setDrawColor(lightGrayColor[0], lightGrayColor[1], lightGrayColor[2]);
+                    doc.line(margin, currentY, pageWidth - margin, currentY);
+                    currentY += 15;
+                }
             });
-        }
-        
-        return currentY;
-    }
 
-    // Seção: Resumo da Pesquisa
-    doc.setFontSize(12);
-    doc.setFont("times", "bold");
-    doc.text("RESUMO DA PESQUISA DE PREÇOS", margin, yPosition);
-    yPosition += 15;
+            // Adicionar rodapé na última página
+            addFooter(doc.internal.getNumberOfPages());
 
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    
-    const totalOrgaos = jsonData.orgaos_contratantes ? jsonData.orgaos_contratantes.length : 0;
-    let totalItens = 0;
-    let valorTotalGeral = 0;
-    
-    if (jsonData.orgaos_contratantes) {
-        jsonData.orgaos_contratantes.forEach(orgao => {
-            if (orgao.items) {
-                totalItens += orgao.items.length;
-                orgao.items.forEach(item => {
-                    valorTotalGeral += (item.quantidade || 0) * (item.valor_unitario || 0);
-                });
-            }
-        });
-    }
+            resolve(doc);
+        };
 
-    doc.text(`Órgãos pesquisados: ${totalOrgaos}`, margin, yPosition);
-    yPosition += 8;
-    doc.text(`Total de itens analisados: ${totalItens}`, margin, yPosition);
-    yPosition += 8;
-    doc.text(`Valor total estimado: R$ ${valorTotalGeral.toFixed(2).replace('.', ',')}`, margin, yPosition);
-    yPosition += 20;
+        brasaoImg.onload = function () {
+            const yPosition = addHeader(true);
+            proceedWithPdf(yPosition);
+        };
 
-    // Tabela de comparação de preços
-    doc.setFontSize(12);
-    doc.setFont("times", "bold");
-    doc.text("COMPARAÇÃO DE PREÇOS", margin, yPosition);
-    yPosition += 15;
-
-    yPosition = createPriceComparisonTable(jsonData, yPosition);
-    yPosition += 20;
-
-    // Seção de conclusão
-    if (yPosition > 240) {
-        doc.addPage();
-        yPosition = 30;
-    }
-
-    doc.setFontSize(12);
-    doc.setFont("times", "bold");
-    doc.text("CONCLUSÃO E RECOMENDAÇÕES", margin, yPosition);
-    yPosition += 15;
-
-    doc.setFontSize(10);
-    doc.setFont("times", "normal");
-    
-    const conclusaoText = `Com base na pesquisa de preços realizada junto aos órgãos públicos consultados, foi possível estabelecer um panorama comparativo dos valores praticados no mercado. Os dados apresentados servem como referência para futuras contratações e processos licitatórios.
-
-Recomenda-se a utilização destes valores como base para estimativas orçamentárias, observando sempre as especificações técnicas detalhadas de cada item e as condições particulares de cada contratação.
-
-Data da pesquisa: ${currentDate}
-Responsável: Seção de Licitações e Contratos`;
-
-    const conclusaoLines = wrapText(conclusaoText, textMaxWidth);
-    conclusaoLines.forEach(line => {
-        if (yPosition > 270) {
-            doc.addPage();
-            yPosition = 30;
-        }
-        doc.text(line, margin, yPosition);
-        yPosition += lineHeight;
+        brasaoImg.onerror = function() {
+            console.error("Não foi possível carregar a imagem do brasão.");
+            const yPosition = addHeader(true);
+            proceedWithPdf(yPosition);
+        };
     });
-
-    return doc;
 }
 
 // Função para exibir PDF no visualizador
 function displayPDF(pdf) {
-    const pdfDataUri = pdf.output('datauristring');
+    const pdfBlob = pdf.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+
     const pdfViewer = document.getElementById('pdfViewer');
     const pdfPlaceholder = document.getElementById('pdfPlaceholder');
     
-    pdfViewer.src = pdfDataUri;
+    pdfViewer.src = pdfUrl;
+    
+    pdfViewer.onload = () => {
+        URL.revokeObjectURL(pdfUrl);
+        console.log('PDF carregado e URL do objeto revogada.');
+    };
+
     pdfPlaceholder.style.display = 'none';
     pdfViewer.style.display = 'block';
 }
 
 // Função para popular a pré-visualização do documento com PDF
-function populateDocument(jsonData) {
-    const pdf = generatePDF(jsonData);
+async function populateDocument(jsonData) {
+    const pdf = await generatePDF(jsonData);
     currentPDF = pdf;
     displayPDF(pdf);
 }
 
+// ✅ FUNÇÃO PRINCIPAL: Carregar e processar dados do PDP
+async function carregarDadosPDP() {
+    try {
+        showLoading('Buscando dados da pesquisa de preços no banco de dados...');
+        
+        const dadosBanco = await buscarDadosPDP();
+        
+        if (dadosBanco) {
+            console.log('Dados carregados do banco, gerando PDF...');
+            showSuccess('Dados carregados do banco de dados! Gerando documento...');
+            
+            setTimeout(async () => {
+                await populateDocument(dadosBanco);
+                
+                setTimeout(() => {
+                    showSuccess('Documento gerado com sucesso!');
+                }, 1000);
+            }, 500);
+            
+            return;
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados do banco:', error);
+        showError(`Erro ao carregar PDP: ${error.message}`);
+        
+        const savedData = loadDataFromStorage();
+        
+        if (savedData) {
+            console.log('Dados encontrados no localStorage, gerando PDF...');
+            showSuccess('Dados carregados do localStorage! Gerando documento...');
+            
+            setTimeout(async () => {
+                await populateDocument(savedData);
+                
+                setTimeout(() => {
+                    showSuccess('Documento gerado com sucesso! (usando dados locais)');
+                }, 1000);
+            }, 500);
+        } else {
+            showError('Nenhum dado encontrado. Retorne à página de curadoria para gerar o documento.');
+        }
+    }
+}
+
 // Event listener para carregar dados automaticamente quando a página carrega
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Carregando dados do localStorage...');
-    
-    // Tentar carregar dados do localStorage
-    const savedData = loadDataFromStorage();
-    
-    if (savedData) {
-        showSuccess('Dados carregados com sucesso!');
-        populateDocument(savedData);
-    } else {
-        console.log('Usando dados de exemplo...');
-        showSuccess('Usando dados de exemplo para demonstração');
-        populateDocument(sampleJSON);
-    }
+    console.log('Iniciando carregamento dos dados do PDP...');
+    carregarDadosPDP();
 });
 
 // Funcionalidade do botão de download
 document.getElementById('downloadButton').addEventListener('click', function() {
     if (currentPDF) {
         const currentDate = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
-        const filename = `PDP_Pesquisa_Precos_${currentDate}.pdf`;
-        currentPDF.save(filename);
-        
-        showSuccess('Download iniciado com sucesso!');
+        const fileName = `PDP-${currentDate}.pdf`;
+        currentPDF.save(fileName);
     } else {
-        showError('Nenhum documento disponível para download.');
+        alert('Nenhum documento foi gerado ainda. Por favor, aguarde o processamento.');
     }
 });
 
-// Função para extrair project_id da URL
-function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)\//);
-    return match ? match[1] : null;
-}
+// Funcionalidade do botão Voltar ao início
+document.getElementById('voltar-inicio').addEventListener('click', function() {
+    const projectId = getProjectIdFromUrl();
+    if (projectId) {
+        window.location.href = `${BASE_URL}/projetos/${projectId}/`;
+    } else {
+        window.location.href = `${BASE_URL}/`;
+    }
+});
 
-// Funcionalidade do botão salvar no banco
-document.getElementById('saveButton').addEventListener('click', async function() {
-    try {
-        const saveButton = this;
-        const originalText = saveButton.innerHTML;
-        
-        // Desabilitar botão e mostrar loading
-        saveButton.disabled = true;
-        saveButton.innerHTML = '<i class="uil uil-spinner animate-spin mr-2"></i>Salvando...';
-        
-        // Obter project_id da URL
-        const projectId = getProjectIdFromUrl();
-        if (!projectId) {
-            throw new Error('ID do projeto não encontrado na URL');
-        }
-        
-        // Obter dados do localStorage
-        const savedData = loadDataFromStorage();
-        if (!savedData) {
-            throw new Error('Nenhum dado encontrado para salvar');
-        }
-        
-        // Preparar dados para envio
-        const dataToSend = {
-            project_id: parseInt(projectId),
-            pdp_data: savedData,
-            pdf_content: currentPDF ? currentPDF.output('datauristring') : null
-        };
-        
-        // Fazer requisição para salvar
-        const response = await fetch(`${BASE_URL}/pdp/save`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataToSend)
+// Funcionalidade do botão Voltar à curadoria
+document.addEventListener('DOMContentLoaded', function() {
+    const voltarCuradoriaButton = document.getElementById('voltar-curadoria');
+    if (voltarCuradoriaButton) {
+        voltarCuradoriaButton.addEventListener('click', function() {
+            const projectId = getProjectIdFromUrl();
+            if (projectId) {
+                window.location.href = `${BASE_URL}/projetos/${projectId}/confere_pdp`;
+            } else {
+                window.location.href = `${BASE_URL}/`;
+            }
         });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || 'Erro ao salvar no banco de dados');
-        }
-        
-        const result = await response.json();
-        showSuccess('Dados salvos com sucesso no banco de dados!');
-        
-    } catch (error) {
-        console.error('Erro ao salvar:', error);
-        showError(`Erro ao salvar: ${error.message}`);
-    } finally {
-        // Reabilitar botão
-        const saveButton = document.getElementById('saveButton');
-        saveButton.disabled = false;
-        saveButton.innerHTML = '<i class="uil uil-save mr-2 group-hover:animate-pulse"></i>Salvar no Banco';
     }
 });
-
-// Função para ser chamada ao receber JSON de fonte externa
-function processJSON(jsonResponse) {
-    populateDocument(jsonResponse);
-}

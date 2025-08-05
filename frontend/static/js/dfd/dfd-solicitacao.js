@@ -15,8 +15,7 @@ const populateOptions = (options, container) => {
         input.type = 'radio';
         input.value = option.obj;
         input.name = 'pca-2026-option';
-        input.className = 'custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none';
-        input.style.accentColor = '#0097B2';
+        input.className = 'custom-radio w-4 h-4 text-[#0097B2] bg-gray-100 border-gray-300 focus:ring-[#0097B2] focus:ring-2';
         
         // O primeiro item, "NÃO POSSUI PLANO", deve ser marcado por padrão.
         if (option.item === 0) {
@@ -151,4 +150,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // Adiciona o listener de submit ao formulário
     const form = document.getElementById('dfd-solicitacao-form');
     form.addEventListener('submit', handleFormSubmit);
+
+    // Adiciona o listener para o botão Voltar
+    const backButton = document.getElementById('voltar-inicio');
+    backButton.addEventListener('click', () => {
+        window.location.href = `${URL}/projetos/${idProjeto}/`;
+    });
 });

@@ -59,7 +59,7 @@ class DFDProjectRead(BaseModel):
     item: int
     objeto_contratado: str = Field(alias="objeto_a_ser_contratado")
     justificativa_contratacao: str = Field(alias="justificativa") 
-    quantidade_contratada: QuantidadeJustificaTest = Field(alias="quantidade_justifica_a_ser_contratada")
+    quantidade_contratada: List[QuantidadeJustificaTest] = Field(alias="quantidade_justifica_a_ser_contratada")
     previsao_data_bem_servico: datetime = Field(alias="previsao_da_entrega_do_bem_ou_inicio_dos_servicos")
     alinhamento_estrategico: List[str]
     equipe_de_planejamento: str

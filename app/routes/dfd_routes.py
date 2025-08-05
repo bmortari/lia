@@ -152,6 +152,32 @@ async def save_dfd(
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/projetos/{project_id}/dfd", response_model=DFDRead, status_code=200)
+async def get_dfd(
+    project_id: int,
+    db: AsyncSession = Depends(get_db),
+    # current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    try:
+        # Busca o DFD associado ao projeto
+        dfd_stmt = (
+            select(DFD)
+            .options(selectinload(DFD.projeto))
+            .where(DFD.id_projeto == project_id)
+        )
+        dfd_result = await db.execute(dfd_stmt)
+        dfd = dfd_result.scalars().first()
+
+        if not dfd:
+            raise HTTPException(status_code=404, detail="DFD não encontrado para este projeto")
+        return dfd
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.patch("/projetos/{project_id}/dfd", response_model=DFDRead, status_code=200)
 async def patch_dfd(
     project_id: int,

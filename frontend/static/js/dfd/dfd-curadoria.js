@@ -4,11 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // ✅ NOVO: Função para obter dados atuais dos campos (que já vêm do template)
     function obterDadosAtuais() {
+        const previsaoEntregaEl = document.getElementById('previsao-entrega');
+        let previsaoEntrega = previsaoEntregaEl?.value || '';
+
+        // O input type date retorna uma data em formato YYYY-MM-DD 
+        // Quando isso ocorre, converte para DD/MM/YYYY
+        if (previsaoEntrega.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = previsaoEntrega.split('-');
+            previsaoEntrega = `${day}/${month}/${year}`;
+        }
+
         return {
             unidade_demandante: document.getElementById('unidade-demandante')?.value?.trim() || '',
             objeto_a_ser_contratado: document.getElementById('objeto-contratado')?.value?.trim() || '',
             justificativa: document.getElementById('justificativa')?.value?.trim() || '',
-            previsao_da_entrega_do_bem_ou_inicio_dos_servicos: document.getElementById('previsao-entrega')?.value?.trim() || '',
+            previsao_da_entrega_do_bem_ou_inicio_dos_servicos: previsaoEntrega,
             alinhamento_estrategico: extrairAlinhamentoEstrategico(),
             equipe_de_planejamento: document.getElementById('informacoes-adicionais')?.value?.trim() || '',
             quantidade_justifica_a_ser_contratada: extrairQuantidadeItens(),
@@ -58,22 +68,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 const descricaoInput = row.querySelector('.item-description');
                 const quantidadeInput = row.querySelector('.item-quantity');
                 
-                const descricao = descricaoInput?.value?.trim() || null;
-                const quantidade = quantidadeInput?.value ? parseInt(quantidadeInput.value) : null;
-                
-                quantidadeItens.push({
-                    id_do_item: index + 1,
-                    descricao: descricao,
-                    quantidade: quantidade
-                });
+                const descricao = descricaoInput?.value?.trim();
+                const quantidadeStr = quantidadeInput?.value?.trim();
+
+                // Adiciona o item à lista apenas se a descrição e a quantidade forem fornecidas
+                if (descricao && quantidadeStr) {
+                    const quantidade = parseInt(quantidadeStr, 10);
+                    if (!isNaN(quantidade)) {
+                        quantidadeItens.push({
+                            id_do_item: index + 1,
+                            descricao: descricao,
+                            quantidade: quantidade
+                        });
+                    }
+                }
             });
         }
         
-        return quantidadeItens.length > 0 ? quantidadeItens : [{
-            id_do_item: 1,
-            descricao: null,
-            quantidade: null
-        }];
+        // Retorna a lista de itens. Se estiver vazia, a validação do formulário irá lidar com isso.
+        return quantidadeItens;
     }
 
     // Mapeamento das opções estratégicas
@@ -364,13 +377,13 @@ document.addEventListener('DOMContentLoaded', function () {
         descriptionInput.type = 'text';
         descriptionInput.value = item.descricao || '';
         descriptionInput.placeholder = 'Descrição do item';
-        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md item-description';
+        descriptionInput.className = 'flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]';
 
         const quantityInput = document.createElement('input');
         quantityInput.type = 'number';
         quantityInput.value = item.quantidade || '';
         quantityInput.placeholder = 'Qtd.';
-        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md item-quantity';
+        quantityInput.className = 'w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]';
         quantityInput.min = '1';
 
         const deleteBtn = document.createElement('button');
@@ -519,7 +532,14 @@ document.addEventListener('DOMContentLoaded', function () {
                                 'Você não tem permissão para editar este DFD.', 
                                 'error'
                             );
+                        } else if (response.status == 422) {
+                            exibirAlerta(
+                                'Erro ao Salvar',
+                                'Verifique se há campos em branco na lista de itens e exclua-os antes de tentar salvar novamente.',
+                                'error'
+                            );
                         } else {
+                            const errorData = await response.json().catch(() => ({}));
                             exibirAlerta(
                                 'Erro ao Salvar', 
                                 `Erro ${response.status}: ${errorData.detail || 'Erro ao salvar no banco.'}`, 
@@ -554,4 +574,25 @@ document.addEventListener('DOMContentLoaded', function () {
     window.validarFormulario = validarFormulario;
     window.exibirAlerta = exibirAlerta;
     window.processarAlinhamentoEstrategico = processarAlinhamentoEstrategico;
+
+    // Função para extrair project_id da URL
+    function getProjectIdFromUrl() {
+        const url = window.location.pathname;
+        const match = url.match(/\/projetos\/(\d+)\//);
+        return match ? match[1] : null;
+    }
+
+    // Funcionalidade do botão Voltar ao início
+    const voltarInicioButton = document.getElementById('voltar-inicio');
+    if (voltarInicioButton) {
+        voltarInicioButton.addEventListener('click', function() {
+            const projectId = getProjectIdFromUrl();
+            if (projectId) {
+                window.location.href = `${window.location.origin}/projetos/${projectId}/`;
+            } else {
+                // Fallback caso o ID do projeto não seja encontrado
+                window.location.href = `${window.location.origin}/`;
+            }
+        });
+    }
 });
