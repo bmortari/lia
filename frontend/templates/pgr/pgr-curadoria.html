@@ -267,7 +267,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script>
         // Dados do servidor passados via template
-        window.pgrData = JSON.parse('{{ pgr_data_json|safe }}');
+        window.pgrData = {{ pgr_data_json|safe }};
         window.projectId = {{ projeto.id_projeto if projeto else 'null' }};
     </script>
     <script src="/static/js/pgr/pgr-curadoria.js"></script>
