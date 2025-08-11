@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'pgr': {
             // PGR (Plano de Gerenciamento de Riscos)
             create: `/projetos/${projectId}/criar_pgr`,
-            edit: `/projetos/${projectId}/criar_pgr`,
+            edit: `/projetos/${projectId}/confere_pgr`,
             view: `/projetos/${projectId}/visualizacao_pgr`,
             delete: `/projetos/${projectId}/pgr`
         },
