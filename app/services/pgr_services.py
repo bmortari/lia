@@ -56,20 +56,33 @@ async def create_pgr_service(pgr_in: PGRCreate, db: AsyncSession, current_user: 
 
         pgrs_criados = []
         
-        # Cria PGR para cada solução com riscos identificados
-        for solucao, riscos_solucao in zip(solucoes_selecionadas, analise_riscos.get("riscos_por_solucao", [])):
+        # Cria PGR para cada solução selecionada com seus respectivos riscos
+        riscos_por_solucao = analise_riscos.get("riscos_por_solucao", [])
+        
+        for solucao, riscos_solucao in zip(solucoes_selecionadas, riscos_por_solucao):
             try:
-                novo_pgr = PGR(
+                # Adiciona informações gerais da análise aos riscos específicos da solução
+                riscos_completos = {
+                    **riscos_solucao,  # Riscos específicos da solução
+                    "resumo_analise": analise_riscos.get("resumo_analise"),
+                    "metodologia_aplicada": analise_riscos.get("metodologia_aplicada"),
+                    "analise_comparativa": analise_riscos.get("analise_comparativa"),
+                    "plano_geral_riscos": analise_riscos.get("plano_geral_riscos"),
+                    "status_ia": analise_riscos.get("status_ia")
+                }
+                
+                # Cria um PGR para esta solução
+                pgr = PGR(
                     id_projeto=project_id,
                     id_solucao=solucao.id_solucao,
                     usuario_criacao=current_user.username if hasattr(current_user, 'username') else 'sistema',
                     objeto=contexto.get('objeto_contratacao', 'Objeto do projeto'),
-                    risco=riscos_solucao
+                    risco=riscos_completos
                 )
                 
-                db.add(novo_pgr)
+                db.add(pgr)
                 await db.flush()
-                pgrs_criados.append(novo_pgr)
+                pgrs_criados.append(pgr)
                     
             except Exception as e:
                 print(f"Erro ao processar PGR para solução {solucao.id_solucao}: {e}")
@@ -85,6 +98,7 @@ async def create_pgr_service(pgr_in: PGRCreate, db: AsyncSession, current_user: 
 
         await db.commit()
         
+        # Preparar resposta
         pgrs_response = []
         for pgr in pgrs_criados:
             await db.refresh(pgr)
@@ -97,7 +111,6 @@ async def create_pgr_service(pgr_in: PGRCreate, db: AsyncSession, current_user: 
         await db.rollback()
         print(f"Erro geral na criação do PGR: {e}")
         raise e
-
 
 async def buscar_solucoes_projeto(project_id: int, db: AsyncSession) -> List[SolucaoIdentificada]:
     """
