@@ -236,107 +236,114 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Criar array com um único item para manter compatibilidade com o código existente
-        const riscosPorSolucao = [riscoData];
-
-        riscosPorSolucao.forEach((solucaoRisco, index) => {
-            const solucaoDiv = document.createElement('div');
-            solucaoDiv.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+        const solucaoRisco = riscoData;
+        const solucaoDiv = document.createElement('div');
+        solucaoDiv.className = 'border border-gray-200 rounded-lg p-4 bg-gray-50';
+        
+        solucaoDiv.innerHTML = `
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-semibold text-gray-800">
+                    ${solucaoRisco.nome_solucao || `Solução ${solucaoRisco.id_solucao}`}
+                </h3>
+                <span class="px-3 py-1 text-xs font-medium rounded-full ${getRiscoColorClass(solucaoRisco.nivel_risco_geral)}">
+                    ${solucaoRisco.nivel_risco_geral || 'N/A'}
+                </span>
+            </div>
             
-            solucaoDiv.innerHTML = `
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-lg font-semibold text-gray-800">
-                        ${solucaoRisco.nome_solucao || `Solução ${solucaoRisco.id_solucao}`}
-                    </h3>
-                    <span class="px-3 py-1 text-xs font-medium rounded-full ${getRiscoColorClass(solucaoRisco.nivel_risco_geral)}">
-                        ${solucaoRisco.nivel_risco_geral || 'N/A'}
-                    </span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <span class="text-sm font-medium text-gray-600">Categoria Principal:</span>
+                    <span class="text-sm text-gray-800">${solucaoRisco.categoria_risco_principal || 'N/A'}</span>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <span class="text-sm font-medium text-gray-600">Categoria Principal:</span>
-                        <span class="text-sm text-gray-800">${solucaoRisco.categoria_risco_principal || 'N/A'}</span>
-                    </div>
-                    <div>
-                        <span class="text-sm font-medium text-gray-600">Total de Riscos:</span>
-                        <span class="text-sm text-gray-800">${(solucaoRisco.riscos_identificados || []).length}</span>
-                    </div>
+                <div>
+                    <span class="text-sm font-medium text-gray-600">Total de Riscos:</span>
+                    <span class="text-sm text-gray-800">${(solucaoRisco.riscos_identificados || []).length}</span>
                 </div>
+            </div>
 
-                ${(solucaoRisco.riscos_identificados || []).length > 0 ? `
-                    <div class="mb-4">
-                        <h4 class="text-md font-medium text-gray-700 mb-2">Riscos Identificados:</h4>
-                        <div class="space-y-2 max-h-48 overflow-y-auto">
-                            ${solucaoRisco.riscos_identificados.map(risco => `
-                                <div class="bg-white p-3 rounded border">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <span class="font-medium text-sm">${risco.tipo_risco || 'Tipo não especificado'}</span>
-                                        <span class="px-2 py-1 text-xs rounded ${getRiscoColorClass(risco.nivel_risco)}">${risco.nivel_risco || 'N/A'}</span>
-                                    </div>
-                                    <p class="text-sm text-gray-600 mb-2">${risco.descricao || ''}</p>
-                                    <div class="text-xs text-gray-500 mb-2">
-                                        <span>Probabilidade: ${risco.probabilidade || 'N/A'}</span> | 
-                                        <span>Impacto: ${risco.impacto || 'N/A'}</span> | 
-                                        <span>Fase: ${risco.fase_projeto || 'N/A'}</span>
-                                    </div>
-                                    ${(risco.acoes_mitigacao || []).length > 0 ? `
-                                        <div class="mt-2">
-                                            <span class="text-xs font-medium text-gray-600">Ações de Mitigação:</span>
-                                            <ul class="text-xs text-gray-600 mt-1 space-y-1">
-                                                ${risco.acoes_mitigacao.slice(0, 2).map(acao => 
-                                                    `<li>• ${acao.acao} (${acao.responsavel})</li>`
-                                                ).join('')}
-                                                ${risco.acoes_mitigacao.length > 2 ? `<li class="text-gray-500">... e mais ${risco.acoes_mitigacao.length - 2} ação(ões)</li>` : ''}
-                                            </ul>
+            ${(solucaoRisco.riscos_identificados || []).length > 0 ? `
+                <div class="mb-4">
+                    <h4 class="text-md font-medium text-gray-700 mb-2">Riscos Identificados:</h4>
+                    <div id="riscos-identificados-container" class="space-y-3">
+                        ${solucaoRisco.riscos_identificados.map((risco, riscoIndex) => `
+                            <div class="bg-white p-3 rounded border border-gray-200">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="font-medium text-sm">${risco.tipo_risco || 'Tipo não especificado'}</span>
+                                    <span class="px-2 py-1 text-xs rounded ${getRiscoColorClass(risco.nivel_risco)}">${risco.nivel_risco || 'N/A'}</span>
+                                </div>
+                                
+                                <label for="risco-descricao-${riscoIndex}" class="text-sm font-medium text-gray-600">Descrição do Risco:</label>
+                                <textarea id="risco-descricao-${riscoIndex}" data-risco-index="${riscoIndex}" class="editable-risco-field mt-1 block w-full p-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" rows="3">${risco.descricao || ''}</textarea>
+                                
+                                <div class="text-xs text-gray-500 my-2">
+                                    <span>Probabilidade: ${risco.probabilidade || 'N/A'}</span> | 
+                                    <span>Impacto: ${risco.impacto || 'N/A'}</span> | 
+                                    <span>Fase: ${risco.fase_projeto || 'N/A'}</span>
+                                </div>
+
+                                ${(risco.acoes_mitigacao || []).length > 0 ? `
+                                    <div class="mt-3">
+                                        <span class="text-sm font-medium text-gray-600">Ações de Mitigação:</span>
+                                        <div id="acoes-mitigacao-container-${riscoIndex}" class="text-sm text-gray-600 mt-1 space-y-2">
+                                            ${risco.acoes_mitigacao.map((acao, acaoIndex) => `
+                                                <div>
+                                                    <label for="acao-mitigacao-${riscoIndex}-${acaoIndex}" class="text-xs font-medium text-gray-500">Ação (Responsável: ${acao.responsavel || 'N/A'}):</label>
+                                                    <textarea id="acao-mitigacao-${riscoIndex}-${acaoIndex}" data-risco-index="${riscoIndex}" data-acao-index="${acaoIndex}" class="editable-risco-field mt-1 block w-full p-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" rows="2">${acao.acao || ''}</textarea>
+                                                </div>
+                                            `).join('')}
                                         </div>
-                                    ` : ''}
-                                </div>
-                            `).join('')}
-                        </div>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
                     </div>
-                ` : ''}
+                </div>
+            ` : ''}
 
-                ${(solucaoRisco.recomendacoes_gerais || []).length > 0 ? `
-                    <div class="mb-4">
-                        <h4 class="text-md font-medium text-gray-700 mb-2">Recomendações Gerais:</h4>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                            ${solucaoRisco.recomendacoes_gerais.map(rec => `<li>${rec}</li>`).join('')}
-                        </ul>
+            ${(solucaoRisco.recomendacoes_gerais || []).length > 0 ? `
+                <div class="mb-4">
+                    <h4 class="text-md font-medium text-gray-700 mb-2">Recomendações Gerais:</h4>
+                    <div id="recomendacoes-gerais-container" class="space-y-2">
+                        ${solucaoRisco.recomendacoes_gerais.map((rec, recIndex) => `
+                            <div>
+                                <label for="recomendacao-geral-${recIndex}" class="text-xs font-medium text-gray-500">Recomendação ${recIndex + 1}:</label>
+                                <textarea id="recomendacao-geral-${recIndex}" data-rec-index="${recIndex}" class="editable-risco-field mt-1 block w-full p-2 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" rows="2">${rec}</textarea>
+                            </div>
+                        `).join('')}
                     </div>
-                ` : ''}
+                </div>
+            ` : ''}
 
-                ${solucaoRisco.matriz_riscos ? `
-                    <div>
-                        <h4 class="text-md font-medium text-gray-700 mb-2">Matriz de Riscos:</h4>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                            ${solucaoRisco.matriz_riscos.riscos_criticos && solucaoRisco.matriz_riscos.riscos_criticos.length > 0 ? `
-                                <div class="bg-red-50 p-2 rounded">
-                                    <span class="font-medium text-red-800">Críticos (${solucaoRisco.matriz_riscos.riscos_criticos.length})</span>
-                                </div>
-                            ` : ''}
-                            ${solucaoRisco.matriz_riscos.riscos_altos && solucaoRisco.matriz_riscos.riscos_altos.length > 0 ? `
-                                <div class="bg-orange-50 p-2 rounded">
-                                    <span class="font-medium text-orange-800">Altos (${solucaoRisco.matriz_riscos.riscos_altos.length})</span>
-                                </div>
-                            ` : ''}
-                            ${solucaoRisco.matriz_riscos.riscos_medios && solucaoRisco.matriz_riscos.riscos_medios.length > 0 ? `
-                                <div class="bg-yellow-50 p-2 rounded">
-                                    <span class="font-medium text-yellow-800">Médios (${solucaoRisco.matriz_riscos.riscos_medios.length})</span>
-                                </div>
-                            ` : ''}
-                            ${solucaoRisco.matriz_riscos.riscos_baixos && solucaoRisco.matriz_riscos.riscos_baixos.length > 0 ? `
-                                <div class="bg-green-50 p-2 rounded">
-                                    <span class="font-medium text-green-800">Baixos (${solucaoRisco.matriz_riscos.riscos_baixos.length})</span>
-                                </div>
-                            ` : ''}
-                        </div>
+            ${solucaoRisco.matriz_riscos ? `
+                <div>
+                    <h4 class="text-md font-medium text-gray-700 mb-2">Matriz de Riscos:</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                        ${solucaoRisco.matriz_riscos.riscos_criticos && solucaoRisco.matriz_riscos.riscos_criticos.length > 0 ? `
+                            <div class="bg-red-50 p-2 rounded">
+                                <span class="font-medium text-red-800">Críticos (${solucaoRisco.matriz_riscos.riscos_criticos.length})</span>
+                            </div>
+                        ` : ''}
+                        ${solucaoRisco.matriz_riscos.riscos_altos && solucaoRisco.matriz_riscos.riscos_altos.length > 0 ? `
+                            <div class="bg-orange-50 p-2 rounded">
+                                <span class="font-medium text-orange-800">Altos (${solucaoRisco.matriz_riscos.riscos_altos.length})</span>
+                            </div>
+                        ` : ''}
+                        ${solucaoRisco.matriz_riscos.riscos_medios && solucaoRisco.matriz_riscos.riscos_medios.length > 0 ? `
+                            <div class="bg-yellow-50 p-2 rounded">
+                                <span class="font-medium text-yellow-800">Médios (${solucaoRisco.matriz_riscos.riscos_medios.length})</span>
+                            </div>
+                        ` : ''}
+                        ${solucaoRisco.matriz_riscos.riscos_baixos && solucaoRisco.matriz_riscos.riscos_baixos.length > 0 ? `
+                            <div class="bg-green-50 p-2 rounded">
+                                <span class="font-medium text-green-800">Baixos (${solucaoRisco.matriz_riscos.riscos_baixos.length})</span>
+                            </div>
+                        ` : ''}
                     </div>
-                ` : ''}
-            `;
+                </div>
+            ` : ''}
+        `;
 
-            container.appendChild(solucaoDiv);
-        });
+        container.appendChild(solucaoDiv);
     }
 
     // Função auxiliar para obter classes CSS baseadas no nível de risco
@@ -364,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return null;
         }
 
-        const risco = currentPgrData.risco || {};
+        const risco = JSON.parse(JSON.stringify(currentPgrData.risco || {})); // Deep copy
         
         // Atualizar campos editáveis
         const objeto = document.getElementById('objeto-contrato')?.value?.trim() || '';
@@ -378,7 +385,39 @@ document.addEventListener('DOMContentLoaded', function () {
         const estruturaGovernanca = document.getElementById('estrutura-governanca')?.value?.trim() || '';
         const periodicidadeRevisao = document.getElementById('periodicidade-revisao')?.value?.trim() || '';
 
-        // Manter a estrutura original dos dados de risco, atualizando apenas campos editáveis
+        // Extrair dados dos riscos e recomendações editáveis
+        if (risco.riscos_identificados) {
+            risco.riscos_identificados.forEach((riscoItem, riscoIndex) => {
+                const descricaoTextarea = document.getElementById(`risco-descricao-${riscoIndex}`);
+                if (descricaoTextarea) {
+                    riscoItem.descricao = descricaoTextarea.value;
+                }
+
+                if (riscoItem.acoes_mitigacao) {
+                    riscoItem.acoes_mitigacao.forEach((acaoItem, acaoIndex) => {
+                        const acaoTextarea = document.getElementById(`acao-mitigacao-${riscoIndex}-${acaoIndex}`);
+                        if (acaoTextarea) {
+                            acaoItem.acao = acaoTextarea.value;
+                        }
+                    });
+                }
+            });
+        }
+
+        if (risco.recomendacoes_gerais) {
+            const recomendacoesContainer = document.getElementById('recomendacoes-gerais-container');
+            if (recomendacoesContainer) {
+                const textareas = recomendacoesContainer.querySelectorAll('textarea');
+                const novasRecomendacoes = [];
+                textareas.forEach(textarea => {
+                    novasRecomendacoes.push(textarea.value);
+                });
+                risco.recomendacoes_gerais = novasRecomendacoes;
+            }
+        }
+
+
+        // Montar o objeto de risco atualizado
         const riscoAtualizado = {
             ...risco,
             resumo_analise: resumoAnalise,
