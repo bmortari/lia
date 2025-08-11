@@ -246,17 +246,85 @@ document.addEventListener("DOMContentLoaded", () => {
           .closest("tr")
           .querySelector("th").textContent;
 
-        // Confirma antes de deletar
-        if (
-          confirm(
-            `Tem certeza que deseja excluir o projeto "${projectName}"? Esta ação não pode ser desfeita.`
-          )
-        ) {
-          deleteProject(projectId, target.closest("tr"));
-        }
+        showDeleteConfirmation(projectId, projectName, target.closest("tr"));
       }
     });
   }
 
+  // --- FUNÇÕES DO MODAL DE DELETE ---
+  function setupDeleteModal() {
+    const modal = document.getElementById("deleteModal");
+    const cancelBtn = document.getElementById("cancelDelete");
+    const confirmBtn = document.getElementById("confirmDelete");
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        hideDeleteConfirmation();
+      });
+    }
+
+    // Fechar modal clicando fora
+    if (modal) {
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          hideDeleteConfirmation();
+        }
+      });
+    }
+
+    // Fechar modal com ESC
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
+        hideDeleteConfirmation();
+      }
+    });
+  }
+
+  function showDeleteConfirmation(projectId, projectName, rowElement) {
+    const modal = document.getElementById("deleteModal");
+    const confirmBtn = document.getElementById("confirmDelete");
+    const modalMessage = document.getElementById("deleteModalMessage");
+
+    if (!modal || !confirmBtn || !modalMessage) {
+      console.error("Elementos do modal de exclusão não encontrados!");
+      // Fallback para o confirm nativo se o modal falhar
+      if (
+        confirm(
+          `Tem certeza que deseja excluir o projeto "${projectName}"? Esta ação não pode ser desfeita.`
+        )
+      ) {
+        deleteProject(projectId, rowElement);
+      }
+      return;
+    }
+
+    // Atualiza a mensagem do modal
+    modalMessage.textContent = `Tem certeza que deseja excluir o projeto "${projectName}"? Esta ação não pode ser desfeita.`;
+
+    // Remove event listeners antigos para evitar chamadas múltiplas
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+    // Adiciona o novo event listener
+    newConfirmBtn.addEventListener("click", function () {
+      hideDeleteConfirmation();
+      deleteProject(projectId, rowElement);
+    });
+
+    // Mostra o modal
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function hideDeleteConfirmation() {
+    const modal = document.getElementById("deleteModal");
+    if (modal) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  }
+
   setupActionButtons();
+  setupDeleteModal(); // Adiciona a configuração do modal
 });

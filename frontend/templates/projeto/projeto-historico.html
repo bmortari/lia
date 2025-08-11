@@ -66,10 +66,70 @@
       .btn-custom:focus {
         box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
       }
+
+      /* Estilo do modal de confirmação */
+      .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .hidden {
+        display: none !important;
+      }
     </style>
   </head>
 
   <body class="bg-gray-100">
+    <!-- Modal de Confirmação de Delete -->
+    <div id="deleteModal" class="modal-backdrop hidden">
+      <div class="modal-content">
+        <div class="mb-4">
+          <i
+            class="uil uil-exclamation-triangle text-red-500 text-4xl mb-2"
+          ></i>
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+            Confirmar Exclusão
+          </h3>
+          <p id="deleteModalMessage" class="text-gray-600">
+            Tem certeza que deseja excluir o projeto? Esta ação não pode ser
+            desfeita.
+          </p>
+        </div>
+        <div class="flex gap-3 justify-center">
+          <button
+            id="cancelDelete"
+            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            id="confirmDelete"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Sim, excluir
+          </button>
+        </div>
+      </div>
+    </div>
+
     <main class="py-10">
       <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6">
