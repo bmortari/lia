@@ -207,18 +207,49 @@ function generatePDF(pgrData) {
             const brasaoImg = new Image();
             brasaoImg.src = '/static/assets/img/brasao_oficial_republica.png';
             brasaoImg.onload = () => {
-                doc.addImage(brasaoImg, 'PNG', pageWidth / 2 - 20, 10, 40, 40 * (brasaoImg.height / brasaoImg.width));
-                y = 60;
+                const targetWidth = 40; // mm
+                const aspectRatio = brasaoImg.height / brasaoImg.width;
+                const targetHeight = targetWidth * aspectRatio;
+                const xPosition = pageWidth / 2 - targetWidth / 2;
+                
+                y = 15; // start from 15mm from top. 'y' is from outer scope.
+
+                doc.addImage(brasaoImg, 'PNG', xPosition, y, targetWidth, targetHeight);
+                y += targetHeight + 10; // 10mm space
+
+                // Tribunal info from dfd-resultado.js
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, y, { align: 'center' });
+                y += 6;
+
+                doc.setFontSize(8);
+                doc.setFont("times", "normal");
+                doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth / 2, y, { align: 'center' });
+                y += 15;
+
+                // Document Title (as it was in pgr)
                 doc.setFontSize(14);
                 doc.setFont('times', 'bold');
                 doc.text('PLANO DE GERENCIAMENTO DE RISCOS (PGR)', pageWidth / 2, y, { align: 'center' });
                 y += 10;
+
                 addContent();
                 resolve(doc);
             };
             brasaoImg.onerror = () => {
                 console.error("Falha ao carregar imagem do brasão.");
                 y = 20;
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, y, { align: 'center' });
+                y += 6;
+
+                doc.setFontSize(8);
+                doc.setFont("times", "normal");
+                doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth / 2, y, { align: 'center' });
+                y += 15;
+
                 doc.setFontSize(14);
                 doc.setFont('times', 'bold');
                 doc.text('PLANO DE GERENCIAMENTO DE RISCOS (PGR)', pageWidth / 2, y, { align: 'center' });
