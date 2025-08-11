@@ -103,69 +103,66 @@ function showStatus(type, message) {
     }
 }
 
-// ✅ FUNÇÃO: Criar a interface do Accordion
+// ✅ FUNÇÃO: Criar a interface do Dropdown
 function criarInterfacePGR(pgrDataArray) {
-    const container = document.getElementById('pgrAccordionContainer');
-    if (!container) return;
+    const container = document.getElementById('pgrDropdownContainer');
+    const previewContainer = document.getElementById('pdfPreviewContainer');
+    if (!container || !previewContainer) return;
 
     pgrDataStore = pgrDataArray;
 
     if (pgrDataArray.length === 0) {
-        container.innerHTML = `<div class="p-6 text-center text-gray-500">Nenhuma solução com análise de riscos foi encontrada para este projeto.</div>`;
+        container.innerHTML = `<span class="text-gray-500">Nenhuma solução encontrada.</span>`;
+        previewContainer.innerHTML = `<div class="p-6 text-center text-gray-500">Nenhuma solução com análise de riscos foi encontrada para este projeto.</div>`;
         return;
     }
 
-    const accordionHtml = pgrDataArray.map((pgrItem, index) => {
+    const optionsHtml = pgrDataArray.map((pgrItem, index) => {
         const solucaoId = pgrItem.id_solucao || index;
         const nomeSolucao = pgrItem.risco?.nome_solucao || `Solução ${solucaoId}`;
-        return `
-            <h2 id="accordion-header-${solucaoId}">
-                <button type="button" class="flex items-center justify-between w-full p-5 font-medium text-left text-gray-600 border ${index === 0 ? 'border-b-0' : ''} border-gray-200 hover:bg-gray-100 focus:ring-4 focus:ring-gray-200" data-accordion-target="#accordion-body-${solucaoId}" aria-expanded="false" aria-controls="accordion-body-${solucaoId}">
-                    <span>${nomeSolucao}</span>
-                    <svg data-accordion-icon class="w-3 h-3 rotate-180 shrink-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5"/>
-                    </svg>
-                </button>
-            </h2>
-            <div id="accordion-body-${solucaoId}" class="hidden" aria-labelledby="accordion-header-${solucaoId}">
-                <div class="accordion-body">
-                    <div id="pdf-placeholder-${solucaoId}" class="pdf-placeholder">
-                        <div class="text-center">
-                            <i class="uil uil-file-pdf-alt text-6xl text-gray-400 mb-4"></i>
-                            <p class="text-gray-500 text-lg">Clique para gerar o documento</p>
-                        </div>
-                    </div>
-                    <iframe id="pdfViewer-${solucaoId}" style="display: none;"></iframe>
-                </div>
-            </div>
-        `;
+        return `<option value="${solucaoId}">${nomeSolucao}</option>`;
     }).join('');
 
-    container.innerHTML = `<div id="accordion-pgr">${accordionHtml}</div>`;
+    container.innerHTML = `
+        <select id="pgrSelector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+            ${optionsHtml}
+        </select>
+    `;
 
-    // Adicionar event listeners
-    pgrDataArray.forEach((pgrItem, index) => {
-        const solucaoId = pgrItem.id_solucao || index;
-        const button = document.querySelector(`[data-accordion-target='#accordion-body-${solucaoId}']`);
-        button.addEventListener('click', () => handleAccordionClick(pgrItem, solucaoId));
+    const selector = document.getElementById('pgrSelector');
+    selector.addEventListener('change', (event) => {
+        const selectedId = event.target.value;
+        // Use '==' for comparison because option value is a string
+        const selectedPgrItem = pgrDataStore.find((p, i) => (p.id_solucao || i) == selectedId);
+        if (selectedPgrItem) {
+            handleSolutionSelection(selectedPgrItem, selectedId);
+        }
     });
 
-    // Inicializa os componentes do Flowbite para o conteúdo dinâmico
-    initFlowbite();
+    // Carregar o primeiro item da lista ao iniciar
+    if (pgrDataArray.length > 0) {
+        const firstId = pgrDataArray[0].id_solucao || 0;
+        handleSolutionSelection(pgrDataArray[0], firstId);
+    }
 }
 
-// ✅ FUNÇÃO: Lidar com clique no accordion
-async function handleAccordionClick(pgrItem, solucaoId) {
+// ✅ FUNÇÃO: Lidar com a seleção de uma solução no dropdown
+async function handleSolutionSelection(pgrItem, solucaoId) {
     activeSolutionId = solucaoId;
-    console.log(`Accordion para solução ${solucaoId} clicado.`);
+    console.log(`Solução ${solucaoId} selecionada.`);
 
     if (generatedPdfs[solucaoId]) {
         console.log('PDF já gerado. Exibindo.');
-        displayPDF(generatedPdfs[solucaoId], solucaoId);
+        displayPDF(generatedPdfs[solucaoId]);
         return;
     }
 
-    const placeholder = document.getElementById(`pdf-placeholder-${solucaoId}`);
+    const placeholder = document.getElementById('pdf-placeholder');
+    const pdfViewer = document.getElementById('pdfViewer');
+    
+    // Mostrar placeholder e esconder viewer
+    placeholder.style.display = 'flex';
+    pdfViewer.style.display = 'none';
     placeholder.innerHTML = `
         <div class="text-center">
             <i class="uil uil-spinner animate-spin text-4xl text-blue-500 mb-4"></i>
@@ -176,7 +173,7 @@ async function handleAccordionClick(pgrItem, solucaoId) {
     try {
         const pdf = await generatePDF(pgrItem);
         generatedPdfs[solucaoId] = pdf;
-        displayPDF(pdf, solucaoId);
+        displayPDF(pdf);
     } catch (error) {
         console.error(`Erro ao gerar PDF para solução ${solucaoId}:`, error);
         placeholder.innerHTML = `
@@ -341,12 +338,12 @@ function generatePDF(pgrData) {
 }
 
 // ✅ FUNÇÃO: Exibir PDF no visualizador
-function displayPDF(pdf, solucaoId) {
+function displayPDF(pdf) {
     const pdfBlob = pdf.output('blob');
     const pdfUrl = URL.createObjectURL(pdfBlob);
 
-    const pdfViewer = document.getElementById(`pdfViewer-${solucaoId}`);
-    const pdfPlaceholder = document.getElementById(`pdf-placeholder-${solucaoId}`);
+    const pdfViewer = document.getElementById('pdfViewer');
+    const pdfPlaceholder = document.getElementById('pdf-placeholder');
     
     if (pdfViewer && pdfPlaceholder) {
         pdfViewer.src = pdfUrl;
@@ -379,7 +376,7 @@ document.addEventListener('DOMContentLoaded', carregarDadosPGR);
 // Event listener para o botão de download principal
 document.getElementById('downloadButton').addEventListener('click', function() {
     if (activeSolutionId !== null && generatedPdfs[activeSolutionId]) {
-        const pgrItem = pgrDataStore.find(p => (p.id_solucao || pgrDataStore.indexOf(p)) === activeSolutionId);
+        const pgrItem = pgrDataStore.find(p => (p.id_solucao || pgrDataStore.indexOf(p)) == activeSolutionId);
         const nomeSolucao = pgrItem.risco?.nome_solucao.replace(/\s+/g, '_') || `solucao_${activeSolutionId}`;
         const currentDate = new Date().toLocaleDateString('pt-BR').replace(/\//g, '-');
         const fileName = `PGR_${nomeSolucao}_${currentDate}.pdf`;
