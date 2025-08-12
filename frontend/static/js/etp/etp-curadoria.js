@@ -318,14 +318,14 @@ document.addEventListener("DOMContentLoaded", function () {
     input.placeholder = "Requisito para contratação";
     input.className =
       "flex-grow p-2 border-gray-300 border rounded-md requisito-input";
-    input.disabled = true;
+    input.disabled = false; // Habilitado por padrão
 
     const removeBtn = document.createElement("button");
     removeBtn.type = "button";
     removeBtn.className =
       "text-red-500 hover:text-red-700 remove-requisito-btn";
     removeBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
-    removeBtn.style.display = "none"; // Inicialmente oculto
+    removeBtn.style.display = "block"; // Visível por padrão
 
     removeBtn.onclick = () => {
       const totalRows = container.querySelectorAll(".requisito-row").length;
@@ -548,6 +548,16 @@ document.addEventListener("DOMContentLoaded", function () {
         // Extrair dados do formulário
         const dados = extrairDadosFormulario();
         console.log("Dados extraídos para salvamento:", dados);
+
+        // --- INÍCIO: Nova Validação para Requisitos ---
+        if (!dados.req_contratacao || dados.req_contratacao.length === 0) {
+          alert("É obrigatório preencher ao menos um Requisito para Contratação.");
+          saveChangesBtn.disabled = false; // Reabilitar o botão
+          saveChangesBtn.innerHTML =
+            '<i class="las la-save text-lg mr-2"></i>Salvar alterações'; // Restaurar o texto do botão
+          return; // Interromper o processo de salvamento
+        }
+        // --- FIM: Nova Validação para Requisitos ---
 
         // Mostrar loading
         saveChangesBtn.disabled = true;
