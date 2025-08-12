@@ -340,365 +340,402 @@ function wrapText(text, maxWidth) {
 
 // Função para gerar PDF a partir dos dados JSON do ETP
 function generateETPPDF(jsonData) {
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 15;
-  const lineHeight = 7;
-  const maxWidth = pageWidth - margin * 2;
-  let yPosition = 30;
+    return new Promise((resolve) => {
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 15;
+        const lineHeight = 7;
+        const maxWidth = pageWidth - margin * 2;
 
-  // Cabeçalho - Nome da instituição
-  doc.setFontSize(9);
-  doc.setFont("times", "normal");
-  doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, yPosition, {
-    align: "center",
-  });
-  yPosition += 6;
+        const brasaoImg = new Image();
+        brasaoImg.src = '/static/assets/img/brasao_oficial_republica.png';
 
-  // Linha do endereço
-  doc.setFontSize(8);
-  doc.setFont("times", "normal");
-  doc.text(
-    "Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC",
-    pageWidth / 2,
-    yPosition,
-    { align: "center" }
-  );
-  yPosition += 15;
+        const proceedWithPdf = (yPosition) => {
+            // Título do documento
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            const currentDate = new Date().toLocaleDateString("pt-BR");
+            const docTitle = `ETP - ESTUDO TÉCNICO PRELIMINAR - ${currentDate}`;
+            doc.text(docTitle, pageWidth / 2, yPosition, {
+                align: "center",
+            });
+            yPosition += 10;
 
-  // Título do documento
-  doc.setFontSize(12);
-  doc.setFont("times", "bold");
-  const currentDate = new Date().toLocaleDateString("pt-BR");
-  const docTitle = `ETP - ESTUDO TÉCNICO PRELIMINAR - ${currentDate}`;
-  doc.text(docTitle, pageWidth / 2, yPosition, { align: "center" });
-  yPosition += 10;
+            doc.setFontSize(11);
+            doc.text("ANEXO I", pageWidth / 2, yPosition, {
+                align: "center",
+            });
+            yPosition += 15;
 
-  doc.setFontSize(11);
-  doc.text("ANEXO I", pageWidth / 2, yPosition, { align: "center" });
-  yPosition += 15;
+            doc.setFontSize(11);
+            doc.text("ESTUDO TÉCNICO PRELIMINAR (ETP)", pageWidth / 2, yPosition, {
+                align: "center",
+            });
+            yPosition += 20;
 
-  doc.setFontSize(11);
-  doc.text("ESTUDO TÉCNICO PRELIMINAR (ETP)", pageWidth / 2, yPosition, {
-    align: "center",
-  });
-  yPosition += 20;
+            // Função auxiliar para adicionar seção
+            function addSection(title, content, startY) {
+                const sectionWidth = maxWidth;
+                const padding = 4;
 
-  // Função auxiliar para adicionar seção
-  function addSection(title, content, startY) {
-    const sectionWidth = maxWidth;
-    const padding = 4;
+                // Calcular altura do título
+                doc.setFontSize(10);
+                doc.setFont("times", "bold");
+                const titleLines = doc.splitTextToSize(title, sectionWidth - 8);
+                const titleHeight = titleLines.length * 7 + 6;
 
-    // Calcular altura do título
-    doc.setFontSize(10);
-    doc.setFont("times", "bold");
-    const titleLines = doc.splitTextToSize(title, sectionWidth - 8);
-    const titleHeight = titleLines.length * 7 + 6;
+                // Calcular altura do conteúdo
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                const contentLines = doc.splitTextToSize(
+                    content || "Não informado",
+                    sectionWidth - 8
+                );
+                const contentHeight = contentLines.length * 6 + padding;
 
-    // Calcular altura do conteúdo
-    doc.setFontSize(9);
-    doc.setFont("times", "normal");
-    const contentLines = doc.splitTextToSize(
-      content || "Não informado",
-      sectionWidth - 8
-    );
-    const contentHeight = contentLines.length * 6 + padding;
+                const totalHeight = titleHeight + contentHeight + padding;
 
-    const totalHeight = titleHeight + contentHeight + padding;
+                // Verificar se precisa de nova página
+                if (startY + totalHeight > 270) {
+                    doc.addPage();
+                    startY = 30;
+                }
 
-    // Verificar se precisa de nova página
-    if (startY + totalHeight > 270) {
-      doc.addPage();
-      startY = 30;
-    }
+                // Desenhar borda
+                doc.setLineWidth(0.2);
+                doc.setDrawColor(0, 0, 0);
+                doc.rect(margin, startY, sectionWidth, totalHeight);
 
-    // Desenhar borda
-    doc.setLineWidth(0.2);
-    doc.setDrawColor(0, 0, 0);
-    doc.rect(margin, startY, sectionWidth, totalHeight);
+                // Linha separadora do título
+                doc.setDrawColor(169, 169, 169);
+                doc.line(
+                    margin,
+                    startY + titleHeight,
+                    margin + sectionWidth,
+                    startY + titleHeight
+                );
+                doc.setDrawColor(0, 0, 0);
 
-    // Linha separadora do título
-    doc.setDrawColor(169, 169, 169);
-    doc.line(
-      margin,
-      startY + titleHeight,
-      margin + sectionWidth,
-      startY + titleHeight
-    );
-    doc.setDrawColor(0, 0, 0);
+                // Adicionar título
+                doc.setFontSize(10);
+                doc.setFont("times", "bold");
+                titleLines.forEach((line, index) => {
+                    doc.text(line, margin + 4, startY + 10 + index * 7);
+                });
 
-    // Adicionar título
-    doc.setFontSize(10);
-    doc.setFont("times", "bold");
-    titleLines.forEach((line, index) => {
-      doc.text(line, margin + 4, startY + 10 + index * 7);
-    });
+                // Adicionar conteúdo
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                contentLines.forEach((line, index) => {
+                    doc.text(line, margin + 4, startY + titleHeight + 8 + index * 6);
+                });
 
-    // Adicionar conteúdo
-    doc.setFontSize(9);
-    doc.setFont("times", "normal");
-    contentLines.forEach((line, index) => {
-      doc.text(line, margin + 4, startY + titleHeight + 8 + index * 6);
-    });
+                return startY + totalHeight + 10;
+            }
 
-    return startY + totalHeight + 10;
-  }
+            // Seção 1 - UNIDADE DEMANDANTE
+            yPosition = addSection(
+                "1. IDENTIFICAÇÃO DA UNIDADE DEMANDANTE",
+                jsonData.unidade_demandante,
+                yPosition
+            );
 
-  // Seção 1 - UNIDADE DEMANDANTE
-  yPosition = addSection(
-    "1. IDENTIFICAÇÃO DA UNIDADE DEMANDANTE",
-    jsonData.unidade_demandante,
-    yPosition
-  );
+            // Seção 2 - OBJETO DA CONTRATAÇÃO
+            yPosition = addSection(
+                "2. OBJETO DA CONTRATAÇÃO",
+                jsonData.objeto_contratado,
+                yPosition
+            );
 
-  // Seção 2 - OBJETO DA CONTRATAÇÃO
-  yPosition = addSection(
-    "2. OBJETO DA CONTRATAÇÃO",
-    jsonData.objeto_contratado,
-    yPosition
-  );
+            // Seção 3 - JUSTIFICATIVA DA NECESSIDADE
+            yPosition = addSection(
+                "3. JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO",
+                jsonData.necessidade_contratacao,
+                yPosition
+            );
 
-  // Seção 3 - JUSTIFICATIVA DA NECESSIDADE
-  yPosition = addSection(
-    "3. JUSTIFICATIVA DA NECESSIDADE DA CONTRATAÇÃO",
-    jsonData.necessidade_contratacao,
-    yPosition
-  );
+            // Seção 4 - SISTEMA DE REGISTRO DE PREÇOS
+            const srpText = jsonData.sist_reg_preco ?
+                "Sim, utilizará Sistema de Registro de Preços" :
+                "Não utilizará Sistema de Registro de Preços";
+            yPosition = addSection(
+                "4. SISTEMA DE REGISTRO DE PREÇOS",
+                srpText,
+                yPosition
+            );
 
-  // Seção 4 - SISTEMA DE REGISTRO DE PREÇOS
-  const srpText = jsonData.sist_reg_preco
-    ? "Sim, utilizará Sistema de Registro de Preços"
-    : "Não utilizará Sistema de Registro de Preços";
-  yPosition = addSection(
-    "4. SISTEMA DE REGISTRO DE PREÇOS",
-    srpText,
-    yPosition
-  );
+            // Seção 5 - ALINHAMENTO ESTRATÉGICO
+            const alinhamentoText = 
+                jsonData.alinhamento_estrategico &&
+                jsonData.alinhamento_estrategico.length > 0 ?
+                jsonData.alinhamento_estrategico.map((item) => `• ${item}`).join("\n") :
+                "Não possui alinhamento estratégico.";
+            yPosition = addSection(
+                "5. ALINHAMENTO ESTRATÉGICO",
+                alinhamentoText,
+                yPosition
+            );
 
-  // Seção 5 - ALINHAMENTO ESTRATÉGICO
-  const alinhamentoText =
-    jsonData.alinhamento_estrategico &&
-    jsonData.alinhamento_estrategico.length > 0
-      ? jsonData.alinhamento_estrategico.map((item) => `• ${item}`).join("\n")
-      : "Não possui alinhamento estratégico.";
-  yPosition = addSection(
-    "5. ALINHAMENTO ESTRATÉGICO",
-    alinhamentoText,
-    yPosition
-  );
+            // Seção 6 - REQUISITOS PARA CONTRATAÇÃO
+            const requisitosText = 
+                jsonData.req_contratacao && jsonData.req_contratacao.length > 0 ?
+                jsonData.req_contratacao.map((item) => `• ${item}`).join("\n") :
+                "Requisitos não especificados";
+            yPosition = addSection(
+                "6. REQUISITOS PARA CONTRATAÇÃO",
+                requisitosText,
+                yPosition
+            );
 
-  // Seção 6 - REQUISITOS PARA CONTRATAÇÃO
-  const requisitosText =
-    jsonData.req_contratacao && jsonData.req_contratacao.length > 0
-      ? jsonData.req_contratacao.map((item) => `• ${item}`).join("\n")
-      : "Requisitos não especificados";
-  yPosition = addSection(
-    "6. REQUISITOS PARA CONTRATAÇÃO",
-    requisitosText,
-    yPosition
-  );
-
-  // Seção 7 - LEVANTAMENTO DE MERCADO
-  const levMercado = jsonData.lev_mercado || {};
-  const mercadoText =
-    `Pesquisa de Mercado: ${
-      levMercado.pesquisa_mercado || "Não informado"
+            // Seção 7 - LEVANTAMENTO DE MERCADO
+            const levMercado = jsonData.lev_mercado || {};
+            const mercadoText = 
+                `Pesquisa de Mercado: ${ 
+      levMercado.pesquisa_mercado || "Não informado" 
     }\n\n` +
-    `Preço Médio Encontrado: R$ ${(levMercado.preco_medio || 0).toLocaleString(
+                `Preço Médio Encontrado: R$ ${(levMercado.preco_medio || 0).toLocaleString(
       "pt-BR",
       { minimumFractionDigits: 2 }
     )}\n\n` +
-    `Variação Percentual: ${levMercado.variacao_percentual || 0}%\n\n` +
-    `Fontes Consultadas: ${
-      (levMercado.fontes || []).join(", ") || "Não informado"
+                `Variação Percentual: ${levMercado.variacao_percentual || 0}%\n\n` +
+                `Fontes Consultadas: ${ 
+      (levMercado.fontes || []).join(", ") || "Não informado" 
     }\n\n` +
-    `Observações: ${levMercado.observacoes || "Nenhuma observação"}`;
-  yPosition = addSection("7. LEVANTAMENTO DE MERCADO", mercadoText, yPosition);
+                `Observações: ${levMercado.observacoes || "Nenhuma observação"}`;
+            yPosition = addSection("7. LEVANTAMENTO DE MERCADO", mercadoText, yPosition);
 
-  // Seção 8 - SOLUÇÃO PROPOSTA
-  yPosition = addSection("8. SOLUÇÃO PROPOSTA", jsonData.solucao, yPosition);
+            // Seção 8 - SOLUÇÃO PROPOSTA
+            yPosition = addSection("8. SOLUÇÃO PROPOSTA", jsonData.solucao, yPosition);
 
-  // Seção 9 - QUANTIDADE ESTIMADA
-  let quantidadeText = "Quantidade não especificada";
-  if (
-    jsonData.quantidade_estimada &&
-    Object.keys(jsonData.quantidade_estimada).length > 0
-  ) {
-    const quant = jsonData.quantidade_estimada;
-    quantidadeText =
-      `Total Estimado: R$ ${(quant.total_estimado || 0).toLocaleString(
+            // Seção 9 - QUANTIDADE ESTIMADA
+            let quantidadeText = "Quantidade não especificada";
+            if (
+                jsonData.quantidade_estimada &&
+                Object.keys(jsonData.quantidade_estimada).length > 0
+            ) {
+                const quant = jsonData.quantidade_estimada;
+                quantidadeText =
+                    `Total Estimado: R$ ${(quant.total_estimado || 0).toLocaleString(
         "pt-BR",
         { minimumFractionDigits: 2 }
       )}\n\n` +
-      `Critérios de Dimensionamento: ${
-        quant.criterios_dimensionamento || "Não especificado"
+                    `Critérios de Dimensionamento: ${ 
+        quant.criterios_dimensionamento || "Não especificado" 
       }`;
 
-    if (quant.item_principal) {
-      quantidadeText +=
-        `\n\nItem Principal:\n` +
-        `• Descrição: ${
-          quant.item_principal.descricao || "Não especificado"
+                if (quant.item_principal) {
+                    quantidadeText +=
+                        `\n\nItem Principal:\n` +
+                        `• Descrição: ${ 
+          quant.item_principal.descricao || "Não especificado" 
         }\n` +
-        `• Quantidade: ${quant.item_principal.quantidade || 0}\n` +
-        `• Valor Unitário: R$ ${(
+                        `• Quantidade: ${quant.item_principal.quantidade || 0}\n` +
+                        `• Valor Unitário: R$ ${( 
           quant.item_principal.valor_unitario || 0
         ).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`;
-    }
-  }
-  yPosition = addSection("9. QUANTIDADE ESTIMADA", quantidadeText, yPosition);
+                }
+            }
+            yPosition = addSection("9. QUANTIDADE ESTIMADA", quantidadeText, yPosition);
 
-  // Seção 10 - JUSTIFICATIVA PARA NÃO PARCELAMENTO
-  yPosition = addSection(
-    "10. JUSTIFICATIVA PARA NÃO PARCELAMENTO",
-    jsonData.just_nao_parc,
-    yPosition
-  );
+            // Seção 10 - JUSTIFICATIVA PARA NÃO PARCELAMENTO
+            yPosition = addSection(
+                "10. JUSTIFICATIVA PARA NÃO PARCELAMENTO",
+                jsonData.just_nao_parc,
+                yPosition
+            );
 
-  // Seção 11 - VALOR TOTAL ESTIMADO
-  yPosition = addSection(
-    "11. VALOR TOTAL ESTIMADO",
-    jsonData.valor_total,
-    yPosition
-  );
+            // Seção 11 - VALOR TOTAL ESTIMADO
+            yPosition = addSection(
+                "11. VALOR TOTAL ESTIMADO",
+                jsonData.valor_total,
+                yPosition
+            );
 
-  // Seção 12 - DEMONSTRAÇÃO DE RESULTADOS
-  let resultadosText = "Resultados não especificados";
-  if (
-    jsonData.demonst_resultados &&
-    Object.keys(jsonData.demonst_resultados).length > 0
-  ) {
-    const demo = jsonData.demonst_resultados;
-    resultadosText = "";
+            // Seção 12 - DEMONSTRAÇÃO DE RESULTADOS
+            let resultadosText = "Resultados não especificados";
+            if (
+                jsonData.demonst_resultados &&
+                Object.keys(jsonData.demonst_resultados).length > 0
+            ) {
+                const demo = jsonData.demonst_resultados;
+                resultadosText = "";
 
-    if (demo.resultados_quantitativos) {
-      resultadosText += "RESULTADOS QUANTITATIVOS:\n";
-      Object.entries(demo.resultados_quantitativos).forEach(([key, value]) => {
-        resultadosText += `• ${key}: ${value}\n`;
-      });
-      resultadosText += "\n";
-    }
+                if (demo.resultados_quantitativos) {
+                    resultadosText += "RESULTADOS QUANTITATIVOS:\n";
+                    Object.entries(demo.resultados_quantitativos).forEach(([key, value]) => {
+                        resultadosText += `• ${key}: ${value}\n`;
+                    });
+                    resultadosText += "\n";
+                }
 
-    if (demo.resultados_qualitativos) {
-      resultadosText += "RESULTADOS QUALITATIVOS:\n";
-      Object.entries(demo.resultados_qualitativos).forEach(([key, value]) => {
-        resultadosText += `• ${key}: ${value}\n`;
-      });
-      resultadosText += "\n";
-    }
+                if (demo.resultados_qualitativos) {
+                    resultadosText += "RESULTADOS QUALITATIVOS:\n";
+                    Object.entries(demo.resultados_qualitativos).forEach(([key, value]) => {
+                        resultadosText += `• ${key}: ${value}\n`;
+                    });
+                    resultadosText += "\n";
+                }
 
-    if (demo.indicadores_desempenho && demo.indicadores_desempenho.length > 0) {
-      resultadosText += `INDICADORES DE DESEMPENHO:\n${demo.indicadores_desempenho
+                if (demo.indicadores_desempenho && demo.indicadores_desempenho.length > 0) {
+                    resultadosText += `INDICADORES DE DESEMPENHO:\n${demo.indicadores_desempenho
         .map((ind) => `• ${ind}`)
         .join("\n")}\n\n`;
-    }
+                }
 
-    if (demo.prazo_resultados) {
-      resultadosText += `PRAZO PARA RESULTADOS: ${demo.prazo_resultados}`;
-    }
-  }
-  yPosition = addSection(
-    "12. DEMONSTRAÇÃO DE RESULTADOS",
-    resultadosText,
-    yPosition
-  );
+                if (demo.prazo_resultados) {
+                    resultadosText += `PRAZO PARA RESULTADOS: ${demo.prazo_resultados}`;
+                }
+            }
+            yPosition = addSection(
+                "12. DEMONSTRAÇÃO DE RESULTADOS",
+                resultadosText,
+                yPosition
+            );
 
-  // Seção 13 - SERVIÇO CONTÍNUO
-  const servicoContinuoText = jsonData.serv_continuo
-    ? `Sim, trata-se de serviço de natureza continuada.\n\nJustificativa: ${
-        jsonData.justif_serv_continuo || "Não informada"
-      }`
-    : "Não se trata de serviço de natureza continuada.";
-  yPosition = addSection(
-    "13. SERVIÇO DE NATUREZA CONTINUADA",
-    servicoContinuoText,
-    yPosition
-  );
+            // Seção 13 - SERVIÇO CONTÍNUO
+            const servicoContinuoText = jsonData.serv_continuo ?
+                `Sim, trata-se de serviço de natureza continuada.\n\nJustificativa: ${ 
+        jsonData.justif_serv_continuo || "Não informada" 
+      }` :
+                "Não se trata de serviço de natureza continuada.";
+            yPosition = addSection(
+                "13. SERVIÇO DE NATUREZA CONTINUADA",
+                servicoContinuoText,
+                yPosition
+            );
 
-  // Seção 14 - PROVIDÊNCIAS NECESSÁRIAS
-  let providenciasText = "Providências não especificadas";
-  if (jsonData.providencias && Object.keys(jsonData.providencias).length > 0) {
-    const prov = jsonData.providencias;
-    providenciasText = "";
+            // Seção 14 - PROVIDÊNCIAS NECESSÁRIAS
+            let providenciasText = "Providências não especificadas";
+            if (jsonData.providencias && Object.keys(jsonData.providencias).length > 0) {
+                const prov = jsonData.providencias;
+                providenciasText = "";
 
-    if (prov.pre_contratacao && prov.pre_contratacao.length > 0) {
-      providenciasText += "PRÉ-CONTRATAÇÃO:\n";
-      prov.pre_contratacao.forEach((item) => {
-        providenciasText += `• ${item}\n`;
-      });
-      providenciasText += "\n";
-    }
+                if (prov.pre_contratacao && prov.pre_contratacao.length > 0) {
+                    providenciasText += "PRÉ-CONTRATAÇÃO:\n";
+                    prov.pre_contratacao.forEach((item) => {
+                        providenciasText += `• ${item}\n`;
+                    });
+                    providenciasText += "\n";
+                }
 
-    if (prov.durante_execucao && prov.durante_execucao.length > 0) {
-      providenciasText += "DURANTE A EXECUÇÃO:\n";
-      prov.durante_execucao.forEach((item) => {
-        providenciasText += `• ${item}\n`;
-      });
-      providenciasText += "\n";
-    }
+                if (prov.durante_execucao && prov.durante_execucao.length > 0) {
+                    providenciasText += "DURANTE A EXECUÇÃO:\n";
+                    prov.durante_execucao.forEach((item) => {
+                        providenciasText += `• ${item}\n`;
+                    });
+                    providenciasText += "\n";
+                }
 
-    if (prov.pos_contratacao && prov.pos_contratacao.length > 0) {
-      providenciasText += "PÓS-CONTRATAÇÃO:\n";
-      prov.pos_contratacao.forEach((item) => {
-        providenciasText += `• ${item}\n`;
-      });
-    }
-  }
-  yPosition = addSection(
-    "14. PROVIDÊNCIAS NECESSÁRIAS",
-    providenciasText,
-    yPosition
-  );
+                if (prov.pos_contratacao && prov.pos_contratacao.length > 0) {
+                    providenciasText += "PÓS-CONTRATAÇÃO:\n";
+                    prov.pos_contratacao.forEach((item) => {
+                        providenciasText += `• ${item}\n`;
+                    });
+                }
+            }
+            yPosition = addSection(
+                "14. PROVIDÊNCIAS NECESSÁRIAS",
+                providenciasText,
+                yPosition
+            );
 
-  // Seção 15 - IMPACTOS AMBIENTAIS
-  yPosition = addSection(
-    "15. IMPACTOS AMBIENTAIS",
-    jsonData.impac_ambientais,
-    yPosition
-  );
+            // Seção 15 - IMPACTOS AMBIENTAIS
+            yPosition = addSection(
+                "15. IMPACTOS AMBIENTAIS",
+                jsonData.impac_ambientais,
+                yPosition
+            );
 
-  // Seção 16 - ALINHAMENTO COM PLS
-  const plsText =
-    jsonData.alinhamento_pls && jsonData.alinhamento_pls.length > 0
-      ? jsonData.alinhamento_pls.map((item) => `• ${item}`).join("\n")
-      : "Nenhum critério específico de sustentabilidade definido";
-  yPosition = addSection(
-    "16. ALINHAMENTO COM PLANO DE LOGÍSTICA SUSTENTÁVEL",
-    plsText,
-    yPosition
-  );
+            // Seção 16 - ALINHAMENTO COM PLS
+            const plsText = 
+                jsonData.alinhamento_pls && jsonData.alinhamento_pls.length > 0 ?
+                jsonData.alinhamento_pls.map((item) => `• ${item}`).join("\n") :
+                "Nenhum critério específico de sustentabilidade definido";
+            yPosition = addSection(
+                "16. ALINHAMENTO COM PLANO DE LOGÍSTICA SUSTENTÁVEL",
+                plsText,
+                yPosition
+            );
 
-  // Seção 17 - POSIÇÃO CONCLUSIVA
-  const posicaoText =
-    `POSIÇÃO: ${
-      jsonData.posic_conclusivo ? "FAVORÁVEL" : "CONTRÁRIA"
+            // Seção 17 - POSIÇÃO CONCLUSIVA
+            const posicaoText =
+                `POSIÇÃO: ${ 
+      jsonData.posic_conclusivo ? "FAVORÁVEL" : "CONTRÁRIA" 
     } à contratação\n\n` + `JUSTIFICATIVA: ${jsonData.justif_posic_conclusivo}`;
-  yPosition = addSection("17. POSIÇÃO CONCLUSIVA", posicaoText, yPosition);
+            yPosition = addSection("17. POSIÇÃO CONCLUSIVA", posicaoText, yPosition);
 
-  // Seção 18 - EQUIPE DE PLANEJAMENTO
-  yPosition = addSection(
-    "18. EQUIPE DE PLANEJAMENTO",
-    jsonData.equipe_de_planejamento,
-    yPosition
-  );
+            // Seção 18 - EQUIPE DE PLANEJAMENTO
+            yPosition = addSection(
+                "18. EQUIPE DE PLANEJAMENTO",
+                jsonData.equipe_de_planejamento,
+                yPosition
+            );
 
-  return doc;
+            resolve(doc);
+        }
+
+        brasaoImg.onload = function() {
+            let yPosition = 15;
+
+            const targetWidth = 50;
+            const aspectRatio = brasaoImg.height / brasaoImg.width;
+            const targetHeight = targetWidth * aspectRatio;
+            const xPosition = pageWidth / 2 - targetWidth / 2;
+
+            doc.addImage(brasaoImg, 'PNG', xPosition, yPosition, targetWidth, targetHeight);
+            yPosition += targetHeight + 10;
+
+            // Cabeçalho
+            doc.setFontSize(9);
+            doc.setFont("times", "normal");
+            doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, yPosition, {
+                align: "center",
+            });
+            yPosition += 6;
+
+            doc.setFontSize(8);
+            doc.setFont("times", "normal");
+            doc.text(
+                "Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC",
+                pageWidth / 2,
+                yPosition, { align: "center" }
+            );
+            yPosition += 15;
+
+            proceedWithPdf(yPosition);
+        };
+
+        brasaoImg.onerror = function() {
+            console.error("Não foi possível carregar a imagem do brasão.");
+            let yPosition = 30; // Posição inicial sem imagem
+            proceedWithPdf(yPosition);
+        };
+    });
 }
 
 // Função para exibir PDF no visualizador
 function displayPDF(pdf) {
-  const pdfDataUri = pdf.output("datauristring");
-  const pdfViewer = document.getElementById("pdfViewer");
-  const pdfPlaceholder = document.getElementById("pdfPlaceholder");
+  const pdfBlob = pdf.output('blob');
+  const pdfUrl = URL.createObjectURL(pdfBlob);
 
-  pdfViewer.src = pdfDataUri;
-  pdfPlaceholder.style.display = "none";
-  pdfViewer.style.display = "block";
+  const pdfViewer = document.getElementById('pdfViewer');
+  const pdfPlaceholder = document.getElementById('pdfPlaceholder');
+
+  pdfViewer.src = pdfUrl;
+
+  pdfViewer.onload = () => {
+      // Revogar a URL do objeto para liberar memória após o carregamento
+      URL.revokeObjectURL(pdfUrl);
+      console.log('PDF carregado e URL do objeto revogada.');
+  };
+
+  pdfPlaceholder.style.display = 'none';
+  pdfViewer.style.display = 'block';
 }
 
 // Função para popular a pré-visualização do documento com PDF
-function populateDocument(jsonData) {
-  const pdf = generateETPPDF(jsonData);
+async function populateDocument(jsonData) {
+  const pdf = await generateETPPDF(jsonData);
   currentPDF = pdf;
   displayPDF(pdf);
 }
@@ -716,8 +753,8 @@ async function carregarDadosETP() {
       showSuccess("Dados carregados do banco de dados! Gerando documento...");
 
       // Pequeno delay para mostrar o status de sucesso
-      setTimeout(() => {
-        populateDocument(dadosBanco);
+      setTimeout(async () => {
+        await populateDocument(dadosBanco);
 
         // Atualizar status para concluído
         setTimeout(() => {
@@ -739,12 +776,12 @@ async function carregarDadosETP() {
       console.log("Dados encontrados no localStorage, gerando PDF...");
       showSuccess("Dados carregados do localStorage! Gerando documento...");
 
-      setTimeout(() => {
+      setTimeout(async () => {
         // Se são dados do localStorage, podem estar em formato diferente
         const dadosProcessados = Array.isArray(savedData)
           ? savedData[0]
           : savedData;
-        populateDocument(dadosProcessados);
+        await populateDocument(dadosProcessados);
 
         setTimeout(() => {
           showSuccess(
@@ -759,6 +796,7 @@ async function carregarDadosETP() {
     }
   }
 }
+
 
 // Event listener para carregar dados automaticamente quando a página carrega
 document.addEventListener("DOMContentLoaded", function () {
