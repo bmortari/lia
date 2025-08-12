@@ -836,3 +836,11 @@ document
       ? `${BASE_URL}/projetos/${projectId}/confere_etp`
       : `${BASE_URL}/`;
   });
+
+// Event listener para o botão Voltar ao início
+document.getElementById("voltar-inicio").addEventListener("click", function () {
+  const projectId = getProjectIdFromUrl();
+  window.location.href = projectId
+    ? `${BASE_URL}/projetos/${projectId}/`
+    : `${BASE_URL}/`;
+});
