@@ -366,6 +366,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (targetId === "lev-mercado") {
         const pesquisaMercado = document.getElementById("pesquisa-mercado");
         isCurrentlyDisabled = pesquisaMercado ? pesquisaMercado.disabled : true; // Assume disabled if element not found
+      } else if (targetId === "posic-conclusivo") {
+        const justifPosic = document.getElementById("justif-posic-conclusivo");
+        isCurrentlyDisabled = justifPosic ? justifPosic.disabled : true;
       } else {
         const targetElement = document.getElementById(targetId);
         if (!targetElement) {
@@ -400,11 +403,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const posFavoravel = document.getElementById("pos-favoravel");
       const posContraria = document.getElementById("pos-contraria");
       const justifPosic = document.getElementById("justif-posic-conclusivo");
-      if (posFavoravel) posFavoravel.disabled = false;
-      if (posContraria) posContraria.disabled = false;
+      // Radio buttons should always be enabled, so no action needed here.
+      // if (posFavoravel) {
+      //   posFavoravel.disabled = false;
+      //   posFavoravel.classList.remove("editable-content:disabled");
+      // }
+      // if (posContraria) {
+      //   posContraria.disabled = false;
+      //   posContraria.classList.remove("editable-content:disabled");
+      // }
       if (justifPosic) {
         justifPosic.disabled = false;
         justifPosic.focus();
+        justifPosic.classList.remove("editable-content:disabled");
       }
     } else if (targetId === "lev-mercado") {
       // Levantamento de mercado
@@ -449,9 +460,19 @@ document.addEventListener("DOMContentLoaded", function () {
       const posFavoravel = document.getElementById("pos-favoravel");
       const posContraria = document.getElementById("pos-contraria");
       const justifPosic = document.getElementById("justif-posic-conclusivo");
-      if (posFavoravel) posFavoravel.disabled = true;
-      if (posContraria) posContraria.disabled = true;
-      if (justifPosic) justifPosic.disabled = true;
+      // Radio buttons should always be enabled, so no action needed here.
+      // if (posFavoravel) {
+      //   posFavoravel.disabled = true;
+      //   posFavoravel.classList.add("editable-content:disabled");
+      // }
+      // if (posContraria) {
+      //   posContraria.disabled = true;
+      //   posContraria.classList.add("editable-content:disabled");
+      // }
+      if (justifPosic) {
+        justifPosic.disabled = true;
+        justifPosic.classList.add("editable-content:disabled");
+      }
     } else if (targetId === "lev-mercado") {
       // Levantamento de mercado
       const pesquisaMercado = document.getElementById("pesquisa-mercado");
