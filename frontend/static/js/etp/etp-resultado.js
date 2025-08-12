@@ -826,3 +826,13 @@ document
 function processJSON(jsonResponse) {
   populateDocument(jsonResponse);
 }
+
+// Event listener para o botão Voltar à curadoria
+document
+  .getElementById("voltar-curadoria")
+  .addEventListener("click", function () {
+    const projectId = getProjectIdFromUrl();
+    window.location.href = projectId
+      ? `${BASE_URL}/projetos/${projectId}/confere_etp`
+      : `${BASE_URL}/`;
+  });
