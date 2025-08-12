@@ -360,14 +360,20 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
       const button = e.target.closest(".edit-btn");
       const targetId = button.getAttribute("data-target");
-      const targetElement = document.getElementById(targetId);
-
-      if (!targetElement) {
-        console.warn(`Elemento com ID ${targetId} não encontrado`);
-        return;
+      // For "lev-mercado", the targetId refers to the container, not an input.
+      // We need to check the disabled status of one of the inputs within the container.
+      let isCurrentlyDisabled;
+      if (targetId === "lev-mercado") {
+        const pesquisaMercado = document.getElementById("pesquisa-mercado");
+        isCurrentlyDisabled = pesquisaMercado ? pesquisaMercado.disabled : true; // Assume disabled if element not found
+      } else {
+        const targetElement = document.getElementById(targetId);
+        if (!targetElement) {
+          console.warn(`Elemento com ID ${targetId} não encontrado`);
+          return;
+        }
+        isCurrentlyDisabled = targetElement.disabled;
       }
-
-      const isCurrentlyDisabled = targetElement.disabled;
 
       if (isCurrentlyDisabled) {
         // Habilitar edição
@@ -408,9 +414,16 @@ document.addEventListener("DOMContentLoaded", function () {
       if (pesquisaMercado) {
         pesquisaMercado.disabled = false;
         pesquisaMercado.focus();
+        pesquisaMercado.classList.remove("editable-content:disabled");
       }
-      if (precoMedio) precoMedio.disabled = false;
-      if (observacoesMercado) observacoesMercado.disabled = false;
+      if (precoMedio) {
+        precoMedio.disabled = false;
+        precoMedio.classList.remove("editable-content:disabled");
+      }
+      if (observacoesMercado) {
+        observacoesMercado.disabled = false;
+        observacoesMercado.classList.remove("editable-content:disabled");
+      }
     } else {
       // Campo normal
       targetElement.disabled = false;
@@ -444,9 +457,18 @@ document.addEventListener("DOMContentLoaded", function () {
       const pesquisaMercado = document.getElementById("pesquisa-mercado");
       const precoMedio = document.getElementById("preco-medio");
       const observacoesMercado = document.getElementById("observacoes-mercado");
-      if (pesquisaMercado) pesquisaMercado.disabled = true;
-      if (precoMedio) precoMedio.disabled = true;
-      if (observacoesMercado) observacoesMercado.disabled = true;
+      if (pesquisaMercado) {
+        pesquisaMercado.disabled = true;
+        pesquisaMercado.classList.add("editable-content:disabled");
+      }
+      if (precoMedio) {
+        precoMedio.disabled = true;
+        precoMedio.classList.add("editable-content:disabled");
+      }
+      if (observacoesMercado) {
+        observacoesMercado.disabled = true;
+        observacoesMercado.classList.add("editable-content:disabled");
+      }
     } else {
       // Campo normal
       targetElement.disabled = true;
