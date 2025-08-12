@@ -1,338 +1,530 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Curadoria de ETP</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css"
+      rel="stylesheet"
+    />
     <style>
-        /* Estilo para desabilitar o textarea/input */
-        .editable-content:disabled {
-            background-color: #f8fafc;
-            border-color: #e2e8f0;
-            color: #334155;
-            cursor: not-allowed;
-        }
-        
-        /* Estilo para checkboxes desabilitados */
-        .checkbox-container.disabled {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        
-        .checkbox-container.disabled label {
-            color: #6b7280;
-        }
+      /* Estilo para desabilitar o textarea/input */
+      .editable-content:disabled {
+        background-color: #f8fafc;
+        border-color: #e2e8f0;
+        color: #334155;
+        cursor: not-allowed;
+      }
 
-        /* Estilo para campos não editáveis */
-        .readonly-content {
-            background-color: #f9fafb;
-            border-color: #d1d5db;
-            color: #374151;
-            cursor: not-allowed;
-        }
-        
-        /* Estilo para seções colapsáveis */
-        .collapsible-section {
-            transition: all 0.3s ease;
-        }
-        
-        .section-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-left: 0.5rem;
-        }
-        
-        .badge-required {
-            background-color: #fef2f2;
-            color: #991b1b;
-        }
-        
-        .badge-optional {
-            background-color: #f0f9ff;
-            color: #1e40af;
-        }
+      /* Estilo para checkboxes desabilitados */
+      .checkbox-container.disabled {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .checkbox-container.disabled label {
+        color: #6b7280;
+      }
+
+      /* Estilo para campos não editáveis */
+      .readonly-content {
+        background-color: #f9fafb;
+        border-color: #d1d5db;
+        color: #374151;
+        cursor: not-allowed;
+      }
+
+      /* Estilo para seções colapsáveis */
+      .collapsible-section {
+        transition: all 0.3s ease;
+      }
+
+      .section-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        margin-left: 0.5rem;
+      }
+
+      .badge-required {
+        background-color: #fef2f2;
+        color: #991b1b;
+      }
+
+      .badge-optional {
+        background-color: #f0f9ff;
+        color: #1e40af;
+      }
     </style>
-</head>
-<body class="bg-gray-50">
-
+  </head>
+  <body class="bg-gray-50">
     <div class="min-h-screen py-8 px-4">
+      <!-- Cabeçalho Principal -->
+      <div class="text-center mb-12">
+        <div class="mb-6">
+          <i class="las la-analysis text-6xl text-blue-600 mb-4"></i>
+          <h1 class="text-4xl font-bold text-gray-900 mb-2">
+            Curadoria de Estudo Técnico Preliminar
+          </h1>
+          <p class="text-xl text-gray-600">
+            E.T.P. Gerado - Estudo Técnico Preliminar
+          </p>
+          {% if projeto %}
+          <p class="text-lg text-gray-500 mt-2">Projeto: {{ projeto.nome }}</p>
+          {% endif %}
+        </div>
+      </div>
 
-        <!-- Cabeçalho Principal -->
-        <div class="text-center mb-12">
-            <div class="mb-6">
-                <i class="las la-analysis text-6xl text-blue-600 mb-4"></i>
-                <h1 class="text-4xl font-bold text-gray-900 mb-2">Curadoria de Estudo Técnico Preliminar</h1>
-                <p class="text-xl text-gray-600">E.T.P. Gerado - Estudo Técnico Preliminar</p>
-                {% if projeto %}
-                    <p class="text-lg text-gray-500 mt-2">Projeto: {{ projeto.nome }}</p>
-                {% endif %}
+      <!-- Status de carregamento/erro -->
+      <div id="status-container" class="max-w-4xl mx-auto mb-6">
+        <div
+          id="loading-status"
+          class="bg-blue-50 border border-blue-200 rounded-lg p-4"
+        >
+          <div class="flex items-center">
+            <i class="las la-spinner la-spin text-blue-600 text-2xl mr-3"></i>
+            <p class="text-blue-800">Carregando dados do ETP...</p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="max-w-4xl mx-auto space-y-6"
+        id="etp-content"
+        style="display: none"
+      >
+        <!-- 1. Identificação da Unidade Demandante -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-building text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  1. Identificação da Unidade Demandante
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="unidade-demandante"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
             </div>
+            <textarea
+              id="unidade-demandante"
+              class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="4"
+              disabled
+            ></textarea>
+          </div>
         </div>
 
-        <!-- Status de carregamento/erro -->
-        <div id="status-container" class="max-w-4xl mx-auto mb-6">
-            <div id="loading-status" class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div class="flex items-center">
-                    <i class="las la-spinner la-spin text-blue-600 text-2xl mr-3"></i>
-                    <p class="text-blue-800">Carregando dados do ETP...</p>
-                </div>
+        <!-- 2. Objeto da Contratação -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i
+                  class="las la-clipboard-list text-2xl text-gray-600 mr-3"
+                ></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  2. Objeto da Contratação
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="objeto-contratado"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
             </div>
+            <textarea
+              id="objeto-contratado"
+              class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="5"
+              disabled
+            ></textarea>
+          </div>
         </div>
 
-        <div class="max-w-4xl mx-auto space-y-6" id="etp-content" style="display: none;">
-
-            <!-- 1. Identificação da Unidade Demandante -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-building text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">1. Identificação da Unidade Demandante</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="unidade-demandante">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <textarea id="unidade-demandante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled></textarea>
-                </div>
+        <!-- 3. Justificativa da Necessidade -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  3. Justificativa da Necessidade
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="necessidade-contratacao"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
             </div>
+            <textarea
+              id="necessidade-contratacao"
+              class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="5"
+              disabled
+            ></textarea>
+          </div>
+        </div>
 
-            <!-- 2. Objeto da Contratação -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-clipboard-list text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">2. Objeto da Contratação</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="objeto-contratado">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <textarea id="objeto-contratado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled></textarea>
-                </div>
-            </div>
-
-            <!-- 3. Justificativa da Necessidade -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">3. Justificativa da Necessidade</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="necessidade-contratacao">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <textarea id="necessidade-contratacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled></textarea>
-                </div>
-            </div>
-
-            <!-- 4. Sistema de Registro de Preços -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-tags text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">4. Sistema de Registro de Preços</h2>
-                            <span class="section-badge badge-optional">Opcional</span>
-                        </div>
-                        <!-- <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="sist-reg-preco">
+        <!-- 4. Sistema de Registro de Preços -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-tags text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  4. Sistema de Registro de Preços
+                </h2>
+                <span class="section-badge badge-optional">Opcional</span>
+              </div>
+              <!-- <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="sist-reg-preco">
                             <i class="las la-edit mr-1"></i>Editar
                         </button> -->
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <label class="flex items-center">
-                            <input type="radio" id="srp-sim" name="sist_reg_preco" value="true" class="mr-2">
-                            <span>Sim</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" id="srp-nao" name="sist_reg_preco" value="false" class="mr-2">
-                            <span>Não</span>
-                        </label>
-                    </div>
-                </div>
             </div>
-
-            <!-- 5. Alinhamento Estratégico -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-crosshairs text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">5. Alinhamento Estratégico</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="alinhamento-estrategico">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <div id="alinhamento-estrategico-container" class="space-y-2">
-                        <!-- Será preenchido dinamicamente -->
-                    </div>
-                </div>
+            <div class="flex items-center space-x-4">
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  id="srp-sim"
+                  name="sist_reg_preco"
+                  value="true"
+                  class="mr-2"
+                />
+                <span>Sim</span>
+              </label>
+              <label class="flex items-center">
+                <input
+                  type="radio"
+                  id="srp-nao"
+                  name="sist_reg_preco"
+                  value="false"
+                  class="mr-2"
+                />
+                <span>Não</span>
+              </label>
             </div>
-
-            <!-- 6. Requisitos para Contratação -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-clipboard-check text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">6. Requisitos para Contratação</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button id="add-requisito-btn" type="button" class="text-white bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
-                            <i class="las la-plus mr-1"></i>Adicionar Requisito
-                        </button>
-                    </div>
-                    <div id="requisitos-container" class="space-y-3">
-                        <!-- Será preenchido dinamicamente -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- 7. Levantamento de Mercado -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-chart-line text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">7. Levantamento de Mercado</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="lev-mercado">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Pesquisa de Mercado</label>
-                            <textarea id="pesquisa-mercado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="3" disabled></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Preço Médio (R$)</label>
-                            <input type="number" id="preco-medio" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" step="0.01" disabled>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Observações</label>
-                        <textarea id="observacoes-mercado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="2" disabled></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 8. Solução Proposta -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">8. Solução Proposta</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="solucao">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <textarea id="solucao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="5" disabled></textarea>
-                </div>
-            </div>
-
-            <!-- 9. Valor Total Estimado -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-dollar-sign text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">9. Valor Total Estimado</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="valor-total">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <input type="text" id="valor-total" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3" disabled>
-                </div>
-            </div>
-
-            <!-- 10. Posição Conclusiva -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-check-circle text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">10. Posição Conclusiva</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="posic-conclusivo">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-4">
-                            <label class="flex items-center">
-                                <input type="radio" id="pos-favoravel" name="posic_conclusivo" value="true" class="mr-2" disabled>
-                                <span>Favorável à contratação</span>
-                            </label>
-                            <label class="flex items-center">
-                                <input type="radio" id="pos-contraria" name="posic_conclusivo" value="false" class="mr-2" disabled>
-                                <span>Contrária à contratação</span>
-                            </label>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Justificativa</label>
-                            <textarea id="justif-posic-conclusivo" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 11. Equipe de Planejamento -->
-            <div class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section">
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex items-center">
-                            <i class="las la-users text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">11. Equipe de Planejamento</h2>
-                            <span class="section-badge badge-required">Obrigatório</span>
-                        </div>
-                        <button type="button" class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="equipe-de-planejamento">
-                            <i class="las la-edit mr-1"></i>Editar
-                        </button>
-                    </div>
-                    <textarea id="equipe-de-planejamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none" rows="4" disabled></textarea>
-                </div>
-            </div>
-
+          </div>
         </div>
 
-        <!-- Botões de Ação -->
-        <div class="max-w-4xl mx-auto mt-8 mb-8" id="action-buttons" style="display: none;">
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-            
-                <!-- Botão Salvar Alterações (Primário) -->
-                <button type="button" id="save-changes-btn" class="inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
-                    <i class="las la-save text-lg mr-2"></i>
-                    Salvar alterações
-                </button>
+        <!-- 5. Alinhamento Estratégico -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-crosshairs text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  5. Alinhamento Estratégico
+                </h2>
+                <span class="section-badge badge-optional">Opcional</span>
+              </div>
+              <button
+                id="add-alinhamento-btn"
+                type="button"
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+              >
+                <i class="las la-plus mr-1"></i>Adicionar
+              </button>
             </div>
+            <div id="alinhamento-estrategico-container" class="space-y-2">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
         </div>
 
+        <!-- 6. Requisitos para Contratação -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i
+                  class="las la-clipboard-check text-2xl text-gray-600 mr-3"
+                ></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  6. Requisitos para Contratação
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                id="add-requisito-btn"
+                type="button"
+                class="text-white bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+              >
+                <i class="las la-plus mr-1"></i>Adicionar Requisito
+              </button>
+            </div>
+            <div id="requisitos-container" class="space-y-3">
+              <!-- Será preenchido dinamicamente -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Levantamento de Mercado -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-chart-line text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  7. Levantamento de Mercado
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="lev-mercado"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Pesquisa de Mercado</label
+                >
+                <textarea
+                  id="pesquisa-mercado"
+                  class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows="3"
+                  disabled
+                ></textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Preço Médio (R$)</label
+                >
+                <input
+                  type="number"
+                  id="preco-medio"
+                  class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                  step="0.01"
+                  disabled
+                />
+              </div>
+            </div>
+            <div class="mt-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Observações</label
+              >
+              <textarea
+                id="observacoes-mercado"
+                class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                rows="2"
+                disabled
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Solução Proposta -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  8. Solução Proposta
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="solucao"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
+            </div>
+            <textarea
+              id="solucao"
+              class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="5"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- 9. Valor Total Estimado -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-dollar-sign text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  9. Valor Total Estimado
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="valor-total"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
+            </div>
+            <input
+              type="text"
+              id="valor-total"
+              class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              disabled
+            />
+          </div>
+        </div>
+
+        <!-- 10. Posição Conclusiva -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-check-circle text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  10. Posição Conclusiva
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="posic-conclusivo"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4">
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    id="pos-favoravel"
+                    name="posic_conclusivo"
+                    value="true"
+                    class="mr-2"
+                    disabled
+                  />
+                  <span>Favorável à contratação</span>
+                </label>
+                <label class="flex items-center">
+                  <input
+                    type="radio"
+                    id="pos-contraria"
+                    name="posic_conclusivo"
+                    value="false"
+                    class="mr-2"
+                    disabled
+                  />
+                  <span>Contrária à contratação</span>
+                </label>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Justificativa</label
+                >
+                <textarea
+                  id="justif-posic-conclusivo"
+                  class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+                  rows="4"
+                  disabled
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. Equipe de Planejamento -->
+        <div
+          class="bg-white border border-gray-200 rounded-lg shadow-sm collapsible-section"
+        >
+          <div class="p-6">
+            <div class="flex justify-between items-start mb-4">
+              <div class="flex items-center">
+                <i class="las la-users text-2xl text-gray-600 mr-3"></i>
+                <h2 class="text-xl font-semibold text-gray-900">
+                  11. Equipe de Planejamento
+                </h2>
+                <span class="section-badge badge-required">Obrigatório</span>
+              </div>
+              <button
+                type="button"
+                class="edit-btn text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                data-target="equipe-de-planejamento"
+              >
+                <i class="las la-edit mr-1"></i>Editar
+              </button>
+            </div>
+            <textarea
+              id="equipe-de-planejamento"
+              class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
+              rows="4"
+              disabled
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botões de Ação -->
+      <div
+        class="max-w-4xl mx-auto mt-8 mb-8"
+        id="action-buttons"
+        style="display: none"
+      >
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <!-- Botão Salvar Alterações (Primário) -->
+          <button
+            type="button"
+            id="save-changes-btn"
+            class="inline-flex items-center justify-center text-white bg-blue-700 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none"
+          >
+            <i class="las la-save text-lg mr-2"></i>
+            Salvar alterações
+          </button>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script src="/static/js/etp/etp-curadoria.js"></script>
-</body>
+  </body>
 </html>
