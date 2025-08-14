@@ -313,24 +313,30 @@ function generatePDF(jsonData) {
             currentY += 20;
 
             // Caixa de informações gerais
-            doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-            doc.setFillColor(250, 250, 255);
-            doc.roundedRect(margin, currentY, maxWidth, 25, 3, 3, 'FD');
-            
-            currentY += 8;
-            // ✅ ALTERAÇÃO: Cor do título da seção para preto
-            doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
-            doc.setFontSize(12);
-            doc.setFont("times", "bold");
-            doc.text("1. INFORMAÇÕES GERAIS", margin + 5, currentY);
-            
-            currentY += 8;
-            doc.setTextColor(0, 0, 0);
+            const infoBoxStartY = currentY;
             doc.setFontSize(10);
             doc.setFont("times", "normal");
             const objetoLines = doc.splitTextToSize(`Objeto: ${jsonData.objeto}`, maxWidth - 10);
-            doc.text(objetoLines, margin + 5, currentY);
-            currentY += (objetoLines.length * lineHeight) + 15;
+            const objetoHeight = objetoLines.length * lineHeight;
+            const infoBoxHeight = 8 + objetoHeight; // Includes padding and title space
+
+            doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+            doc.setFillColor(250, 250, 255);
+            doc.roundedRect(margin, infoBoxStartY, maxWidth, infoBoxHeight, 3, 3, 'FD');
+            
+            let infoContentY = infoBoxStartY + 8;
+            doc.setTextColor(blackColor[0], blackColor[1], blackColor[2]);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("1. INFORMAÇÕES GERAIS", margin + 5, infoContentY);
+            
+            infoContentY += 8;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(10);
+            doc.setFont("times", "normal");
+            doc.text(objetoLines, margin + 5, infoContentY);
+
+            currentY = infoBoxStartY + infoBoxHeight + 15;
 
             // Seção de fontes de pesquisa
             currentY = checkNewPage(currentY, 30);
