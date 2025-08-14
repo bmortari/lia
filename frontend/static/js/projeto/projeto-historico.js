@@ -1,184 +1,330 @@
 // Aguarda o carregamento completo do DOM antes de executar os scripts
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Seleciona os elementos da página
-    const tableBody = document.querySelector('table tbody');
-    const searchInput = document.getElementById('table-search');
-    const dropdownContainer = document.getElementById('dropdown');
-    const dropdownButton = document.getElementById('dropdownDefaultButton');
-    const dropdownButtonText = dropdownButton.childNodes[0]; // Pega o nó de texto do botão
-  
-    const url = window.location.origin;
+document.addEventListener("DOMContentLoaded", () => {
+  // Seleciona os elementos da página
+  const tableBody = document.querySelector("table tbody");
+  const searchInput = document.getElementById("table-search");
+  const dropdownContainer = document.getElementById("dropdown");
+  const dropdownButton = document.getElementById("dropdownDefaultButton");
+  const dropdownButtonText = dropdownButton.childNodes[0]; // Pega o nó de texto do botão
 
-    // Variável para armazenar o estado atual do filtro de tipo
-    let selectedType = 'todos'; // 'todos' é o valor padrão para mostrar tudo
+  const url = window.location.origin;
 
-    /**
-     * Função central que aplica AMBOS os filtros (pesquisa e tipo) na tabela.
-     */
-    function applyFilters() {
-        const searchTerm = searchInput.value.trim().toLowerCase();
-        const rows = tableBody.querySelectorAll('tr');
+  // Variável para armazenar o estado atual do filtro de tipo
+  let selectedType = "todos"; // 'todos' é o valor padrão para mostrar tudo
 
-        rows.forEach(row => {
-            // Ignora as linhas de mensagem (ex: "Nenhum projeto encontrado")
-            if (row.querySelector('th')) {
-                const projectName = row.querySelector('th').textContent.toLowerCase();
-                // A célula do tipo é a 3ª na linha (índice 2)
-                const projectType = row.children[2].textContent.trim().toLowerCase();
+  /**
+   * Função central que aplica AMBOS os filtros (pesquisa e tipo) na tabela.
+   */
+  function applyFilters() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const rows = tableBody.querySelectorAll("tr");
 
-                // Verifica se a linha corresponde aos dois filtros
-                const nameMatches = projectName.includes(searchTerm);
-                const typeMatches = (selectedType === 'todos' || projectType === selectedType);
+    rows.forEach((row) => {
+      // Ignora as linhas de mensagem (ex: "Nenhum projeto encontrado")
+      if (row.querySelector("th")) {
+        const projectName = row.querySelector("th").textContent.toLowerCase();
+        // A célula do tipo é a 3ª na linha (índice 2)
+        const projectType = row.children[2].textContent.trim().toLowerCase();
 
-                // A linha só é exibida se corresponder a AMBOS os critérios
-                if (nameMatches && typeMatches) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            }
-        });
-    }
+        // Verifica se a linha corresponde aos dois filtros
+        const nameMatches = projectName.includes(searchTerm);
+        const typeMatches =
+          selectedType === "todos" || projectType === selectedType;
 
-    /**
-     * Configura o ouvinte de eventos para o filtro de pesquisa.
-     */
-    function setupSearchFilter() {
-        // Agora, o input de pesquisa apenas chama a função de filtro central
-        searchInput.addEventListener('input', applyFilters);
-    }
+        // A linha só é exibida se corresponder a AMBOS os critérios
+        if (nameMatches && typeMatches) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      }
+    });
+  }
 
-    /**
-     * Configura o ouvinte de eventos para o filtro de tipo (dropdown).
-     */
-    function setupTypeFilter() {
-        dropdownContainer.addEventListener('click', (event) => {
-            // Usa delegação de eventos para ouvir cliques nos links <a>
-            if (event.target.tagName === 'A') {
-                event.preventDefault(); // Impede que a página pule para o topo
+  /**
+   * Configura o ouvinte de eventos para o filtro de pesquisa.
+   */
+  function setupSearchFilter() {
+    // Agora, o input de pesquisa apenas chama a função de filtro central
+    searchInput.addEventListener("input", applyFilters);
+  }
 
-                // Pega o tipo do atributo data-filter-type
-                const type = event.target.dataset.filterType;
-                selectedType = type; // Atualiza a variável de estado do filtro
+  /**
+   * Configura o ouvinte de eventos para o filtro de tipo (dropdown).
+   */
+  function setupTypeFilter() {
+    dropdownContainer.addEventListener("click", (event) => {
+      // Usa delegação de eventos para ouvir cliques nos links <a>
+      if (event.target.tagName === "A") {
+        event.preventDefault(); // Impede que a página pule para o topo
 
-                // Atualiza o texto do botão para mostrar a seleção atual
-                dropdownButtonText.textContent = event.target.textContent + ' ';
-                
-                // Chama a função de filtro central para atualizar a tabela
-                applyFilters();
-            }
-        });
-    }
+        // Pega o tipo do atributo data-filter-type
+        const type = event.target.dataset.filterType;
+        selectedType = type; // Atualiza a variável de estado do filtro
 
-    // --- FUNÇÕES DE BUSCA E RENDERIZAÇÃO (sem alterações) ---
-    function formatDate(dateString) {
-        if (!dateString) return 'N/A';
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear().toString().slice(-2);
-        return `${day}/${month}/${year}`;
-    }
+        // Atualiza o texto do botão para mostrar a seleção atual
+        dropdownButtonText.textContent = event.target.textContent + " ";
 
-    async function fetchAndRenderProjects() {
-        const endpoint = `${url}/projetos`;
+        // Chama a função de filtro central para atualizar a tabela
+        applyFilters();
+      }
+    });
+  }
 
-        try {
-            const response = await fetch(endpoint, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'remote-user': 'user.test',
-                    'remote-groups': 'TI, OUTROS'
-                }
-            });
-            if (!response.ok) throw new Error(`Erro na requisição: ${response.statusText}`);
-            
-            const projects = await response.json();
-            tableBody.innerHTML = '';
+  // --- FUNÇÕES DE BUSCA E RENDERIZAÇÃO (sem alterações) ---
+  function formatDate(dateString) {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
+  }
 
-            if (projects.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="5" class="text-center px-6 py-4">Nenhum projeto encontrado.</td></tr>';
-                return;
-            }
-            
-            projects.forEach(project => {
-                const row = `
-                    <tr class="bg-white border-b hover:bg-gray-50"  data-id=${project.id_projeto}>
-                        <td class="px-6 py-4">${formatDate(project.dt_created)}</td>
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${project.nome}</th>
+  async function fetchAndRenderProjects() {
+    const endpoint = `${url}/projetos`;
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "remote-user": "user.test",
+          "remote-groups": "TI, OUTROS",
+        },
+      });
+      if (!response.ok)
+        throw new Error(`Erro na requisição: ${response.statusText}`);
+
+      const projects = await response.json();
+      tableBody.innerHTML = "";
+
+      if (projects.length === 0) {
+        tableBody.innerHTML =
+          '<tr><td colspan="6" class="text-center px-6 py-4">Nenhum projeto encontrado.</td></tr>';
+        return;
+      }
+
+      projects.forEach((project) => {
+        const row = `
+                    <tr class="bg-white border-b hover:bg-gray-50"  data-id=${
+                      project.id_projeto
+                    }>
+                        <td class="px-6 py-4">${formatDate(
+                          project.dt_created
+                        )}</td>
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">${
+                          project.nome
+                        }</th>
                         <td class="px-6 py-4">${project.tipo}</td>
                         <td class="px-6 py-4">${project.descricao}</td>
                         <td class="px-6 py-4">${project.user_created}</td>
                         <td class="px-6 py-4 flex gap-2">
-                            <button class="text-blue-600 hover:underline view-btn" data-id="${project.id_projeto}">Ver</button>
-                            <button class="text-yellow-500 hover:underline edit-btn" data-id="${project.id_projeto}">Editar</button>
-                            <button class="text-red-600 hover:underline delete-btn" data-id="${project.id_projeto}">Excluir</button>
+                            <button class="text-blue-600 hover:underline view-btn" data-id="${
+                              project.id_projeto
+                            }">Ver</button>
+                            <button class="text-yellow-500 hover:underline edit-btn" data-id="${
+                              project.id_projeto
+                            }">Editar</button>
+                            <button class="text-red-600 hover:underline delete-btn" data-id="${
+                              project.id_projeto
+                            }">Excluir</button>
                         </td>
                     </tr>
                 `;
-                tableBody.innerHTML += row;
-            });
+        tableBody.innerHTML += row;
+      });
+    } catch (error) {
+      console.error("Falha ao buscar projetos:", error);
+      tableBody.innerHTML = `<tr><td colspan="6" class="text-center px-6 py-4 text-red-500">Falha ao carregar os projetos. Tente novamente mais tarde.</td></tr>`;
+    }
+  }
 
-        } catch (error) {
-            console.error('Falha ao buscar projetos:', error);
-            tableBody.innerHTML = `<tr><td colspan="5" class="text-center px-6 py-4 text-red-500">Falha ao carregar os projetos. Tente novamente mais tarde.</td></tr>`;
+  /**
+   * Função para deletar um projeto específico
+   */
+  async function deleteProject(projectId, rowElement) {
+    const endpoint = `${url}/projetos/${projectId}`;
+
+    try {
+      // Desabilita o botão de exclusão durante a operação
+      const deleteBtn = rowElement.querySelector(".delete-btn");
+      const originalText = deleteBtn.textContent;
+      deleteBtn.textContent = "Excluindo...";
+      deleteBtn.disabled = true;
+
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "remote-user": "user.test",
+          "remote-groups": "TI, OUTROS",
+        },
+      });
+
+      if (response.status === 204) {
+        // Sucesso - remove a linha da tabela com animação suave
+        rowElement.style.transition = "opacity 0.3s ease";
+        rowElement.style.opacity = "0";
+
+        setTimeout(() => {
+          rowElement.remove();
+
+          // Verifica se ainda há projetos na tabela
+          const remainingRows = tableBody.querySelectorAll("tr");
+          if (remainingRows.length === 0) {
+            tableBody.innerHTML =
+              '<tr><td colspan="6" class="text-center px-6 py-4">Nenhum projeto encontrado.</td></tr>';
+          }
+        }, 300);
+      } else if (response.status === 403) {
+        alert(
+          "Você não tem permissão para excluir este projeto. Apenas o criador do projeto pode excluí-lo."
+        );
+      } else if (response.status === 404) {
+        alert("Projeto não encontrado.");
+      } else {
+        throw new Error(`Erro na requisição: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Falha ao deletar projeto:", error);
+      alert("Erro ao excluir o projeto. Tente novamente mais tarde.");
+
+      // Reabilita o botão em caso de erro
+      const deleteBtn = rowElement.querySelector(".delete-btn");
+      deleteBtn.textContent = originalText;
+      deleteBtn.disabled = false;
+    }
+  }
+
+  // --- EXECUÇÃO ---
+  setupSearchFilter();
+  setupTypeFilter();
+  fetchAndRenderProjects(); // A busca de dados continua como antes
+
+  // function setupRowClick() {
+  //     tableBody.addEventListener('click', (event) => {
+  //         const clickedRow = event.target.closest('tr.clickable-row');
+  //         if (clickedRow) {
+  //             // const projectName = clickedRow.querySelector('th').textContent;
+  //             // console.log('Linha clicada:', projectName);
+
+  //             const projectId = clickedRow.dataset.id;
+  //             window.location.href = `${url}/projetos/${projectId}/`;
+  //         }
+  //     });
+  // }
+
+  // setupRowClick();
+
+  function setupActionButtons() {
+    tableBody.addEventListener("click", (event) => {
+      const target = event.target;
+
+      if (target.classList.contains("view-btn")) {
+        const projectId = target.dataset.id;
+        window.location.href = `${url}/projetos/${projectId}/`;
+      }
+
+      // MODIFIQUE ESTE BLOCO 'IF'
+      if (target.classList.contains("edit-btn")) {
+        const row = target.closest("tr"); // Pega a linha (tr) mais próxima
+        const project = {
+          id: row.dataset.id,
+          nome: row.cells[1].textContent, // Célula do Nome
+          tipo: row.cells[2].textContent, // Célula do Tipo
+          descricao: row.cells[3].textContent, // Célula da Descrição
+        };
+
+        // Chama a função global do modal.js para abrir o modal
+        window.openEditModal(project);
+      }
+
+      if (target.classList.contains("delete-btn")) {
+        const projectId = target.dataset.id;
+        const projectName = target
+          .closest("tr")
+          .querySelector("th").textContent;
+
+        showDeleteConfirmation(projectId, projectName, target.closest("tr"));
+      }
+    });
+  }
+
+  // --- FUNÇÕES DO MODAL DE DELETE ---
+  function setupDeleteModal() {
+    const modal = document.getElementById("deleteModal");
+    const cancelBtn = document.getElementById("cancelDelete");
+    const confirmBtn = document.getElementById("confirmDelete");
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        hideDeleteConfirmation();
+      });
+    }
+
+    // Fechar modal clicando fora
+    if (modal) {
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) {
+          hideDeleteConfirmation();
         }
+      });
     }
 
-    // --- EXECUÇÃO ---
-    setupSearchFilter();
-    setupTypeFilter();
-    fetchAndRenderProjects(); // A busca de dados continua como antes
+    // Fechar modal com ESC
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal && !modal.classList.contains("hidden")) {
+        hideDeleteConfirmation();
+      }
+    });
+  }
 
-    
-    // function setupRowClick() {
-    //     tableBody.addEventListener('click', (event) => {
-    //         const clickedRow = event.target.closest('tr.clickable-row');
-    //         if (clickedRow) {
-    //             // const projectName = clickedRow.querySelector('th').textContent;
-    //             // console.log('Linha clicada:', projectName);
+  function showDeleteConfirmation(projectId, projectName, rowElement) {
+    const modal = document.getElementById("deleteModal");
+    const confirmBtn = document.getElementById("confirmDelete");
+    const modalMessage = document.getElementById("deleteModalMessage");
 
-    //             const projectId = clickedRow.dataset.id;
-    //             window.location.href = `${url}/projetos/${projectId}/`;
-    //         }
-    //     });
-    // }
-
-    // setupRowClick();
-
-    function setupActionButtons() {
-        tableBody.addEventListener('click', (event) => {
-            const target = event.target;
-
-            if (target.classList.contains('view-btn')) {
-                const projectId = target.dataset.id;
-                window.location.href = `${url}/projetos/${projectId}/`;
-            }
-
-            // MODIFIQUE ESTE BLOCO 'IF'
-            if (target.classList.contains('edit-btn')) {
-                const row = target.closest('tr'); // Pega a linha (tr) mais próxima
-                const project = {
-                    id: row.dataset.id,
-                    nome: row.cells[1].textContent,      // Célula do Nome
-                    tipo: row.cells[2].textContent,      // Célula do Tipo
-                    descricao: row.cells[3].textContent // Célula da Descrição
-                };
-                
-                // Chama a função global do modal.js para abrir o modal
-                window.openEditModal(project);
-            }
-
-            if (target.classList.contains('delete-btn')) {
-                const projectId = target.dataset.id;
-                console.log(`Excluir projeto ${projectId}`);
-                // Aqui viria a lógica de exclusão...
-            }
-        });
+    if (!modal || !confirmBtn || !modalMessage) {
+      console.error("Elementos do modal de exclusão não encontrados!");
+      // Fallback para o confirm nativo se o modal falhar
+      if (
+        confirm(
+          `Tem certeza que deseja excluir o projeto "${projectName}"? Esta ação não pode ser desfeita.`
+        )
+      ) {
+        deleteProject(projectId, rowElement);
+      }
+      return;
     }
 
-    setupActionButtons();
+    // Atualiza a mensagem do modal
+    modalMessage.textContent = `Tem certeza que deseja excluir o projeto "${projectName}"? Esta ação não pode ser desfeita.`;
 
+    // Remove event listeners antigos para evitar chamadas múltiplas
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+    // Adiciona o novo event listener
+    newConfirmBtn.addEventListener("click", function () {
+      hideDeleteConfirmation();
+      deleteProject(projectId, rowElement);
+    });
+
+    // Mostra o modal
+    modal.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  function hideDeleteConfirmation() {
+    const modal = document.getElementById("deleteModal");
+    if (modal) {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+  }
+
+  setupActionButtons();
+  setupDeleteModal(); // Adiciona a configuração do modal
 });

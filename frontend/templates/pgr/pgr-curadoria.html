@@ -156,9 +156,14 @@
                 <!-- 4. Riscos por Solução -->
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div class="p-6">
-                        <div class="flex items-center mb-4">
-                            <i class="las la-exclamation-triangle text-2xl text-gray-600 mr-3"></i>
-                            <h2 class="text-xl font-semibold text-gray-900">Análise de Riscos por Solução</h2>
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center">
+                                <i class="las la-exclamation-triangle text-2xl text-gray-600 mr-3"></i>
+                                <h2 class="text-xl font-semibold text-gray-900">Análise de Riscos por Solução</h2>
+                            </div>
+                            <button type="button" id="btn-edit-riscos" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                <i class="las la-edit mr-1"></i>Editar
+                            </button>
                         </div>
                         <div id="riscos-container" class="space-y-4 max-h-96 overflow-y-auto custom-scroll">
                             <!-- Conteúdo será preenchido via JavaScript -->
@@ -267,7 +272,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
     <script>
         // Dados do servidor passados via template
-        window.pgrData = JSON.parse('{{ pgr_data_json|safe }}');
+        window.pgrData = {{ pgr_data_json|safe }};
         window.projectId = {{ projeto.id_projeto if projeto else 'null' }};
     </script>
     <script src="/static/js/pgr/pgr-curadoria.js"></script>

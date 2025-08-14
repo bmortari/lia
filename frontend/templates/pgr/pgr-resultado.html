@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.T.P. - Resultado</title>
+    <title>P.G.R. - Resultado</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- CSS e JS do Flowbite -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
     <!-- jsPDF para geração de PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <!-- Unicons -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <style>
@@ -57,6 +58,19 @@
             box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
             outline: none;
         }
+        /* Estilos para o preview do PDF */
+        #pdfPreviewContainer .pdf-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            background-color: #f9fafb;
+        }
+        #pdfViewer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
@@ -75,39 +89,37 @@
             <div id="loadingStatus" class="text-center mb-4">
                 <div class="inline-flex items-center text-blue-700 bg-blue-50 border border-blue-200 font-medium rounded-lg text-sm px-4 py-2">
                     <i class="uil uil-spinner animate-spin mr-2"></i>
-                    Carregando dados do ETP...
+                    Carregando dados do Plano de Gerenciamento de Riscos...
                 </div>
             </div>
 
-            <!-- Seção de Pré-visualização do Documento -->
+            <!-- Seção de Pré-visualização do Documento com Dropdown -->
             <div class="flex-1 mb-4 min-h-0">
                 <div class="bg-white rounded-xl border-2 border-gray-200 shadow-inner h-full flex flex-col">
                     <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
                         <h3 class="text-lg font-semibold text-gray-800 flex items-center">
-                            <i class="uil uil-analysis mr-2 text-blue-600"></i>
-                            Pré-visualização do Documento
+                            <i class="uil uil-file-shield-alt mr-2 text-blue-600"></i>
+                            Pré-visualização do PGR
                         </h3>
+                        <div id="pgrDropdownContainer" class="max-w-lg">
+                            <!-- O Dropdown será inserido aqui pelo JavaScript -->
+                        </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">E.T.P.</span>
+                            <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">P.G.R.</span>
                             <button id="voltar-curadoria" type="button" class="text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 focus:ring-1 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center">
                                 <i class="uil uil-edit mr-1"></i>Voltar à curadoria
                             </button>
                         </div>
                     </div>
                     
-                    <div id="pdfContainer" class="flex-1 relative min-h-0">
-                        <iframe 
-                            id="pdfViewer" 
-                            class="w-full h-full rounded-b-xl border-0"
-                            style="min-height: 400px;"
-                        ></iframe>
-                        <div id="pdfPlaceholder" class="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-b-xl">
+                    <div id="pdfPreviewContainer" class="flex-1 relative min-h-0 overflow-y-auto scrollbar-custom">
+                        <div id="pdf-placeholder" class="pdf-placeholder">
                             <div class="text-center">
                                 <i class="uil uil-file-pdf-alt text-6xl text-gray-400 mb-4"></i>
-                                <p class="text-gray-500 text-lg">Gerando documento PDF...</p>
-                                <p class="text-gray-400 text-sm mt-2">Por favor, aguarde enquanto o ETP é processado</p>
+                                <p class="text-gray-500 text-lg">Selecione uma solução para gerar o documento.</p>
                             </div>
                         </div>
+                        <iframe id="pdfViewer" style="display: none;"></iframe>
                     </div>
                 </div>
             </div>
@@ -120,7 +132,7 @@
                 </button>
                 <button id="downloadButton" type="button" class="group inline-flex items-center text-gray-700 bg-white border-2 border-gray-300 hover:border-gray-400 focus:outline-none hover:bg-gray-50 focus:ring-4 focus:ring-gray-100 font-semibold rounded-xl text-sm px-6 py-3 transition-all duration-200 transform hover:scale-105">
                     <i class="uil uil-download-alt mr-2 group-hover:animate-bounce"></i>
-                    Baixar Documento
+                    Baixar Documento Ativo
                 </button>
             </div>
 
@@ -129,6 +141,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
-<script src="/static/js/etp/etp-resultado.js"></script>
+<script src="/static/js/pgr/pgr-resultado.js"></script>
 </body>
 </html>
