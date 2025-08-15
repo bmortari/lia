@@ -183,7 +183,7 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
     },
     "servico_continuo": boolean,
     "justificativa_servico_continuo": "string ou null",
-    "providencias_necessarias": {
+    "providencias": {
         "pre_contratacao": ["array - Providências antes da contratação"],
         "durante_execucao": ["array - Providências durante execução"],
         "pos_contratacao": ["array - Providências pós-contratação"],

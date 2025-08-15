@@ -296,7 +296,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
             }},
             "servico_continuo": false,
             "justificativa_servico_continuo": "Justificativa se for serviço de natureza continuada (ou null se não for)",
-            "providencias_necessarias": {{
+            "providencias": {{
                 "pre_contratacao": [
                     "Elaboração detalhada do Termo de Referência/Projeto Básico",
                     "Aprovação pela autoridade competente",
@@ -619,7 +619,7 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
         },
         "servico_continuo": False,
         "justificativa_servico_continuo": None,
-        "providencias_necessarias": {
+        "providencias": {
             "pre_contratacao": [
                 "Elaboração do Termo de Referência",
                 "Aprovação da documentação técnica",

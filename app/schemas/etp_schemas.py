@@ -140,7 +140,7 @@ class ETPCompleto(BaseModel):
     demonst_resultados: DemonstracaoResultados = Field(..., description="Resultados esperados")
     servico_continuo: bool = Field(..., description="Se é serviço de natureza contínua")
     justificativa_servico_continuo: Optional[str] = Field(None, description="Justificativa se for serviço contínuo")
-    providencias_necessarias: ProvidenciasETP = Field(..., description="Providências necessárias")
+    providencias: ProvidenciasETP = Field(..., description="Providências necessárias")
     impactos_ambientais: str = Field(..., description="Análise de impactos ambientais")
     alinhamento_pls: List[str] = Field(..., description="Alinhamento com PLS da Administração Pública")
     posicao_conclusiva: bool = Field(..., description="Posição conclusiva sobre a contratação")
@@ -174,7 +174,7 @@ class ETPCompleto(BaseModel):
             'demonst_resultados': self.demonst_resultados.dict(),
             'serv_continuo': self.servico_continuo,
             'justif_serv_continuo': self.justificativa_servico_continuo,
-            'providencias': self.providencias_necessarias.dict(),
+            'providencias': self.providencias.dict(),
             'impac_ambientais': self.impactos_ambientais,
             'alinhamento_pls': self.alinhamento_pls,
             'posic_conclusivo': self.posicao_conclusiva,
