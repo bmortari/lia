@@ -196,7 +196,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
     <script>
         // O filtro '|safe' do Jinja2 é CRUCIAL para evitar que as aspas do JSON sejam escapadas
-        window.serverData = JSON.parse('{{ pdp_data_json|safe }}');
+        window.serverData = '{{ pdp_data_json|safe }}';
     </script>
     <script src="/static/js/pdp/pdp-curadoria.js"></script>
 </body>

@@ -498,7 +498,7 @@ class PNCPSearcher:
         try:
             logger.info(f"📥 Baixando: {documento.objeto[:50]}...")
             
-            response = requests.get(documento.url_download, stream=True, timeout=30)
+            response = requests.get(documento.url_download, stream=True, timeout=60)
             response.raise_for_status()
             
             # Determina o nome do arquivo

@@ -1,3 +1,47 @@
+/**
+ * Tenta recuperar uma string JSON malformada.
+ * @param {string} text - A string JSON potencialmente malformada.
+ * @returns {any} - O objeto JSON parseado ou null se a recuperação falhar.
+ */
+function tryRecoverJson(text) {
+    if (!text || typeof text !== 'string') {
+        return null;
+    }
+    try {
+        // Tenta o parse direto
+        return JSON.parse(text);
+    } catch (e) {
+        console.warn("Falha no parsing inicial do JSON. Tentando recuperação...", e);
+
+        // Remove lixo e marcadores de código comuns
+        let correctedText = text.trim().replace(/^```json\s*|```\s*$/g, '');
+
+        // Adiciona vírgulas faltantes entre "}" e "{" (comum em listas de objetos)
+        correctedText = correctedText.replace(/}\s*{/g, '},{');
+
+        // Remove vírgulas finais (trailing commas) antes de "}" ou "]"
+        correctedText = correctedText.replace(/,\s*([}\]])/g, '$1');
+        
+        // Se a IA retorna múltiplos objetos sem envolvê-los em um array
+        if (!correctedText.startsWith('[') && correctedText.includes('},{')) {
+             correctedText = `[${correctedText}]`;
+        }
+
+        try {
+            console.log("JSON após tentativa de correção:", correctedText);
+            const parsed = JSON.parse(correctedText);
+            // Se o resultado for um único objeto, mas a lógica espera um array, envolve-o
+            if (!Array.isArray(parsed)) {
+                return [parsed];
+            }
+            return parsed;
+        } catch (e2) {
+            console.error("Não foi possível recuperar o JSON após as tentativas de correção.", e2);
+            return null; // Retorna null se tudo falhar
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE MANAGEMENT ---
     let contractsData = [];
@@ -392,14 +436,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let dataSource = null;
 
-        // 1. Verifica os dados do servidor. Um array vazio é considerado válido.
-        if (window.serverData && Array.isArray(window.serverData)) {
-            if (window.serverData.length > 0 && !validateDataStructure(window.serverData)) {
-                console.warn('Os dados recebidos do servidor possuem uma estrutura inválida.');
+        // 1. Tenta carregar e recuperar os dados do servidor.
+        if (window.serverData && typeof window.serverData === 'string') {
+            // tryRecoverJson foi implementado devido à constantes falhas na formação correta da sintaxe do JSON por parte da IA
+            dataSource = tryRecoverJson(window.serverData);
+            if (dataSource) {
+                 console.log(`Dados carregados e parseados do servidor. ${dataSource.length} contratos encontrados.`);
             } else {
-                dataSource = window.serverData;
-                console.log(`Dados carregados do servidor. ${dataSource.length} contratos encontrados.`);
+                 console.error('Falha ao parsear dados do servidor, mesmo após tentativa de recuperação.');
             }
+        } else if (window.serverData && Array.isArray(window.serverData)) {
+            // Fallback para caso o dado já venha parseado
+            dataSource = window.serverData;
         }
 
         // 2. Se os dados do servidor não foram usados, tenta o localStorage como fallback.
@@ -407,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const draftPDP = localStorage.getItem('draftPDP');
                 if (draftPDP) {
-                    const parsedData = JSON.parse(draftPDP);
+                    const parsedData = tryRecoverJson(draftPDP);
                     if (validateDataStructure(parsedData)) {
                         dataSource = parsedData;
                         console.log('Dados carregados do localStorage (draftPDP).');

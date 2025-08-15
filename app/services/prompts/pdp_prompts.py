@@ -89,5 +89,5 @@ INSTRUÇÕES IMPORTANTES:
    - Se objeto muito específico: adapte itens similares encontrados
    - Se não houver preços: pesquise por referências de mercado
 
-IMPORTANTE: Retorne sempre um array JSON válido, mesmo que seja um único PDP. Todos os campos numéricos devem ser numbers, não strings. Datas no formato ISO (YYYY-MM-DD).
+IMPORTANTE: Retorne sempre um array JSON válido, mesmo que seja um único PDP. Cada documento analisado deve ser convertido em um elemento do array JSON. Todos os campos numéricos devem ser numbers, não strings. Datas no formato ISO (YYYY-MM-DD).
 """

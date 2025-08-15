@@ -71,7 +71,7 @@ async def create_pdp_service(pdp_in: PDPCreate, db: AsyncSession, current_user: 
             texto_similaridade=pdp_in.descricao,
             tipos_documento=['ata', 'contrato'],
             max_documentos=1000,
-            max_similares=8,
+            max_similares=20,
             ufs=pdp_in.ufs if pdp_in.ufs else None,
             esferas=pdp_in.esferas if pdp_in.esferas else None,
             modalidades=pdp_in.modalidades if pdp_in.modalidades else None
@@ -282,7 +282,7 @@ async def consulta_ia(prompt_final_completo):
         if not pdf_files:
             raise ValueError("Não foi possível achar nenhum documento com as seleções feitas, por favor tente novamente.")
             
-        pdf_files = pdf_files[:5]
+        pdf_files = pdf_files[:15]
 
         uploaded_files = []
         for file_name in pdf_files:
