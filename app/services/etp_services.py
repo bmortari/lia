@@ -102,7 +102,7 @@ async def create_etp_service(etp_in: ETPCreate, db: AsyncSession, current_user: 
             print(f"Nenhum ETP foi criado. Atualizando 'exist_etp' para False no projeto ID: {project_id}")
             projeto.exist_etp = False
 
-        await db.commit()
+        await db.commit() 
         
         etps_response = []
         for etp in etps_criados:
@@ -280,7 +280,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
             }},
             "justificativa_nao_parcelamento": "Justificativa técnica fundamentada para não parcelamento da contratação",
             "valor_total_estimado": "R$ 0,00 (baseado nos dados do PDP)",
-            "demonstracao_resultados": {{
+            "demonst_resultados": {{
                 "resultados_quantitativos": {{
                     "eficiencia_operacional": "Percentual de melhoria esperado",
                     "redução_custos": "Economia estimada",
@@ -605,7 +605,7 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
         },
         "justificativa_nao_parcelamento": "A natureza da contratação não permite parcelamento sem prejuízo da funcionalidade",
         "valor_total_estimado": "A definir mediante pesquisa detalhada",
-        "demonstracao_resultados": {
+        "demonst_resultados": {
             "resultados_quantitativos": {
                 "eficiencia": "Melhoria esperada",
                 "prazo": "Atendimento nos prazos"

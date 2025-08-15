@@ -167,7 +167,7 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
     },
     "justificativa_nao_parcelamento": "string - Justificativa técnica fundamentada",
     "valor_total_estimado": "string - Valor formatado em reais",
-    "demonstracao_resultados": {
+    "demonst_resultados": {
         "resultados_quantitativos": {
             "eficiencia_operacional": "string",
             "reducao_custos": "string",

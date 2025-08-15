@@ -63,7 +63,7 @@ async function fazerRequisicaoAutenticada(url, options = {}) {
 // Função para extrair project_id da URL
 function getProjectIdFromUrl() {
   const url = window.location.pathname;
-  const match = url.match(/\/projetos\/(\d+)\//);
+  const match = url.match(/\/projetos\/(\d+)/);
   return match ? match[1] : null;
 }
 
@@ -338,6 +338,41 @@ function wrapText(text, maxWidth) {
   return lines;
 }
 
+// Mapeamento de chaves de resultados para nomes de exibição amigáveis
+const resultadoKeyMap = {
+    // Quantitativos
+    'reducao_custos': 'Redução de custos',
+    'aumento_receita': 'Aumento de receita',
+    'aumento_produtividade': 'Aumento de produtividade',
+    'reducao_tempo_ciclo': 'Redução do tempo de ciclo',
+    'aumento_market_share': 'Aumento de market share',
+    'reducao_taxa_erro': 'Redução da taxa de erro',
+
+    // Qualitativos
+    'eficiencia_operacional': 'Eficiência operacional',
+    'satisfacao_usuarios': 'Satisfação dos usuários',
+    'melhora_qualidade_servico': 'Melhora na qualidade do serviço',
+    'reducao_riscos': 'Redução de riscos',
+    'conformidade_regulatoria': 'Conformidade regulatória',
+    'inovacao_tecnologica': 'Inovação tecnológica',
+    'sustentabilidade_ambiental': 'Sustentabilidade ambiental',
+    'melhora_imagem_organizacao': 'Melhora na imagem da organização',
+    'acessibilidade': 'Acessibilidade',
+    'seguranca_informacao': 'Segurança da informação',
+    'resiliencia_operacional': 'Resiliência operacional',
+    'escalabilidade': 'Escalabilidade',
+    'interoperabilidade': 'Interoperabilidade',
+    'usabilidade': 'Usabilidade',
+    'transparencia': 'Transparência',
+    'participacao_cidada': 'Participação cidadã',
+    'satisfacao_servidores': 'Satisfação dos servidores'
+};
+
+// Função para obter o nome de exibição de uma chave de resultado
+function getResultadoDisplayName(key) {
+    return resultadoKeyMap[key] || key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
+
 // Função para gerar PDF a partir dos dados JSON do ETP
 function generateETPPDF(jsonData) {
     return new Promise((resolve) => {
@@ -563,7 +598,7 @@ function generateETPPDF(jsonData) {
                 if (demo.resultados_quantitativos) {
                     resultadosText += "RESULTADOS QUANTITATIVOS:\n";
                     Object.entries(demo.resultados_quantitativos).forEach(([key, value]) => {
-                        resultadosText += `• ${key}: ${value}\n`;
+                        resultadosText += `• ${getResultadoDisplayName(key)}: ${value}\n`;
                     });
                     resultadosText += "\n";
                 }
@@ -571,7 +606,7 @@ function generateETPPDF(jsonData) {
                 if (demo.resultados_qualitativos) {
                     resultadosText += "RESULTADOS QUALITATIVOS:\n";
                     Object.entries(demo.resultados_qualitativos).forEach(([key, value]) => {
-                        resultadosText += `• ${key}: ${value}\n`;
+                        resultadosText += `• ${getResultadoDisplayName(key)}: ${value}\n`;
                     });
                     resultadosText += "\n";
                 }

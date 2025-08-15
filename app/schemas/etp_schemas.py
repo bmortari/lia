@@ -137,7 +137,7 @@ class ETPCompleto(BaseModel):
     quantidade_estimada: QuantidadeEstimada = Field(..., description="Quantidades e valores estimados")
     justificativa_nao_parcelamento: str = Field(..., description="Justificativa para não parcelamento")
     valor_total_estimado: str = Field(..., description="Valor total da contratação")
-    demonstracao_resultados: DemonstracaoResultados = Field(..., description="Resultados esperados")
+    demonst_resultados: DemonstracaoResultados = Field(..., description="Resultados esperados")
     servico_continuo: bool = Field(..., description="Se é serviço de natureza contínua")
     justificativa_servico_continuo: Optional[str] = Field(None, description="Justificativa se for serviço contínuo")
     providencias_necessarias: ProvidenciasETP = Field(..., description="Providências necessárias")
@@ -171,7 +171,7 @@ class ETPCompleto(BaseModel):
             'quantidade_estimada': self.quantidade_estimada.dict(),
             'just_nao_parc': self.justificativa_nao_parcelamento,
             'valor_total': self.valor_total_estimado,
-            'demonst_resultados': self.demonstracao_resultados.dict(),
+            'demonst_resultados': self.demonst_resultados.dict(),
             'serv_continuo': self.servico_continuo,
             'justif_serv_continuo': self.justificativa_servico_continuo,
             'providencias': self.providencias_necessarias.dict(),
