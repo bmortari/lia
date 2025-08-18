@@ -193,7 +193,7 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
             "equipe_apoio": "string"
         }
     },
-    "impactos_ambientais": "string - Análise detalhada de impactos ambientais",
+    "impac_ambientais": "string - Análise detalhada de impactos ambientais",
     "alinhamento_pls": ["array - Critérios de sustentabilidade"],
     "posicao_conclusiva": boolean - true para favorável, false para contrária,
     "justificativa_posicao": "string - Justificativa técnica da posição",

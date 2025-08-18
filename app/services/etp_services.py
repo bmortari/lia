@@ -320,7 +320,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
                     "equipe_apoio": "Equipe de apoio necessária"
                 }}
             }},
-            "impactos_ambientais": "Análise detalhada dos impactos ambientais considerando todo o ciclo de vida",
+            "impac_ambientais": "Análise detalhada dos impactos ambientais considerando todo o ciclo de vida",
             "alinhamento_pls": [
                 "Critério específico de sustentabilidade 1",
                 "Critério específico de sustentabilidade 2",
@@ -639,7 +639,7 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
                 "fiscal": "Fiscal técnico"
             }
         },
-        "impactos_ambientais": "Impacto ambiental baixo. Medidas de sustentabilidade serão adotadas conforme legislação vigente",
+        "impac_ambientais": "Impacto ambiental baixo. Medidas de sustentabilidade serão adotadas conforme legislação vigente",
         "alinhamento_pls": [
             "Uso racional de recursos",
             "Práticas sustentáveis",
