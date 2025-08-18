@@ -265,7 +265,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
                 "data_pesquisa": "{datetime.now().strftime('%Y-%m-%d')}",
                 "observacoes": "Observações específicas sobre a pesquisa de mercado realizada"
             }},
-            "solucao_proposta": "Descrição detalhada da solução técnica proposta (integrar dados das soluções identificadas)",
+            "solucao": "Descrição detalhada da solução técnica proposta (integrar dados das soluções identificadas)",
             "quantidade_estimada": {{
                 "item_principal": {{
                     "descricao": "Descrição do item principal",
