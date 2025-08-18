@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "valor-total": etpData.valor_total || "",
       "justif-posic-conclusivo": etpData.justif_posic_conclusivo || "",
       "equipe-de-planejamento": etpData.equipe_de_planejamento || "",
+      "just-nao-parc": etpData.just_nao_parc || "",
     };
 
     Object.entries(camposTexto).forEach(([id, valor]) => {
@@ -564,6 +565,7 @@ document.addEventListener("DOMContentLoaded", function () {
       valor_total: "valor-total",
       justif_posic_conclusivo: "justif-posic-conclusivo",
       equipe_de_planejamento: "equipe-de-planejamento",
+      just_nao_parc: "just-nao-parc",
     };
 
     Object.entries(camposTexto).forEach(([key, id]) => {
@@ -646,6 +648,16 @@ document.addEventListener("DOMContentLoaded", function () {
           return; // Interromper o processo de salvamento
         }
         // --- FIM: Nova Validação para Requisitos ---
+
+        // --- INÍCIO: Nova Validação para Justificativa de Não Parcelamento ---
+        if (!dados.just_nao_parc || dados.just_nao_parc.trim().length === 0) {
+          alert("É obrigatório preencher a Justificativa para o parcelamento ou não da contratação.");
+          saveChangesBtn.disabled = false;
+          saveChangesBtn.innerHTML =
+            '<i class="las la-save text-lg mr-2"></i>Salvar alterações';
+          return;
+        }
+        // --- FIM: Nova Validação para Justificativa de Não Parcelamento ---
 
         // Mostrar loading
         saveChangesBtn.disabled = true;
