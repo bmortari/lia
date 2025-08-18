@@ -138,13 +138,13 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
     "unidade_demandante": "string - Extrair do DFD",
     "objeto_contratacao": "string - Descrição técnica detalhada do objeto",
     "sist_reg_preco": boolean - Se utilizará SRP,
-    "justificativa_necessidade": "string - Justificativa técnica fundamentada",
+    "necessidade_contratacao": "string - Justificativa técnica fundamentada",
     "alinhamento_estrategico": ["array de strings - Objetivos estratégicos"],
     "informacoes_contratacao": "string - Informações técnicas detalhadas",
     "previsto_pca": boolean - Extrair do DFD,
     "item_pca": number - Item do PCA correspondente,
     "requisitos_contratacao": ["array - Requisitos técnicos e habilitatórios"],
-    "levantamento_mercado": {
+    "lev_mercado": {
         "pesquisa_mercado": "string - Metodologia e resultados da pesquisa",
         "preco_medio": number - Preço médio encontrado (baseado no PDP),
         "variacao_percentual": number - Variação entre preços,

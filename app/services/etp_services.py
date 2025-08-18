@@ -63,7 +63,7 @@ async def create_etp_service(etp_in: ETPCreate, db: AsyncSession, current_user: 
                 unidade_demandante=etp_data.get('unidade_demandante', artefatos.get('dfd', {}).get('unidade_demandante', 'N/D')),
                 objeto_contratado=etp_data.get('objeto_contratacao', artefatos.get('dfd', {}).get('objeto_contratacao', 'N/D')),
                 sist_reg_preco=etp_data.get('sist_reg_preco', False),
-                necessidade_contratacao=etp_data.get('justificativa', artefatos.get('dfd', {}).get('justificativa_necessidade', 'N/D')),
+                necessidade_contratacao=etp_data.get('necessidade_contratacao', artefatos.get('dfd', {}).get('justificativa_necessidade', 'N/D')),
                 alinhamento_estrategico=etp_data.get('alinhamento_estrategico', []),
                 info_contratacao=etp_data.get('info_contratacao', 'Informações técnicas da contratação'),
                 previsto_pca=etp_data.get('previsto_pca', True),
@@ -243,21 +243,21 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
             "unidade_demandante": "Unidade responsável pela demanda (extrair do DFD)",
             "objeto_contratacao": "Descrição detalhada do objeto (baseado no DFD)",
             "sist_reg_preco": false,
-            "justificativa_necessidade": "Justificativa detalhada da necessidade (baseado no DFD)",
+            "necessidade_contratacao": "Justificativa detalhada da necessidade (baseado no DFD)",
             "alinhamento_estrategico": [
                 "Alinhamento estratégico extraído do DFD",
                 "Objetivos institucionais relacionados"
             ],
-            "informacoes_contratacao": "Informações técnicas detalhadas sobre a contratação",
+            "info_contratacao": "Informações técnicas detalhadas sobre a contratação",
             "previsto_pca": true,
             "item_pca": 1,
-            "requisitos_contratacao": [
+            "req_contratacao": [
                 "Requisito técnico específico 1",
                 "Requisito habilitatório 2",
                 "Experiência comprovada na área",
                 "Certificações necessárias"
             ],
-            "levantamento_mercado": {{
+            "lev_mercado": {{
                 "pesquisa_mercado": "Descrição da pesquisa realizada baseada nos dados do PDP",
                 "preco_medio": 0.0,
                 "variacao_percentual": 15.0,
@@ -578,12 +578,12 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
         "informacoes_contratacao": "Contratação necessária conforme análise técnica realizada",
         "previsto_pca": dfd_data.get("previsto_pca", True),
         "item_pca": dfd_data.get("item_pca", 1),
-        "requisitos_contratacao": [
+        "req_contratacao": [
             "Experiência comprovada na área",
             "Capacidade técnica adequada",
             "Regularidade jurídica e fiscal"
         ],
-        "levantamento_mercado": {
+        "lev_mercado": {
             "pesquisa_mercado": "Pesquisa básica de mercado realizada",
             "preco_medio": 0.0,
             "variacao_percentual": 15.0,
