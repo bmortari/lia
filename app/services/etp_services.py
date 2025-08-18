@@ -327,7 +327,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
                 "Conformidade com PLS da Administração Pública"
             ],
             "posicao_conclusiva": true,
-            "justificativa_posicao": "Justificativa técnica fundamentada da posição conclusiva",
+            "justif_posic_conclusivo": "Justificativa técnica fundamentada da posição conclusiva",
             "equipe_planejamento": "Identificação completa da equipe responsável pelo planejamento"
         }}
 
@@ -646,7 +646,7 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
             "Responsabilidade socioambiental"
         ],
         "posicao_conclusiva": True,
-        "justificativa_posicao": "A contratação é recomendada considerando a necessidade identificada e os benefícios esperados",
+        "justif_posic_conclusivo": "A contratação é recomendada considerando a necessidade identificada e os benefícios esperados",
         "equipe_planejamento": dfd_data.get("equipe_planejamento", "Equipe técnica responsável pelo planejamento"),
         "status_ia": "fallback"
     }

@@ -236,7 +236,7 @@ function converterDadosETP(etpBanco) {
       providencias: providencias,
       impac_ambientais: etpBanco.impac_ambientais || "Não especificado",
       alinhamento_pls: alinhamento_pls,
-      posic_conclusivo: etpBanco.posic_conclusivo || true,
+      posic_conclusivo: etpBanco.posic_conclusivo ?? true,
       justif_posic_conclusivo:
         etpBanco.justif_posic_conclusivo || "Não especificada",
       equipe_de_planejamento:
@@ -694,9 +694,9 @@ function generateETPPDF(jsonData) {
 
             // Seção 17 - POSIÇÃO CONCLUSIVA
             const posicaoText =
-                `POSIÇÃO: ${ 
-      jsonData.posic_conclusivo ? "FAVORÁVEL" : "CONTRÁRIA" 
-    } à contratação\n\n` + `JUSTIFICATIVA: ${jsonData.justif_posic_conclusivo}`;
+              `Posição: ${ 
+                jsonData.posic_conclusivo ? "Favorável" : "Contrária" 
+              } à contratação\n\n` + `Justificativa: ${jsonData.justif_posic_conclusivo}`;
             yPosition = addSection("17. POSIÇÃO CONCLUSIVA", posicaoText, yPosition);
 
             // Seção 18 - EQUIPE DE PLANEJAMENTO

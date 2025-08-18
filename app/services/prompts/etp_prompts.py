@@ -196,7 +196,7 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
     "impac_ambientais": "string - Análise detalhada de impactos ambientais",
     "alinhamento_pls": ["array - Critérios de sustentabilidade"],
     "posicao_conclusiva": boolean - true para favorável, false para contrária,
-    "justificativa_posicao": "string - Justificativa técnica da posição",
+    "justif_posic_conclusivo": "string - Justificativa técnica da posição",
     "equipe_planejamento": "string - Extrair do DFD"
 }
 
