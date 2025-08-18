@@ -278,7 +278,7 @@ async def gerar_etp_ia(prompt_usuario: str, artefatos: Dict, project_id: int) ->
                 "total_estimado": 0.0,
                 "criterios_dimensionamento": "Critérios técnicos utilizados para dimensionamento"
             }},
-            "justificativa_nao_parcelamento": "Justificativa técnica fundamentada para não parcelamento da contratação",
+            "just_nao_parc": "Justificativa técnica fundamentada para o parcelamento (ou não) da contratação",
             "valor_total_estimado": "R$ 0,00 (baseado nos dados do PDP)",
             "demonst_resultados": {{
                 "resultados_quantitativos": {{
@@ -603,7 +603,7 @@ def criar_etp_fallback(artefatos: Dict, project_id: int) -> Dict:
             "total_estimado": 0.0,
             "criterios_dimensionamento": "Baseado na necessidade identificada"
         },
-        "justificativa_nao_parcelamento": "A natureza da contratação não permite parcelamento sem prejuízo da funcionalidade",
+        "just_nao_parc": "A natureza da contratação não permite parcelamento sem prejuízo da funcionalidade",
         "valor_total_estimado": "A definir mediante pesquisa detalhada",
         "demonst_resultados": {
             "resultados_quantitativos": {

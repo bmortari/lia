@@ -165,7 +165,7 @@ Gere EXCLUSIVAMENTE um JSON válido seguindo exatamente esta estrutura:
         "total_estimado": number,
         "criterios_dimensionamento": "string - Metodologia utilizada"
     },
-    "justificativa_nao_parcelamento": "string - Justificativa técnica fundamentada",
+    "just_nao_parc": "string - Justificativa técnica fundamentada para o parcelamento (ou não) da contratação",
     "valor_total_estimado": "string - Valor formatado em reais",
     "demonst_resultados": {
         "resultados_quantitativos": {

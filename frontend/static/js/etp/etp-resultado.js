@@ -572,9 +572,9 @@ function generateETPPDF(jsonData) {
             }
             yPosition = addSection("9. QUANTIDADE ESTIMADA", quantidadeText, yPosition);
 
-            // Seção 10 - JUSTIFICATIVA PARA NÃO PARCELAMENTO
+            // Seção 10 - JUSTIFICATIVA PARA PARCELAMENTO OU NÃO
             yPosition = addSection(
-                "10. JUSTIFICATIVA PARA NÃO PARCELAMENTO",
+                "10. JUSTIFICATIVAS PARA O PARCELAMENTO OU NÃO DA CONTRATAÇÃO",
                 jsonData.just_nao_parc,
                 yPosition
             );
