@@ -525,13 +525,13 @@ function generateETPPDF(jsonData) {
             // Seção 7 - LEVANTAMENTO DE MERCADO
             const levMercado = jsonData.lev_mercado || {};
             const mercadoText = 
-                `Pesquisa de Mercado: ${ 
+                `${ 
       levMercado.pesquisa_mercado || "Não informado" 
     }\n\n` +
                 `Preço Médio Encontrado: R$ ${(levMercado.preco_medio || 0).toLocaleString(
       "pt-BR",
       { minimumFractionDigits: 2 }
-    )}\n\n` +
+    )}\n` +
                 `Variação Percentual: ${levMercado.variacao_percentual || 0}%\n\n` +
                 `Fontes Consultadas: ${ 
       (levMercado.fontes || []).join(", ") || "Não informado" 

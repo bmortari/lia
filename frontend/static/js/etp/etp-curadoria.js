@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 ETP Curadoria carregado");
 
+  let currentEtpData = null; // Variável para armazenar os dados do ETP carregados
+
   // Função para obter o ID do projeto da URL
   function getProjectIdFromUrl() {
     const url = window.location.pathname;
@@ -160,6 +162,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Pegar o primeiro ETP (mais recente)
       const etpData = etpList[0];
+
+      currentEtpData = etpData; // Armazenar os dados do ETP carregados
 
       // Preencher os campos do formulário
       preencherFormularioETP(etpData);
@@ -346,12 +350,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const pesquisaMercado = document.getElementById("pesquisa-mercado");
     const precoMedio = document.getElementById("preco-medio");
     const observacoesMercado = document.getElementById("observacoes-mercado");
+    const variacaoPercentual = document.getElementById("variacao-percentual");
+    const dataPesquisa = document.getElementById("data-pesquisa");
 
     if (pesquisaMercado)
       pesquisaMercado.value = levMercado.pesquisa_mercado || "";
     if (precoMedio) precoMedio.value = levMercado.preco_medio || "";
     if (observacoesMercado)
       observacoesMercado.value = levMercado.observacoes || "";
+    if (variacaoPercentual) {
+      variacaoPercentual.value = levMercado.variacao_percentual ?? "";
+    }
+    if (dataPesquisa) {
+      let dateValue = levMercado.data_pesquisa || "";
+      if (typeof dateValue === "string" && dateValue.includes("T")) {
+        dateValue = dateValue.split("T")[0];
+      }
+      dataPesquisa.value = dateValue;
+    }
   }
 
   // Event listener para botões de edição
@@ -422,6 +438,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const pesquisaMercado = document.getElementById("pesquisa-mercado");
       const precoMedio = document.getElementById("preco-medio");
       const observacoesMercado = document.getElementById("observacoes-mercado");
+      const variacaoPercentual = document.getElementById("variacao-percentual");
+      const dataPesquisa = document.getElementById("data-pesquisa");
       if (pesquisaMercado) {
         pesquisaMercado.disabled = false;
         pesquisaMercado.focus();
@@ -434,6 +452,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (observacoesMercado) {
         observacoesMercado.disabled = false;
         observacoesMercado.classList.remove("editable-content:disabled");
+      }
+      if (variacaoPercentual) {
+        variacaoPercentual.disabled = false;
+        variacaoPercentual.classList.remove("editable-content:disabled");
+      }
+      if (dataPesquisa) {
+        dataPesquisa.disabled = false;
+        dataPesquisa.classList.remove("editable-content:disabled");
       }
     } else {
       // Campo normal
@@ -478,6 +504,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const pesquisaMercado = document.getElementById("pesquisa-mercado");
       const precoMedio = document.getElementById("preco-medio");
       const observacoesMercado = document.getElementById("observacoes-mercado");
+      const variacaoPercentual = document.getElementById("variacao-percentual");
+      const dataPesquisa = document.getElementById("data-pesquisa");
       if (pesquisaMercado) {
         pesquisaMercado.disabled = true;
         pesquisaMercado.classList.add("editable-content:disabled");
@@ -489,6 +517,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (observacoesMercado) {
         observacoesMercado.disabled = true;
         observacoesMercado.classList.add("editable-content:disabled");
+      }
+      if (variacaoPercentual) {
+        variacaoPercentual.disabled = true;
+        variacaoPercentual.classList.add("editable-content:disabled");
+      }
+      if (dataPesquisa) {
+        dataPesquisa.disabled = true;
+        dataPesquisa.classList.add("editable-content:disabled");
       }
     } else {
       // Campo normal
@@ -565,11 +601,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const pesquisaMercado = document.getElementById("pesquisa-mercado");
     const precoMedio = document.getElementById("preco-medio");
     const observacoesMercado = document.getElementById("observacoes-mercado");
+    const variacaoPercentual = document.getElementById("variacao-percentual");
+    const dataPesquisa = document.getElementById("data-pesquisa");
 
     dados.lev_mercado = {
       pesquisa_mercado: pesquisaMercado ? pesquisaMercado.value.trim() : "",
       preco_medio: precoMedio ? parseFloat(precoMedio.value) || 0 : 0,
       observacoes: observacoesMercado ? observacoesMercado.value.trim() : "",
+      variacao_percentual: variacaoPercentual
+        ? parseFloat(variacaoPercentual.value) || 0
+        : 0,
+      data_pesquisa: dataPesquisa ? dataPesquisa.value : "",
+      fontes: (currentEtpData && currentEtpData.lev_mercado && currentEtpData.lev_mercado.fontes)
+        ? currentEtpData.lev_mercado.fontes
+        : {},
     };
 
     return dados;
