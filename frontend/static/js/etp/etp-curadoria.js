@@ -274,6 +274,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Demonstração de Resultados
     preencherDemonstracaoResultados(etpData.demonst_resultados || {});
+
+    // Caracterização de Serviços ou Fornecimentos Contínuos
+    if (etpData.serv_continuo !== undefined) {
+      const servContinuoSim = document.getElementById("serv-continuo-sim");
+      const servContinuoNao = document.getElementById("serv-continuo-nao");
+      const justifContainer = document.getElementById(
+        "justificativa-serv-continuo-container"
+      );
+      const justifTextarea = document.getElementById("justif-serv-continuo");
+
+      if (etpData.serv_continuo) {
+        if (servContinuoSim) servContinuoSim.checked = true;
+        if (justifContainer) justifContainer.style.display = "block";
+      } else {
+        if (servContinuoNao) servContinuoNao.checked = true;
+        if (justifContainer) justifContainer.style.display = "none";
+      }
+
+      if (justifTextarea) {
+        justifTextarea.value = etpData.justif_serv_continuo || "";
+      }
+    }
   }
 
   // Função para preencher demonstração de resultados
@@ -683,6 +705,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Event listener para os radio buttons de serviço contínuo
+  document.querySelectorAll('input[name="serv_continuo"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      const justifContainer = document.getElementById(
+        "justificativa-serv-continuo-container"
+      );
+      const justifTextarea = document.getElementById("justif-serv-continuo");
+      if (this.value === "true") {
+        justifContainer.style.display = "block";
+        if (justifTextarea) justifTextarea.disabled = false;
+      } else {
+        justifContainer.style.display = "none";
+        if (justifTextarea) justifTextarea.disabled = true;
+      }
+    });
+  });
+
   // Função para extrair dados do formulário
   function extrairDadosFormulario() {
     const dados = {};
@@ -800,6 +839,16 @@ document.addEventListener("DOMContentLoaded", function () {
       indicadores_desempenho: indicadores,
       prazo_resultados: prazo,
     };
+
+    // Caracterização de Serviços ou Fornecimentos Contínuos
+    const servContinuoSim = document.getElementById("serv-continuo-sim");
+    if (servContinuoSim) {
+      dados.serv_continuo = servContinuoSim.checked;
+    }
+    const justifServContinuo = document.getElementById("justif-serv-continuo");
+    if (justifServContinuo) {
+      dados.justif_serv_continuo = justifServContinuo.value.trim();
+    }
 
     return dados;
   }
