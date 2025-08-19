@@ -628,9 +628,6 @@ document.addEventListener("DOMContentLoaded", function () {
         isCurrentlyDisabled = resultadosQuantitativos
           ? resultadosQuantitativos.disabled
           : true;
-      } else if (targetId === "providencias") {
-        const preContratacao = document.getElementById("providencias-pre-contratacao");
-        isCurrentlyDisabled = preContratacao ? preContratacao.disabled : true;
       } else {
         const targetElement = document.getElementById(targetId);
         if (!targetElement) {
@@ -730,18 +727,6 @@ document.addEventListener("DOMContentLoaded", function () {
         prazo.classList.remove("editable-content:disabled");
       }
     } else if (targetId === "providencias") {
-      document.querySelectorAll(".providencia-pre-input").forEach(input => {
-        input.disabled = false;
-        input.classList.remove("editable-content:disabled");
-      });
-      document.querySelectorAll(".providencia-durante-input").forEach(input => {
-        input.disabled = false;
-        input.classList.remove("editable-content:disabled");
-      });
-      document.querySelectorAll(".providencia-pos-input").forEach(input => {
-        input.disabled = false;
-        input.classList.remove("editable-content:disabled");
-      });
       // Show remove buttons
       document.querySelectorAll(".remove-providencia-pre-btn").forEach(btn => btn.style.display = "block");
       document.querySelectorAll(".remove-providencia-durante-btn").forEach(btn => btn.style.display = "block");
