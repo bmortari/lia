@@ -190,11 +190,32 @@ function converterDadosETP(etpBanco) {
         providencias = etpBanco.providencias;
       } else if (typeof etpBanco.providencias === "string") {
         try {
+          // Tenta fazer o parse como um objeto JSON
           providencias = JSON.parse(etpBanco.providencias);
         } catch (e) {
-          providencias = { resumo: etpBanco.providencias };
+          // Se não for um objeto JSON, trata a string como pre_contratacao
+          providencias = { pre_contratacao: etpBanco.providencias };
         }
       }
+
+      // Garante que pre_contratacao, durante_execucao, pos_contratacao sejam arrays de strings
+      const ensureArray = (field) => {
+        if (providencias[field]) {
+          if (typeof providencias[field] === "string") {
+            // Divide por quebra de linha, então remove espaços de cada item
+            providencias[field] = providencias[field].split('\n').map(item => item.trim()).filter(item => item.length > 0);
+          } else if (!Array.isArray(providencias[field])) {
+            // Se não for uma string e nem um array, torna-o um array vazio
+            providencias[field] = [];
+          }
+        } else {
+          providencias[field] = [];
+        }
+      };
+
+      ensureArray('pre_contratacao');
+      ensureArray('durante_execucao');
+      ensureArray('pos_contratacao');
     }
 
     // Processar alinhamento PLS

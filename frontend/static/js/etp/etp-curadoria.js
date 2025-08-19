@@ -296,6 +296,39 @@ document.addEventListener("DOMContentLoaded", function () {
         justifTextarea.value = etpData.justif_serv_continuo || "";
       }
     }
+
+    // Providências Necessárias
+    if (etpData.providencias) {
+      const providenciasPre = etpData.providencias.pre_contratacao || [];
+      const providenciasDurante = etpData.providencias.durante_execucao || [];
+      const providenciasPos = etpData.providencias.pos_contratacao || [];
+
+      const containerPre = document.getElementById("providencias-pre-container");
+      const containerDurante = document.getElementById("providencias-durante-container");
+      const containerPos = document.getElementById("providencias-pos-container");
+
+      containerPre.innerHTML = "";
+      containerDurante.innerHTML = "";
+      containerPos.innerHTML = "";
+
+      if (providenciasPre.length === 0) {
+        criarLinhaProvidenciaPre("");
+      } else {
+        providenciasPre.forEach((item) => criarLinhaProvidenciaPre(item));
+      }
+
+      if (providenciasDurante.length === 0) {
+        criarLinhaProvidenciaDurante("");
+      } else {
+        providenciasDurante.forEach((item) => criarLinhaProvidenciaDurante(item));
+      }
+
+      if (providenciasPos.length === 0) {
+        criarLinhaProvidenciaPos("");
+      } else {
+        providenciasPos.forEach((item) => criarLinhaProvidenciaPos(item));
+      }
+    }
   }
 
   // Função para preencher demonstração de resultados
@@ -449,6 +482,105 @@ document.addEventListener("DOMContentLoaded", function () {
     container.appendChild(div);
   }
 
+  // Função para criar linha de providência (Pré-contratação)
+  function criarLinhaProvidenciaPre(providencia = "") {
+    const container = document.getElementById("providencias-pre-container");
+    const div = document.createElement("div");
+    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-pre-row";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = providencia;
+    input.placeholder = "Providência (Pré-contratação)";
+    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-pre-input";
+    input.disabled = false;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "text-red-500 hover:text-red-700 remove-providencia-pre-btn";
+    removeBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
+    removeBtn.style.display = "block";
+
+    removeBtn.onclick = () => {
+      const totalRows = container.querySelectorAll(".providencia-pre-row").length;
+      if (totalRows > 1) {
+        div.remove();
+      } else {
+        alert("É necessário manter pelo menos uma providência de Pré-contratação.");
+      }
+    };
+
+    div.appendChild(input);
+    div.appendChild(removeBtn);
+    container.appendChild(div);
+  }
+
+  // Função para criar linha de providência (Durante a execução)
+  function criarLinhaProvidenciaDurante(providencia = "") {
+    const container = document.getElementById("providencias-durante-container");
+    const div = document.createElement("div");
+    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-durante-row";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = providencia;
+    input.placeholder = "Providência (Durante a execução)";
+    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-durante-input";
+    input.disabled = false;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "text-red-500 hover:text-red-700 remove-providencia-durante-btn";
+    removeBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
+    removeBtn.style.display = "block";
+
+    removeBtn.onclick = () => {
+      const totalRows = container.querySelectorAll(".providencia-durante-row").length;
+      if (totalRows > 1) {
+        div.remove();
+      } else {
+        alert("É necessário manter pelo menos uma providência de Durante a execução.");
+      }
+    };
+
+    div.appendChild(input);
+    div.appendChild(removeBtn);
+    container.appendChild(div);
+  }
+
+  // Função para criar linha de providência (Pós-contratação)
+  function criarLinhaProvidenciaPos(providencia = "") {
+    const container = document.getElementById("providencias-pos-container");
+    const div = document.createElement("div");
+    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-pos-row";
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = providencia;
+    input.placeholder = "Providência (Pós-contratação)";
+    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-pos-input";
+    input.disabled = false;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "text-red-500 hover:text-red-700 remove-providencia-pos-btn";
+    removeBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
+    removeBtn.style.display = "block";
+
+    removeBtn.onclick = () => {
+      const totalRows = container.querySelectorAll(".providencia-pos-row").length;
+      if (totalRows > 1) {
+        div.remove();
+      } else {
+        alert("É necessário manter pelo menos uma providência de Pós-contratação.");
+      }
+    };
+
+    div.appendChild(input);
+    div.appendChild(removeBtn);
+    container.appendChild(div);
+  }
+
   // Função para preencher levantamento de mercado
   function preencherLevantamentoMercado(levMercado) {
     const pesquisaMercado = document.getElementById("pesquisa-mercado");
@@ -496,6 +628,9 @@ document.addEventListener("DOMContentLoaded", function () {
         isCurrentlyDisabled = resultadosQuantitativos
           ? resultadosQuantitativos.disabled
           : true;
+      } else if (targetId === "providencias") {
+        const preContratacao = document.getElementById("providencias-pre-contratacao");
+        isCurrentlyDisabled = preContratacao ? preContratacao.disabled : true;
       } else {
         const targetElement = document.getElementById(targetId);
         if (!targetElement) {
@@ -594,6 +729,27 @@ document.addEventListener("DOMContentLoaded", function () {
         prazo.disabled = false;
         prazo.classList.remove("editable-content:disabled");
       }
+    } else if (targetId === "providencias") {
+      document.querySelectorAll(".providencia-pre-input").forEach(input => {
+        input.disabled = false;
+        input.classList.remove("editable-content:disabled");
+      });
+      document.querySelectorAll(".providencia-durante-input").forEach(input => {
+        input.disabled = false;
+        input.classList.remove("editable-content:disabled");
+      });
+      document.querySelectorAll(".providencia-pos-input").forEach(input => {
+        input.disabled = false;
+        input.classList.remove("editable-content:disabled");
+      });
+      // Show remove buttons
+      document.querySelectorAll(".remove-providencia-pre-btn").forEach(btn => btn.style.display = "block");
+      document.querySelectorAll(".remove-providencia-durante-btn").forEach(btn => btn.style.display = "block");
+      document.querySelectorAll(".remove-providencia-pos-btn").forEach(btn => btn.style.display = "block");
+      // Enable add buttons
+      document.getElementById("add-providencias-pre-btn").disabled = false;
+      document.getElementById("add-providencias-durante-btn").disabled = false;
+      document.getElementById("add-providencias-pos-btn").disabled = false;
     } else {
       // Campo normal
       targetElement.disabled = false;
@@ -680,6 +836,27 @@ document.addEventListener("DOMContentLoaded", function () {
         prazo.disabled = true;
         prazo.classList.add("editable-content:disabled");
       }
+    } else if (targetId === "providencias") {
+      document.querySelectorAll(".providencia-pre-input").forEach(input => {
+        input.disabled = true;
+        input.classList.add("editable-content:disabled");
+      });
+      document.querySelectorAll(".providencia-durante-input").forEach(input => {
+        input.disabled = true;
+        input.classList.add("editable-content:disabled");
+      });
+      document.querySelectorAll(".providencia-pos-input").forEach(input => {
+        input.disabled = true;
+        input.classList.add("editable-content:disabled");
+      });
+      // Hide remove buttons
+      document.querySelectorAll(".remove-providencia-pre-btn").forEach(btn => btn.style.display = "none");
+      document.querySelectorAll(".remove-providencia-durante-btn").forEach(btn => btn.style.display = "none");
+      document.querySelectorAll(".remove-providencia-pos-btn").forEach(btn => btn.style.display = "none");
+      // Disable add buttons
+      document.getElementById("add-providencias-pre-btn").disabled = true;
+      document.getElementById("add-providencias-durante-btn").disabled = true;
+      document.getElementById("add-providencias-pos-btn").disabled = true;
     } else {
       // Campo normal
       targetElement.disabled = true;
@@ -702,6 +879,28 @@ document.addEventListener("DOMContentLoaded", function () {
   if (addAlinhamentoBtn) {
     addAlinhamentoBtn.addEventListener("click", () => {
       criarLinhaAlinhamento();
+    });
+  }
+
+  // Event listeners para adicionar providências
+  const addProvidenciasPreBtn = document.getElementById("add-providencias-pre-btn");
+  if (addProvidenciasPreBtn) {
+    addProvidenciasPreBtn.addEventListener("click", () => {
+      criarLinhaProvidenciaPre();
+    });
+  }
+
+  const addProvidenciasDuranteBtn = document.getElementById("add-providencias-durante-btn");
+  if (addProvidenciasDuranteBtn) {
+    addProvidenciasDuranteBtn.addEventListener("click", () => {
+      criarLinhaProvidenciaDurante();
+    });
+  }
+
+  const addProvidenciasPosBtn = document.getElementById("add-providencias-pos-btn");
+  if (addProvidenciasPosBtn) {
+    addProvidenciasPosBtn.addEventListener("click", () => {
+      criarLinhaProvidenciaPos();
     });
   }
 
@@ -849,6 +1048,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (justifServContinuo) {
       dados.justif_serv_continuo = justifServContinuo.value.trim();
     }
+
+    // Providências Necessárias
+    const providenciasPreInputs = document.querySelectorAll(".providencia-pre-input");
+    const providenciasDuranteInputs = document.querySelectorAll(".providencia-durante-input");
+    const providenciasPosInputs = document.querySelectorAll(".providencia-pos-input");
+
+    dados.providencias = {
+      pre_contratacao: Array.from(providenciasPreInputs).map((input) => input.value.trim()).filter((value) => value.length > 0),
+      durante_execucao: Array.from(providenciasDuranteInputs).map((input) => input.value.trim()).filter((value) => value.length > 0),
+      pos_contratacao: Array.from(providenciasPosInputs).map((input) => input.value.trim()).filter((value) => value.length > 0),
+    };
 
     return dados;
   }
