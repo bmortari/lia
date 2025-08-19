@@ -1,6 +1,40 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 ETP Curadoria carregado");
 
+  const resultadoKeyMap = {
+    // Quantitativos
+    redução_custos: "Redução de custos",
+    aumento_receita: "Aumento de receita",
+    aumento_produtividade: "Aumento de produtividade",
+    reducao_tempo_ciclo: "Redução do tempo de ciclo",
+    aumento_market_share: "Aumento de market share",
+    reducao_taxa_erro: "Redução da taxa de erro",
+    tempo_execucao: "Tempo de execução",
+
+    // Qualitativos
+    eficiencia_operacional: "Eficiência operacional",
+    satisfacao_usuarios: "Satisfação dos usuários",
+    melhoria_servicos: "Melhoria na qualidade dos serviços",
+    reducao_riscos: "Redução de riscos",
+    conformidade_legal: "Conformidade legal",
+    inovacao_tecnologica: "Inovação tecnológica",
+    sustentabilidade_ambiental: "Sustentabilidade ambiental",
+    melhora_imagem_organizacao: "Melhora na imagem da organização",
+    acessibilidade: "Acessibilidade",
+    seguranca_informacao: "Segurança da informação",
+    resiliencia_operacional: "Resiliência operacional",
+    escalabilidade: "Escalabilidade",
+    interoperabilidade: "Interoperabilidade",
+    usabilidade: "Usabilidade",
+    transparencia: "Transparência",
+    participacao_cidada: "Participação cidadã",
+    satisfacao_servidores: "Satisfação dos servidores",
+  };
+
+  const reverseResultadoKeyMap = Object.fromEntries(
+    Object.entries(resultadoKeyMap).map(([key, value]) => [value, key])
+  );
+
   let currentEtpData = null; // Variável para armazenar os dados do ETP carregados
 
   // Função para obter o ID do projeto da URL
@@ -237,6 +271,53 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Levantamento de Mercado
     preencherLevantamentoMercado(etpData.lev_mercado || {});
+
+    // Demonstração de Resultados
+    preencherDemonstracaoResultados(etpData.demonst_resultados || {});
+  }
+
+  // Função para preencher demonstração de resultados
+  function preencherDemonstracaoResultados(demonstracao) {
+    const resultadosQuantitativos = document.getElementById(
+      "resultados-quantitativos"
+    );
+    const resultadosQualitativos = document.getElementById(
+      "resultados-qualitativos"
+    );
+    const indicadoresDesempenho = document.getElementById(
+      "indicadores-desempenho"
+    );
+    const prazoResultados = document.getElementById("prazo-resultados");
+
+    if (resultadosQuantitativos) {
+      let quantText = "";
+      if (demonstracao.resultados_quantitativos) {
+        quantText = Object.entries(demonstracao.resultados_quantitativos)
+          .map(([key, value]) => `${resultadoKeyMap[key] || key}: ${value}`)
+          .join("\n");
+      }
+      resultadosQuantitativos.value = quantText;
+    }
+
+    if (resultadosQualitativos) {
+      let qualText = "";
+      if (demonstracao.resultados_qualitativos) {
+        qualText = Object.entries(demonstracao.resultados_qualitativos)
+          .map(([key, value]) => `${resultadoKeyMap[key] || key}: ${value}`)
+          .join("\n");
+      }
+      resultadosQualitativos.value = qualText;
+    }
+
+    if (indicadoresDesempenho) {
+      indicadoresDesempenho.value = (
+        demonstracao.indicadores_desempenho || []
+      ).join("\n");
+    }
+
+    if (prazoResultados) {
+      prazoResultados.value = demonstracao.prazo_resultados || "";
+    }
   }
 
   // Função para preencher alinhamento estratégico
@@ -386,6 +467,13 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (targetId === "posic-conclusivo") {
         const justifPosic = document.getElementById("justif-posic-conclusivo");
         isCurrentlyDisabled = justifPosic ? justifPosic.disabled : true;
+      } else if (targetId === "demonstracao-resultados") {
+        const resultadosQuantitativos = document.getElementById(
+          "resultados-quantitativos"
+        );
+        isCurrentlyDisabled = resultadosQuantitativos
+          ? resultadosQuantitativos.disabled
+          : true;
       } else {
         const targetElement = document.getElementById(targetId);
         if (!targetElement) {
@@ -462,6 +550,28 @@ document.addEventListener("DOMContentLoaded", function () {
         dataPesquisa.disabled = false;
         dataPesquisa.classList.remove("editable-content:disabled");
       }
+    } else if (targetId === "demonstracao-resultados") {
+      const quant = document.getElementById("resultados-quantitativos");
+      const qual = document.getElementById("resultados-qualitativos");
+      const ind = document.getElementById("indicadores-desempenho");
+      const prazo = document.getElementById("prazo-resultados");
+      if (quant) {
+        quant.disabled = false;
+        quant.classList.remove("editable-content:disabled");
+        quant.focus();
+      }
+      if (qual) {
+        qual.disabled = false;
+        qual.classList.remove("editable-content:disabled");
+      }
+      if (ind) {
+        ind.disabled = false;
+        ind.classList.remove("editable-content:disabled");
+      }
+      if (prazo) {
+        prazo.disabled = false;
+        prazo.classList.remove("editable-content:disabled");
+      }
     } else {
       // Campo normal
       targetElement.disabled = false;
@@ -526,6 +636,27 @@ document.addEventListener("DOMContentLoaded", function () {
       if (dataPesquisa) {
         dataPesquisa.disabled = true;
         dataPesquisa.classList.add("editable-content:disabled");
+      }
+    } else if (targetId === "demonstracao-resultados") {
+      const quant = document.getElementById("resultados-quantitativos");
+      const qual = document.getElementById("resultados-qualitativos");
+      const ind = document.getElementById("indicadores-desempenho");
+      const prazo = document.getElementById("prazo-resultados");
+      if (quant) {
+        quant.disabled = true;
+        quant.classList.add("editable-content:disabled");
+      }
+      if (qual) {
+        qual.disabled = true;
+        qual.classList.add("editable-content:disabled");
+      }
+      if (ind) {
+        ind.disabled = true;
+        ind.classList.add("editable-content:disabled");
+      }
+      if (prazo) {
+        prazo.disabled = true;
+        prazo.classList.add("editable-content:disabled");
       }
     } else {
       // Campo normal
@@ -616,7 +747,58 @@ document.addEventListener("DOMContentLoaded", function () {
       data_pesquisa: dataPesquisa ? dataPesquisa.value : "",
       fontes: (currentEtpData && currentEtpData.lev_mercado && currentEtpData.lev_mercado.fontes)
         ? currentEtpData.lev_mercado.fontes
-        : {},
+    : {},
+    };
+
+    // Demonstração de Resultados
+    const resultadosQuantitativos = document.getElementById(
+      "resultados-quantitativos"
+    );
+    const resultadosQualitativos = document.getElementById(
+      "resultados-qualitativos"
+    );
+    const indicadoresDesempenho = document.getElementById(
+      "indicadores-desempenho"
+    );
+    const prazoResultados = document.getElementById("prazo-resultados");
+
+    const quantObj = {};
+    if (resultadosQuantitativos && resultadosQuantitativos.value) {
+      resultadosQuantitativos.value.split("\n").forEach((line) => {
+        const parts = line.split(":");
+        if (parts.length >= 2) {
+          const key = parts[0].trim();
+          const value = parts.slice(1).join(":").trim();
+          if (key) quantObj[key] = value;
+        }
+      });
+    }
+
+    const qualObj = {};
+    if (resultadosQualitativos && resultadosQualitativos.value) {
+      resultadosQualitativos.value.split("\n").forEach((line) => {
+        const parts = line.split(":");
+        if (parts.length >= 2) {
+          const displayName = parts[0].trim();
+          const value = parts.slice(1).join(":").trim();
+          const key = reverseResultadoKeyMap[displayName] || displayName;
+          if (key) qualObj[key] = value;
+        }
+      });
+    }
+
+    const indicadores = indicadoresDesempenho
+      ? indicadoresDesempenho.value
+          .split("\n")
+          .filter((line) => line.trim() !== "")
+      : [];
+    const prazo = prazoResultados ? prazoResultados.value.trim() : "";
+
+    dados.demonst_resultados = {
+      resultados_quantitativos: quantObj,
+      resultados_qualitativos: qualObj,
+      indicadores_desempenho: indicadores,
+      prazo_resultados: prazo,
     };
 
     return dados;

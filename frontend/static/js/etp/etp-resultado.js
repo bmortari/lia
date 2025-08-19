@@ -351,9 +351,9 @@ const resultadoKeyMap = {
     // Qualitativos
     'eficiencia_operacional': 'Eficiência operacional',
     'satisfacao_usuarios': 'Satisfação dos usuários',
-    'melhora_qualidade_servico': 'Melhora na qualidade do serviço',
+    'melhoria_servicos': 'Melhoria na qualidade dos serviços',
     'reducao_riscos': 'Redução de riscos',
-    'conformidade_regulatoria': 'Conformidade regulatória',
+    'conformidade_legal': "Conformidade legal",
     'inovacao_tecnologica': 'Inovação tecnológica',
     'sustentabilidade_ambiental': 'Sustentabilidade ambiental',
     'melhora_imagem_organizacao': 'Melhora na imagem da organização',
