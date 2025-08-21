@@ -21,7 +21,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">DFD - Solicitação</h1>
                     <p class="text-gray-600 mt-2">Criação de Documento de Formalização de Demanda</p>
                 </div>
-                <button type="button" id="voltar-inicio" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors border border-current px-4 py-2 rounded-lg">
+                <button type="button" id="voltar-inicio" class="btn-back">
                     <i class="uil uil-arrow-left mr-2"></i>
                     Voltar ao início
                 </button>
@@ -31,54 +31,56 @@
             <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             <!-- Left Section: Form -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Project and Type Info -->
-                <div class="space-y-6">
-                    <div>
-                        <label for="project-name" class="block mb-2 text-sm font-medium text-gray-900">PROJETO</label>
-                        <input type="text" id="project-name" value="{{ projeto.nome }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
-                    </div>
-                    <div>
-                        <label for="item-type" class="block mb-2 text-sm font-medium text-gray-900">TIPO</label>
-                        <input type="text" id="item-type" value="{{ projeto.tipo }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
-                    </div>
-                </div>
-
-                <!-- Solicitation Text Area -->
-                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                     <div class="flex items-center justify-between mb-2">
-                        <label for="solicitation" class="block text-sm font-medium text-gray-900">Envie sua solicitação:</label>
-                        <button data-tooltip-target="tooltip-info" type="button" class="text-gray-400 hover:text-gray-600">
-                           <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                           </svg>
-                           <span class="sr-only">Info</span>
-                        </button>
-                        <div id="tooltip-info" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
-                            <h3>Como Usar o Formulário:</h3>
-                            <ol>
-                                <li>Descreva claramente o objeto da contratação que deseja realizar</li>
-                                <li>Identifique-se com seu nome completo e cargo</li>
-                                <li>Informe sua unidade, departamento ou setor</li>
-                                <li>Inclua quaisquer requisitos específicos ou preferências</li>
-                                <li>Clique no botão "Enviar" quando estiver pronto</li>
-                            </ol>
-                            <p>Sua solicitação será processada pela nossa IA, e você receberá um DFD formatado.</p>
-                            <div class="tooltip-arrow" data-popper-arrow></div>
+            <div class="lg:col-span-2 h-full">
+                <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-6 h-full">
+                    <!-- Project and Type Info -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="project-name" class="block mb-2 text-sm font-medium text-gray-900">PROJETO</label>
+                            <input type="text" id="project-name" value="{{ projeto.nome }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
                         </div>
-                     </div>
-                     <textarea id="solicitation" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" placeholder="Descreva sua solicitação aqui..."></textarea>
-                     <div class="flex justify-end mt-4">
-                        <button type="submit" id="send-button" class="btn-custom text-white font-medium rounded-lg text-sm px-8 py-2.5">
-                            Enviar
-                        </button>
-                     </div>
+                        <div>
+                            <label for="item-type" class="block mb-2 text-sm font-medium text-gray-900">TIPO</label>
+                            <input type="text" id="item-type" value="{{ projeto.tipo }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 cursor-not-allowed" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Solicitation Text Area -->
+                    <div>
+                         <div class="flex items-center justify-between mb-2">
+                            <label for="solicitation" class="block text-sm font-medium text-gray-900">Envie sua solicitação:</label>
+                            <button data-tooltip-target="tooltip-info" type="button" class="text-gray-400 hover:text-gray-600">
+                               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                               </svg>
+                               <span class="sr-only">Info</span>
+                            </button>
+                            <div id="tooltip-info" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
+                                <h3>Como Usar o Formulário:</h3>
+                                <ol>
+                                    <li>Descreva claramente o objeto da contratação que deseja realizar</li>
+                                    <li>Identifique-se com seu nome completo e cargo</li>
+                                    <li>Informe sua unidade, departamento ou setor</li>
+                                    <li>Inclua quaisquer requisitos específicos ou preferências</li>
+                                    <li>Clique no botão "Enviar" quando estiver pronto</li>
+                                </ol>
+                                <p>Sua solicitação será processada pela nossa IA, e você receberá um DFD formatado.</p>
+                                <div class="tooltip-arrow" data-popper-arrow></div>
+                            </div>
+                         </div>
+                         <textarea id="solicitation" rows="8" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" placeholder="Descreva sua solicitação aqui..."></textarea>
+                         <div class="flex justify-end mt-4">
+                            <button type="submit" id="send-button" class="btn-primary text-white font-medium rounded-lg text-sm px-8 py-2.5">
+                                Enviar
+                            </button>
+                         </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Right Section: Checklist -->
-            <div class="flex flex-col">
-                <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col max-h-[30rem]">
+            <div class="flex flex-col h-full">
+                <div class="w-full p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex flex-col h-full max-h-[30rem]">
                     <h3 class="text-lg font-bold text-gray-900">PCA 2026</h3>
                     
                     <!-- Search input -->
@@ -107,7 +109,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
             <!-- Spinning Gear Icon -->
             <div class="mb-4">

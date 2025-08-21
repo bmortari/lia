@@ -29,33 +29,3 @@ body {
     display: inline-block;
     animation: spin 1.5s linear infinite;
 }
-.custom-radio {
-    accent-color: #0097B2;
-    background-color: #f9fafb;
-    border-color: #0097B2;
-}
-.custom-radio:focus {
-    box-shadow: 0 0 0 2px rgba(0, 151, 178, 0.3);
-    outline: none;
-}
-.btn-custom {
-    background-color: #0097B2;
-    color: #fff;
-    border: none;
-}
-.btn-custom:hover {
-    background-color: #007d96;
-}
-.btn-custom:focus {
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
-    outline: none;
-}
-#voltar-inicio {
-    color: #0097B2;
-    border-color: #0097B2;
-    background-color: transparent;
-}
-#voltar-inicio:focus {
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
-    outline: none;
-}
