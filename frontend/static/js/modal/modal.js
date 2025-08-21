@@ -6,32 +6,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // HTML do modal, usando classes do TailwindCSS para estilização consistente
     const modalHTML = `
-        <div id="edit-project-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div id="edit-project-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 hidden">
             <div id="modal-content" class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 relative">
                 
-                <div class="flex items-start justify-between pb-4 border-b rounded-t">
+                <div class="flex items-start justify-between pb-4 rounded-t">
                     <h3 class="text-xl font-semibold text-gray-900">
                         Editar projeto
                     </h3>
-                    <button type="button" id="close-modal-btn" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center">
+                    <button type="button" id="close-modal-btn" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center cursor-pointer">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                         </svg>
                         <span class="sr-only">Fechar modal</span>
                     </button>
                 </div>
-
                 <form id="edit-project-form" class="mt-5 space-y-6">
                     <input type="hidden" id="edit-project-id">
                     
                     <div>
                         <label for="edit-project-name" class="block mb-2 text-sm font-medium text-gray-900">Nome do projeto:</label>
-                        <input type="text" id="edit-project-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+                        <input type="text" id="edit-project-name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" required>
                     </div>
 
                     <div>
                         <label for="edit-project-description" class="block mb-2 text-sm font-medium text-gray-900">Descrição:</label>
-                        <textarea id="edit-project-description" rows="4" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required></textarea>
+                        <textarea id="edit-project-description" rows="4" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" required></textarea>
                     </div>
 
                     <div>
@@ -39,15 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                             ${['Bens', 'Serviços', 'Obras', 'TI', 'Locações', 'Capacitação', 'Outros'].map(type => `
                                 <div class="flex items-center">
-                                    <input id="type-${type.toLowerCase().replace('.', '')}" type="radio" value="${type}" name="projectType" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
+                                    <input id="type-${type.toLowerCase().replace('.', '')}" type="radio" value="${type}" name="projectType" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary cursor-pointer">
                                     <label for="type-${type.toLowerCase().replace('.', '')}" class="ms-2 text-sm font-medium text-gray-900">${type}</label>
                                 </div>
                             `).join('')}
                         </div>
                     </div>
 
-                    <div class="flex justify-end pt-4 border-t mt-6">
-                        <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <div class="flex justify-end pt-4 mt-6">
+                        <button type="submit" class="text-white bg-primary hover:bg-primary-hover focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
                             Editar
                         </button>
                     </div>

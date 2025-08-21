@@ -120,13 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td class="px-6 py-4">${project.descricao}</td>
                         <td class="px-6 py-4">${project.user_created}</td>
                         <td class="px-6 py-4 flex gap-2">
-                            <button class="text-blue-600 hover:underline view-btn" data-id="${
+                            <button class="text-blue-600 hover:underline view-btn cursor-pointer" data-id="${
                               project.id_projeto
                             }">Ver</button>
-                            <button class="text-yellow-500 hover:underline edit-btn" data-id="${
+                            <button class="text-yellow-500 hover:underline edit-btn cursor-pointer" data-id="${
                               project.id_projeto
                             }">Editar</button>
-                            <button class="text-red-600 hover:underline delete-btn" data-id="${
+                            <button class="text-red-600 hover:underline delete-btn cursor-pointer" data-id="${
                               project.id_projeto
                             }">Excluir</button>
                         </td>

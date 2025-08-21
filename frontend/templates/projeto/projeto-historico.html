@@ -14,8 +14,8 @@
 
   <body class="bg-gray-100">
     <!-- Modal de Confirmação de Delete -->
-    <div id="deleteModal" class="modal-backdrop hidden">
-      <div class="modal-content">
+    <div id="deleteModal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 hidden">
+      <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-md text-center">
         <div class="mb-4">
           <i
             class="uil uil-exclamation-triangle text-red-500 text-4xl mb-2"
@@ -76,7 +76,7 @@
               <input
                 type="text"
                 id="table-search"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2.5"
                 placeholder="Pesquisar por nome do projeto"
               />
             </div>
