@@ -1,0 +1,32 @@
+
+/* Estilo para desabilitar o textarea/input */
+.editable-content:disabled {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    color: #334155;
+    cursor: not-allowed;
+}
+
+/* Estilo para campos não editáveis */
+.readonly-content {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+    cursor: not-allowed;
+}
+
+/* Scrollbar customizada para seções longas */
+.custom-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}

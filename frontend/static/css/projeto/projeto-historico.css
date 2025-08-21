@@ -1,0 +1,81 @@
+
+/* Estilos básicos para garantir que o conteúdo ocupe a tela */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f3f4f6; /* cinza claro de fundo */
+}
+main {
+    flex-grow: 1;
+}
+
+/* NOVO: Estiliza a tabela com altura fixa e rolagem apenas no corpo */
+.scrollable-table {
+    height: 50vh; /* 50% da altura da tela */
+    overflow-y: auto;
+    display: block;
+}
+
+.scrollable-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.scrollable-table thead {
+    position: sticky;
+    top: 0;
+    background-color: #f9fafb; /* mesma cor do cabeçalho */
+    z-index: 10;
+}
+
+/* Garante alinhamento entre th e td */
+.scrollable-table th,
+.scrollable-table td {
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+}
+
+.scrollable-table tr {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+}
+.btn-custom {
+    background-color: #0097b2;
+}
+
+.btn-custom:hover {
+    background-color: #007d96;
+}
+
+.btn-custom:focus {
+    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+}
+
+/* Estilo do modal de confirmação */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none !important;
+}

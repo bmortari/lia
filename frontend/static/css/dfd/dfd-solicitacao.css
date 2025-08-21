@@ -1,0 +1,61 @@
+
+body {
+    background-color: #f9fafb; /* A light gray background */
+}
+/* Custom styling for the tooltip content */
+#tooltip-info h3 {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 0.5rem;
+}
+#tooltip-info ol {
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+#tooltip-info li {
+    margin-bottom: 0.25rem;
+}
+/* Spinning animation for the icon */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.animate-spin-icon {
+    display: inline-block;
+    animation: spin 1.5s linear infinite;
+}
+.custom-radio {
+    accent-color: #0097B2;
+    background-color: #f9fafb;
+    border-color: #0097B2;
+}
+.custom-radio:focus {
+    box-shadow: 0 0 0 2px rgba(0, 151, 178, 0.3);
+    outline: none;
+}
+.btn-custom {
+    background-color: #0097B2;
+    color: #fff;
+    border: none;
+}
+.btn-custom:hover {
+    background-color: #007d96;
+}
+.btn-custom:focus {
+    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+    outline: none;
+}
+#voltar-inicio {
+    color: #0097B2;
+    border-color: #0097B2;
+    background-color: transparent;
+}
+#voltar-inicio:focus {
+    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+    outline: none;
+}

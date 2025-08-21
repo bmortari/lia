@@ -1,0 +1,198 @@
+:root {
+--background-color: #F0F0F0;
+}
+
+body {
+background-color: var(--background-color);
+margin: 0;
+padding: 0;
+}
+
+.background-waves {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 100vh;
+    background-image: url('/static/assets/img/abstract.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+
+.content-wrapper {
+    margin-left: 300px;
+    min-height: 100vh;
+    padding-top: 140px;
+    position: relative;
+    z-index: 30;
+}
+
+.btn-custom {
+    background-color: #0097B2;
+}
+
+.btn-custom-dev {
+    background-color:rgb(105, 105, 105);
+}
+
+.btn-custom:hover {
+    background-color: #007d96;
+}
+
+.btn-custom:focus {
+    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
+}
+
+.btn-custom:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.btn-custom-dev:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.btn-danger {
+    background-color: #dc2626;
+}
+
+.btn-danger:hover {
+    background-color: #b91c1c;
+}
+
+.btn-danger:focus {
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.3);
+}
+
+.icon-custom {
+    color: #0097B2;
+}
+
+.icon-custom-dev {
+    color: rgb(105, 105, 105);
+}
+
+.icon-custom-gray {
+    color: #9ca3af;
+}
+
+/* Estados dos cards */
+.card-with-artifact {
+    border: 3px solid #0097B2 !important;
+    background-color: #f0fcff;
+}
+
+.card-without-artifact {
+    border: 2px solid #e5e7eb;
+    background-color: #f9fafb;
+}
+
+.card-with-artifact .icon-custom {
+    color: #0097B2;
+}
+
+.card-without-artifact .icon-custom,
+.card-without-artifact .icon-custom-dev {
+    color: #9ca3af;
+}
+
+.artifact-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.artifact-exists {
+    background-color: #e6f7ff;
+    color: #005c73;
+}
+
+.artifact-not-exists {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
+.header-container {
+    background-color: var(--background-color);
+    border-radius: 12px;
+    outline: 3px solid var(--background-color);
+    margin-bottom: 2.5rem;
+    position: fixed;
+    top: 20px;
+    left: 320px;
+    right: 20px;
+    max-width: calc(100% - 340px);
+    z-index: 60;
+    padding: 24px;
+}
+
+.profile-icon {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.profile-icon:hover {
+    opacity: 0.8;
+}
+
+/* Botões desabilitados */
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Estilo do modal de confirmação */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Media query para dispositivos móveis */
+@media (max-width: 768px) {
+    .background-waves {
+        display: none;
+    }
+    
+    .content-wrapper {
+        margin-left: 0;
+    }
+    
+    .header-container {
+        left: 20px;
+        max-width: calc(100% - 40px);
+    }
+}

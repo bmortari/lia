@@ -1,8 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "build": "postcss static/css/input.css -o static/css/styles.css",
-    "watch": "postcss static/css/input.css -o static/css/styles.css --watch"
+    "build": "postcss static/css/input.css -o static/css/output.css",
+    "watch": "postcss static/css/input.css -o static/css/output.css --watch"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.12",

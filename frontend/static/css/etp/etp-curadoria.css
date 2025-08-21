@@ -1,0 +1,51 @@
+
+/* Estilo para desabilitar o textarea/input */
+.editable-content:disabled {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    color: #334155;
+    cursor: not-allowed;
+}
+
+/* Estilo para checkboxes desabilitados */
+.checkbox-container.disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.checkbox-container.disabled label {
+    color: #6b7280;
+}
+
+/* Estilo para campos não editáveis */
+.readonly-content {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+    cursor: not-allowed;
+}
+
+/* Estilo para seções colapsáveis */
+.collapsible-section {
+    transition: all 0.3s ease;
+}
+
+.section-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.badge-required {
+    background-color: #fef2f2;
+    color: #991b1b;
+}
+
+.badge-optional {
+    background-color: #f0f9ff;
+    color: #1e40af;
+}
