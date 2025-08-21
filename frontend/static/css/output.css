@@ -3465,6 +3465,14 @@
       --tw-ring-color: var(--color-primary);
     }
   }
+  .focus\:ring-primary\/50 {
+    &:focus {
+      --tw-ring-color: color-mix(in srgb, #0097B2 50%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        --tw-ring-color: color-mix(in oklab, var(--color-primary) 50%, transparent);
+      }
+    }
+  }
   .focus\:ring-red-300 {
     &:focus {
       --tw-ring-color: var(--color-red-300);

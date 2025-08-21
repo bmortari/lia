@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <title>Serviços do Projeto</title>
-    <link rel="stylesheet" href="/static/css/projeto/projeto-servicos.css">
+    <link rel="stylesheet" href="/static/css/output.css">    
+    <link rel="stylesheet" href="/static/css/projeto/projeto-servicos.css"> 
 </head>
 <body>
     <div class="background-waves"></div>
@@ -21,10 +20,10 @@
                 <p class="text-gray-600">Tem certeza que deseja deletar este artefato? Esta ação não pode ser desfeita.</p>
             </div>
             <div class="flex gap-3 justify-center">
-                <button id="cancelDelete" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                <button id="cancelDelete" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors cursor-pointer">
                     Cancelar
                 </button>
-                <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors cursor-pointer">
                     Sim, deletar
                 </button>
             </div>
@@ -79,7 +78,7 @@
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Documento de Formalização da Demanda</p>
                     
                     <button id="gera_dfd" 
-                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                    {% if projeto.exist_dfd %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
                             {% if projeto.exist_dfd %}disabled{% endif %}>
                         {% if projeto.exist_dfd %}Já Criado{% else %}Gerar{% endif %}
@@ -91,7 +90,7 @@
                                 data-action="edit"
                                 data-service="dfd"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_dfd %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_dfd %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -101,7 +100,7 @@
                                 data-action="view"
                                 data-service="dfd"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_dfd %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_dfd %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -111,7 +110,7 @@
                                 data-action="delete"
                                 data-service="dfd"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_dfd %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_dfd %}disabled{% endif %}>
                             <i class="uil uil-times"></i>
@@ -147,7 +146,7 @@
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Soluções inteligentes e suporte à pesquisa de preços</p>
                     
                     <button id="gera_pdp" 
-                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                    {% if projeto.exist_pdp %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
                             {% if projeto.exist_pdp %}disabled{% endif %}>
                         {% if projeto.exist_pdp %}Já Criado{% else %}Gerar{% endif %}
@@ -159,7 +158,7 @@
                                 data-action="edit"
                                 data-service="pdp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pdp %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -169,7 +168,7 @@
                                 data-action="view"
                                 data-service="pdp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pdp %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -179,7 +178,7 @@
                                 data-action="delete"
                                 data-service="pdp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_pdp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pdp %}disabled{% endif %}>
                             <i class="uil uil-times"></i>
@@ -214,7 +213,7 @@
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">P. G. R.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Plano de Gerenciamento de Riscos</p>
                     
-                    <button id="gera_pgr" class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                    <button id="gera_pgr" class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                    {% if projeto.exist_pgr %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
                             {% if projeto.exist_pgr %}disabled{% endif %}>
                         {% if projeto.exist_pgr %}Já Criado{% else %}Gerar{% endif %}
@@ -226,7 +225,7 @@
                                 data-action="edit"
                                 data-service="pgr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_pgr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pgr %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -236,7 +235,7 @@
                                 data-action="view"
                                 data-service="pgr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_pgr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pgr %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -246,7 +245,7 @@
                                 data-action="delete"
                                 data-service="pgr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_pgr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_pgr %}disabled{% endif %}>
                             <i class="uil uil-times"></i>
@@ -282,7 +281,7 @@
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Estudo Técnico Preliminar</p>
                     
                     <button id="gera_etp" 
-                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                            class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                 {% if projeto.exist_etp %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
                             {% if projeto.exist_etp %}disabled{% endif %}>
                         {% if projeto.exist_etp %}Já Criado{% else %}Gerar{% endif %}
@@ -294,7 +293,7 @@
                                 data-action="edit"
                                 data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_etp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -304,7 +303,7 @@
                                 data-action="view"
                                 data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_etp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -314,7 +313,7 @@
                                 data-action="delete"
                                 data-service="etp"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_etp %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_etp %}disabled{% endif %}>
                             <i class="uil uil-times"></i>
@@ -349,7 +348,7 @@
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">T. R.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Termo de Referência.</p>
                     
-                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                    {% if projeto.exist_tr %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
                             {% if projeto.exist_tr %}disabled{% endif %}>
                         {% if projeto.exist_tr %}Já Criado{% else %}Em Desenvolvimento{% endif %}
@@ -361,7 +360,7 @@
                                 data-action="edit"
                                 data-service="tr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_tr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_tr %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -371,7 +370,7 @@
                                 data-action="view"
                                 data-service="tr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_tr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_tr %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -381,7 +380,7 @@
                                 data-action="delete"
                                 data-service="tr"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_tr %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_tr %}disabled{% endif %}>
                             <i class="uil uil-times"></i>
@@ -416,7 +415,7 @@
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">Edital</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um documento de Edital.</p>
                     
-                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none
+                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
                                    {% if projeto.exist_ed %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
                             {% if projeto.exist_ed %}disabled{% endif %}>
                         {% if projeto.exist_ed %}Já Criado{% else %}Em Desenvolvimento{% endif %}
@@ -428,7 +427,7 @@
                                 data-action="edit"
                                 data-service="ed"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_ed %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_ed %}disabled{% endif %}>
                             <i class="uil uil-edit"></i>
@@ -438,7 +437,7 @@
                                 data-action="view"
                                 data-service="ed"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-gray-900 bg-white py-2 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                        {% if not projeto.exist_ed %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_ed %}disabled{% endif %}>
                             <i class="uil uil-file-alt"></i>
@@ -448,7 +447,7 @@
                                 data-action="delete"
                                 data-service="ed"
                                 data-project-id="{{ projeto.id_projeto }}"
-                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl
+                                class="flex-1 text-white btn-danger py-2 border-0 focus:outline-none hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg flex justify-center items-center text-xl cursor-pointer
                                     {% if not projeto.exist_ed %}btn-disabled{% endif %}"
                                 {% if not projeto.exist_ed %}disabled{% endif %}>
                             <i class="uil uil-times"></i>

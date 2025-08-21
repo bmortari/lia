@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curadoria de Preços</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Flowbite CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
     <!-- Unicons -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/css/pdp/pdp-curadoria.css">
+    <link rel="stylesheet" href="/static/css/output.css">
 </head>
 <body class="bg-gray-100">
 
@@ -138,7 +135,7 @@
                 </button>
 
                 <!-- Botão Visualizar Resultado -->
-                <button type="button" id="btn-visualizar-resultado" class="inline-flex items-center justify-center text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-4 focus:outline-none focus:ring-[#0097B2]/50 font-medium rounded-lg text-sm px-5 py-2.5">
+                <button type="button" id="btn-visualizar-resultado" class="inline-flex items-center justify-center text-primary hover:text-white border border-primary hover:bg-primary focus:ring-4 focus:outline-none focus:ring-primary/50 font-medium rounded-lg text-sm px-5 py-2.5">
                     <i class="las la-eye text-lg mr-2"></i>
                     Visualizar documento
                 </button>
@@ -147,8 +144,7 @@
     </div>
     
 
-    <!-- Flowbite JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+    <script src="/static/js/flowbite.min.js" defer></script>
     <script>
         // O filtro '|safe' do Jinja2 é CRUCIAL para evitar que as aspas do JSON sejam escapadas
         window.serverData = '{{ pdp_data_json|safe }}';

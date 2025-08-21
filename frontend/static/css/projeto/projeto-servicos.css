@@ -82,12 +82,10 @@ padding: 0;
 /* Estados dos cards */
 .card-with-artifact {
     border: 3px solid #0097B2 !important;
-    background-color: #f0fcff;
 }
 
 .card-without-artifact {
     border: 2px solid #e5e7eb;
-    background-color: #f9fafb;
 }
 
 .card-with-artifact .icon-custom {
