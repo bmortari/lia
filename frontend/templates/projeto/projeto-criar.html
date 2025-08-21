@@ -15,7 +15,7 @@
         
         <!-- Botão Voltar ao Início no topo superior esquerdo -->
         <div class="flex justify-start mb-4">
-            <button type="button" id="btn-voltar-inicio" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 focus:text-blue-700">
+            <button type="button" id="btn-voltar-inicio" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 focus:z-10 focus:ring-4 focus:outline-none focus:ring-gray-100 cursor-pointer">
                 <svg class="w-3.5 h-3.5 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
                 </svg>
@@ -32,43 +32,43 @@
                         <div class="space-y-6">
                             <div>
                                 <label for="project_name" class="block mb-2 text-sm font-medium text-gray-900">Nome:</label>
-                                <input type="text" id="project_name" name="nome-projeto" class="custom-focus bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none block w-full p-2.5" placeholder="Nome do projeto" required />
+                                <input type="text" id="project_name" name="nome-projeto" class="custom-focus bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5" placeholder="Nome do projeto" required />
                             </div>
                             <div>
                                 <label for="description" class="block mb-2 text-sm font-medium text-gray-900">Descrição:</label>
-                                <textarea id="description" name="descricao-projeto" rows="12" class="custom-focus block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:outline-none resize-none" placeholder="Descrição detalhada do projeto..." required></textarea>
+                                <textarea id="description" name="descricao-projeto" rows="12" class="custom-focus block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" placeholder="Descrição detalhada do projeto..." required></textarea>
                             </div>
                         </div>
 
                         <div>
                             <h3 class="mb-2 text-sm font-medium text-gray-900 ">Selecione o tipo do projeto:</h3>
                             <div class="flex flex-col space-y-3">
-                                <div class="flex items-center mb-0">
-                                    <input id="tipo-bens-1" type="radio" value="BENS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;" checked>
+                                <div class="flex items-center">
+                                    <input id="tipo-bens-1" type="radio" value="BENS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300  text-primary focus:outline-none cursor-pointer" style="accent-color: #0097B2;" checked>
                                     <label for="tipo-bens-1" class="ms-2 text-sm font-medium text-gray-900">Bens</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-servicos" type="radio" value="SERVIÇOS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-servicos" type="radio" value="SERVIÇOS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300  text-primary focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-servicos" class="ms-2 text-sm font-medium text-gray-900">Serviços</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-obras" type="radio" value="OBRAS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-obras" type="radio" value="OBRAS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300  text-primary focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-obras" class="ms-2 text-sm font-medium text-gray-900">Obras</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-ti" type="radio" value="TI" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-ti" type="radio" value="TI" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300  text-primary focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-ti" class="ms-2 text-sm font-medium text-gray-900 ">T.I.</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-locacao" type="radio" value="LOCAÇÕES" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-locacao" type="radio" value="LOCAÇÕES" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100  text-primary border-gray-300 focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-locacao" class="ms-2 text-sm font-medium text-gray-900 ">Locação</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-capacitacao" type="radio" value="CAPACITAÇÃO" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-capacitacao" type="radio" value="CAPACITAÇÃO" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 text-primary border-gray-300 focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-capacitacao" class="ms-2 text-sm font-medium text-gray-900">Capacitação</label>
                                 </div>
                                 <div class="flex items-center">
-                                    <input id="tipo-outros" type="radio" value="OUTROS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100 border-gray-300 focus:outline-none" style="accent-color: #0097B2;">
+                                    <input id="tipo-outros" type="radio" value="OUTROS" name="tipo-projeto" class="custom-radio w-4 h-4 bg-gray-100  text-primary border-gray-300 focus:outline-none cursor-pointer" style="accent-color: #0097B2;">
                                     <label for="tipo-outros" class="ms-2 text-sm font-medium text-gray-900">Outros</label>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                     
                     
                     <div class="flex justify-center mt-8">
-                        <button type="submit" class="btn-custom inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white rounded-lg focus:outline-none">
+                        <button type="submit" class="btn-primary inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white rounded-lg focus:outline-none cursor-pointer">
                             <svg class="w-3.5 h-3.5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                             </svg>
