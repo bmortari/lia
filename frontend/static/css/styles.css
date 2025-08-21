@@ -9,35 +9,6 @@ body {
     padding: 0;
 }
 
-.background-waves {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 300px;
-    height: 100vh;
-    background-image: url('/static/assets/img/abstract.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    z-index: -1;
-}
-
-.content-wrapper {
-    margin-left: 300px;
-    min-height: 100vh;
-}
-
-.btn-custom {
-    background-color: #0097B2;
-}
-
-.btn-custom:hover {
-    background-color: #007d96;
-}
-
-.btn-custom:focus {
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
-}
 
 .btn-manual {
     background-color: #919297;
@@ -70,13 +41,6 @@ body {
 .btn-demo:disabled {
     background-color: #6c757d;
     cursor: not-allowed;
-}
-
-.container-projetos {
-    border: 2px solid #0097B2;
-    height: 580px;
-    max-height: 580px;
-    flex-shrink: 0;
 }
 
 #lista-projetos {

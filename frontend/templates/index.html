@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="stylesheet" href="/static/css/output.css">    
 </head>
-<body>
+<body class="bg-gray-50">
     <!-- Elemento para a imagem de fundo -->
-    <div class="background-waves"></div>
+    <div class="hidden lg:block lg:fixed lg:left-0 lg:top-0 lg:w-[300px] lg:h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/assets/img/abstract.jpg'); z-index: -1;"></div>
     
-    <main class="content-wrapper">
+    <main class="lg:ml-[300px] min-h-screen">
         <div class="layout-wrapper h-screen flex items-center justify-center">
-            <div class="grid-wrapper grid grid-cols-2 gap-8 items-start">
+            <div class="grid-wrapper grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                 <div class="container-introducao p-4">
                     <div>
                         <div class="mb-6 w-128">
@@ -26,7 +26,7 @@
                             <button type="button" class="btn-manual cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
                                 Manual
                             </button>
-                            <button type="button" id="iniciar_projeto" class="btn-custom cursor-pointer text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                            <button type="button" id="iniciar_projeto" class="btn-primary">
                                 Iniciar projeto
                             </button>
                             <button type="button" id="carregar_dados_demo" class="btn-demo cursor-pointer font-medium rounded-lg text-sm px-4 py-2.5 focus:outline-none">
@@ -57,7 +57,7 @@
                         <img src="/static/assets/img/logo_nativa.png" alt="Logo 2" id="logo-nativa">
                     </div>
                 </div>
-                <div class="container-projetos w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6 flex flex-col">
+                <div class="container-projetos w-full max-w-sm h-[580px] max-h-[580px] flex-shrink-0 p-4 bg-white border-2 border-primary rounded-lg shadow-sm sm:p-6 flex flex-col">
                     <div class="flex-shrink-0">
                         <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl">
                             Projetos recentes
