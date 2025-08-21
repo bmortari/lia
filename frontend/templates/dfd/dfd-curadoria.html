@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curadoria de Documento</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/static/css/dfd/dfd-curadoria.css">
+    <link rel="stylesheet" href="/static/css/output.css">
 </head>
 <body class="bg-gray-50">
 
@@ -16,7 +14,7 @@
         <!-- Cabeçalho Principal -->
         <div class="text-center mb-12">
             <div class="mb-6">
-                <i class="las la-file-alt text-6xl text-[#0097B2] mb-4"></i>
+                <i class="las la-file-alt text-6xl text-primary mb-4"></i>
                 <h1 class="text-4xl font-bold text-gray-900 mb-2">Curadoria de Documento</h1>
                 <p class="text-xl text-gray-600">D.F.D. Gerado - Documento de Formalização de Demanda</p>
                 {% if projeto %}
@@ -45,7 +43,7 @@
                         <i class="las la-heading text-2xl text-gray-600 mr-3"></i>
                         <h2 class="text-xl font-semibold text-gray-900">Título do Documento</h2>
                     </div>
-                    <textarea id="titulo-documento" class="readonly-content block w-full p-3 text-sm rounded-lg border resize-none focus:ring-[#0097B2] focus:border-[#0097B2]" rows="2" readonly>DOCUMENTO DE FORMALIZAÇÃO DE DEMANDA (DFD) / FORMULÁRIO PARA PEDIDO DE AQUISIÇÃO/CONTRATAÇÃO (FPA)</textarea>
+                    <textarea id="titulo-documento" class="readonly-content block w-full p-3 text-sm rounded-lg border resize-none focus:ring-primary focus:border-primary" rows="2" readonly>DOCUMENTO DE FORMALIZAÇÃO DE DEMANDA (DFD) / FORMULÁRIO PARA PEDIDO DE AQUISIÇÃO/CONTRATAÇÃO (FPA)</textarea>
                 </div>
             </div>
 
@@ -57,11 +55,11 @@
                             <i class="las la-building text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">1. Identificação da Unidade Demandante</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="unidade-demandante">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="unidade-demandante">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="unidade-demandante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#0097B2] focus:border-[#0097B2] resize-none" rows="4" disabled>{% if dfd %}{{ dfd.unidade_demandante or '' }}{% endif %}</textarea>
+                    <textarea id="unidade-demandante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" rows="4" disabled>{% if dfd %}{{ dfd.unidade_demandante or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -73,11 +71,11 @@
                             <i class="las la-clipboard-list text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">2. Objeto a ser Contratado</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="objeto-contratado">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="objeto-contratado">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="objeto-contratado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#0097B2] focus:border-[#0097B2] resize-none" rows="5" disabled>{% if dfd %}{{ dfd.objeto_contratado or '' }}{% endif %}</textarea>
+                    <textarea id="objeto-contratado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" rows="5" disabled>{% if dfd %}{{ dfd.objeto_contratado or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -89,11 +87,11 @@
                             <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">3. Justificativa da Necessidade da Contratação</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="justificativa">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="justificativa">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="justificativa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#0097B2] focus:border-[#0097B2] resize-none" rows="5" disabled>{% if dfd %}{{ dfd.justificativa_contratacao or '' }}{% endif %}</textarea>
+                    <textarea id="justificativa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" rows="5" disabled>{% if dfd %}{{ dfd.justificativa_contratacao or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -105,7 +103,7 @@
                             <i class="las la-calculator text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">4. Quantidade Justificada a ser Contratada</h2>
                         </div>
-                        <button id="add-item-btn" type="button" class="text-white bg-[#0097B2] hover:bg-[#007d96] focus:ring-1 focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                        <button id="add-item-btn" type="button" class="text-white bg-primary hover:bg-[#007d96] focus:ring-1 focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none cursor-pointer">
                             <i class="las la-plus mr-1"></i>Adicionar Item
                         </button>
                     </div>
@@ -114,15 +112,15 @@
                             {% if dfd.quantidade_contratada is iterable and dfd.quantidade_contratada is not string %}
                                 <!-- Se for uma lista de itens -->
                                 {% for item in dfd.quantidade_contratada %}
-                                <div class="flex items-center gap-3 p-2 border rounded-md item-row">
+                                <div class="flex items-center gap-3 p-2 border-[#e5e7eb] border rounded-md item-row">
                                     <input type="text" 
                                            value="{{ item.descricao if item.descricao else '' }}" 
                                            placeholder="Descrição do item" 
-                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]">
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
                                     <input type="number" 
                                            value="{{ item.quantidade if item.quantidade else '' }}" 
                                            placeholder="Qtd." 
-                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]" 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" 
                                            min="1">
                                     <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
                                         <i class="las la-trash-alt text-xl"></i>
@@ -135,11 +133,11 @@
                                     <input type="text" 
                                            value="{{ dfd.quantidade_contratada.descricao if dfd.quantidade_contratada.descricao else '' }}" 
                                            placeholder="Descrição do item" 
-                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]">
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
                                     <input type="number" 
                                            value="{{ dfd.quantidade_contratada.quantidade if dfd.quantidade_contratada.quantidade else '' }}" 
                                            placeholder="Qtd." 
-                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]" 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" 
                                            min="1">
                                     <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
                                         <i class="las la-trash-alt text-xl"></i>
@@ -151,11 +149,11 @@
                                     <input type="text" 
                                            value="{{ dfd.quantidade_contratada if dfd.quantidade_contratada is string else '' }}" 
                                            placeholder="Descrição do item" 
-                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]">
+                                           class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
                                     <input type="number" 
                                            value="" 
                                            placeholder="Qtd." 
-                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]" 
+                                           class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" 
                                            min="1">
                                     <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
                                         <i class="las la-trash-alt text-xl"></i>
@@ -168,11 +166,11 @@
                                 <input type="text" 
                                        value="" 
                                        placeholder="Descrição do item" 
-                                       class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-[#0097B2] focus:border-[#0097B2]">
+                                       class="flex-grow p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
                                 <input type="number" 
                                        value="" 
                                        placeholder="Qtd." 
-                                       class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-[#0097B2] focus:border-[#0097B2]" 
+                                       class="w-24 p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" 
                                        min="1">
                                 <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn">
                                     <i class="las la-trash-alt text-xl"></i>
@@ -191,11 +189,11 @@
                             <i class="las la-calendar text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">5. Previsão da Data de Entrega</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="previsao-entrega">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="previsao-entrega">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <input type="date" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#0097B2] focus:border-[#0097B2] block w-full p-3" value="{% if dfd and dfd.previsao_data_bem_servico %}{{ dfd.previsao_data_bem_servico.strftime('%Y-%m-%d') if dfd.previsao_data_bem_servico else '' }}{% endif %}" disabled>
+                    <input type="date" id="previsao-entrega" class="editable-content bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-3" value="{% if dfd and dfd.previsao_data_bem_servico %}{{ dfd.previsao_data_bem_servico.strftime('%Y-%m-%d') if dfd.previsao_data_bem_servico else '' }}{% endif %}" disabled>
                 </div>
             </div>
 
@@ -207,11 +205,11 @@
                             <i class="las la-crosshairs text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">6. Alinhamento Estratégico</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="alinhamento-estrategico">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="alinhamento-estrategico">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="alinhamento-estrategico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#0097B2] focus:border-[#0097B2] resize-none" rows="12" disabled>{% if dfd and dfd.alinhamento_estrategico %}{% for item in dfd.alinhamento_estrategico %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</textarea>
+                    <textarea id="alinhamento-estrategico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" rows="12" disabled>{% if dfd and dfd.alinhamento_estrategico %}{% for item in dfd.alinhamento_estrategico %}{{ item }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -223,11 +221,11 @@
                             <i class="las la-info-circle text-2xl text-gray-600 mr-3"></i>
                             <h2 class="text-xl font-semibold text-gray-900">7. Informações Adicionais</h2>
                         </div>
-                        <button type="button" class="edit-btn text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center" data-target="informacoes-adicionais">
+                        <button type="button" class="edit-btn text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer" data-target="informacoes-adicionais">
                             <i class="las la-edit mr-1"></i>Editar
                         </button>
                     </div>
-                    <textarea id="informacoes-adicionais" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-[#0097B2] focus:border-[#0097B2] resize-none" rows="4" placeholder="Equipe de planejamento e outras informações relevantes..." disabled>{% if dfd %}{{ dfd.equipe_de_planejamento or '' }}{% endif %}</textarea>
+                    <textarea id="informacoes-adicionais" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" rows="4" placeholder="Equipe de planejamento e outras informações relevantes..." disabled>{% if dfd %}{{ dfd.equipe_de_planejamento or '' }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -267,13 +265,13 @@
         <div class="max-w-4xl mx-auto mt-8 mb-8">
             <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <!-- Botão Voltar ao Início -->
-                <button id="voltar-inicio" type="button" class="text-[#0097B2] hover:text-white border border-[#0097B2] hover:bg-[#0097B2] focus:ring-1 focus:outline-none focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                <button id="voltar-inicio" type="button" class="text-primary hover:text-white border border-primary hover:bg-primary focus:ring-1 focus:outline-none focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 text-center cursor-pointer">
                     <i class="las la-arrow-left mr-2"></i>
                     Voltar ao início
                 </button>
             
                 <!-- Botão Salvar Alterações (Primário) -->
-                <button type="button" class="inline-flex items-center justify-center text-white bg-[#0097B2] hover:bg-[#007d96] focus:ring-1 focus:ring-[#0097B2] font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                <button type="button" class="inline-flex items-center justify-center text-white bg-primary hover:bg-[#007d96] focus:ring-1 focus:ring-primary font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none cursor-pointer">
                     <i class="las la-save text-lg mr-2"></i>
                     Salvar alterações
                 </button>
@@ -282,7 +280,7 @@
 
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script>
+    <script src="/static/js/flowbite.min.js"></script>
     <script src="/static/js/dfd/dfd-curadoria.js"></script>
 </body>
 </html>

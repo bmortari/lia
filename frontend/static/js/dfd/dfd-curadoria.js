@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ✅ FUNÇÃO ATUALIZADA: Criar uma nova linha de item
     const createItemRow = (item = {}) => {
         const itemRow = document.createElement('div');
-        itemRow.className = 'flex items-center gap-3 p-2 border rounded-md item-row';
+        itemRow.className = 'flex items-center gap-3 p-2 border-[#e5e7eb] border rounded-md item-row';
 
         const descriptionInput = document.createElement('input');
         descriptionInput.type = 'text';

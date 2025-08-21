@@ -15,4 +15,22 @@
     .w-128 {
       width: 32rem;
     }
+    /* Estilo para desabilitar o textarea/input */
+    .editable-content:disabled {
+        @apply bg-slate-50 border-slate-200 text-slate-700 cursor-not-allowed;
+    }
+
+    /* Estilo para checkboxes desabilitados */
+    .checkbox-container.disabled {
+        @apply opacity-60 pointer-events-none;
+    }
+
+    .checkbox-container.disabled label {
+        @apply text-gray-500;
+    }
+
+    /* Estilo para campos não editáveis */
+    .readonly-content {
+        @apply bg-gray-50 border-gray-300 text-gray-700 cursor-not-allowed;
+    }
 }
