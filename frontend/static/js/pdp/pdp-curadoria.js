@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (contract.tabela_itens && contract.tabela_itens.length > 0) {
             contract.tabela_itens.forEach(item => {
                 const itemCard = `
-                    <div class="p-4 border rounded-md space-y-4 bg-gray-50" data-item-id="${item.id}">
+                    <div class="p-4 border border-gray-200 rounded-md space-y-4 bg-gray-50" data-item-id="${item.id}">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                             <div class="flex flex-col space-y-1 md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">N. Item</label>
@@ -253,38 +253,38 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="flex flex-col space-y-1 md:col-span-10">
                                 <label class="block text-sm font-medium text-gray-700">Descrição</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${item.descricao || ''}" data-field="descricao" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
-                                    <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
+                                    <input type="text" value="${item.descricao || ''}" data-field="descricao" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900 focus:border-primary focus:ring-primary" disabled>
+                                    <button class="edit-btn btn-outlined inline-flex items-center focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
                         </div>
                         <div class="flex flex-col space-y-1">
                             <label class="block text-sm font-medium text-gray-700">Marca/Modelo</label>
                             <div class="flex items-center space-x-3">
-                                <input type="text" value="${item.marca_referencia || ''}" data-field="marca_referencia" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
-                                <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
+                                <input type="text" value="${item.marca_referencia || ''}" data-field="marca_referencia" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900 focus:border-primary focus:ring-primary" disabled>
+                                <button class="edit-btn btn-outlined inline-flex items-center borderfocus:ring-1 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div class="flex flex-col space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Unidade Medida</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${item.unidade || ''}" data-field="unidade" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
-                                    <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
+                                    <input type="text" value="${item.unidade || ''}" data-field="unidade" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900 focus:border-primary focus:ring-primary" disabled>
+                                    <button class="edit-btn btn-outlined inline-flex items-center focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
                             <div class="flex flex-col space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Quantidade</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="number" value="${item.quantidade || 0}" data-field="quantidade" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
-                                    <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
+                                    <input type="number" value="${item.quantidade || 0}" data-field="quantidade" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900 focus:border-primary focus:ring-primary" disabled>
+                                    <button class="edit-btn btn-outlined inline-flex items-center focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
                             <div class="flex flex-col space-y-1">
                                 <label class="block text-sm font-medium text-gray-700">Valor Unitário (R$)</label>
                                 <div class="flex items-center space-x-3">
-                                    <input type="text" value="${parseFloat(item.valor_unitario || 0).toFixed(2).replace('.', ',')}" data-field="valor_unitario" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900" disabled>
-                                    <button class="edit-btn inline-flex items-center text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
+                                    <input type="text" value="${parseFloat(item.valor_unitario || 0).toFixed(2).replace('.', ',')}" data-field="valor_unitario" class="block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md shadow-sm text-gray-500 disabled:cursor-not-allowed enabled:bg-white enabled:text-gray-900 focus:border-primary focus:ring-primary" disabled>
+                                    <button class="edit-btn btn-outlined inline-flex items-center focus:ring-1 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5"><i class="las la-edit mr-1"></i> Editar</button>
                                 </div>
                             </div>
                         </div>
@@ -520,15 +520,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 input.disabled = true;
                 button.innerHTML = `<i class="las la-edit mr-1"></i> Editar`;
-                button.classList.remove('text-white', 'bg-blue-700', 'hover:bg-blue-800');
-                button.classList.add('text-blue-700', 'hover:text-white', 'border', 'border-blue-700', 'hover:bg-blue-700');
+                button.classList.replace('btn-primary', 'btn-outlined');
             } else {
                 // --- EDIT LOGIC ---
                 input.disabled = false;
                 input.focus();
                 button.innerHTML = `<i class="las la-save mr-1"></i> Salvar`;
-                button.classList.remove('text-blue-700', 'border-blue-700', 'hover:bg-blue-700');
-                button.classList.add('text-white', 'bg-blue-700', 'hover:bg-blue-800');
+                button.classList.replace('btn-outlined', 'btn-primary');
             }
         });
 

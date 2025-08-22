@@ -14,32 +14,3 @@
 #contracts-list::-webkit-scrollbar-thumb:hover {
     background: #9ca3af; /* gray-400 */
 }
-
-/* Botão customizado com as mesmas cores do index */
-.btn-custom {
-    background-color: #0097B2;
-    color: white;
-}
-
-.btn-custom:hover {
-    background-color: #007d96;
-}
-
-.btn-custom:focus {
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
-}
-
-/* Botões de editar customizados */
-.btn-edit-custom {
-    color: #0097B2;
-    border-color: #0097B2;
-}
-
-.btn-edit-custom:hover {
-    background-color: #0097B2;
-    color: white;
-}
-
-.btn-edit-custom:focus {
-    box-shadow: 0 0 0 4px rgba(0, 151, 178, 0.3);
-}

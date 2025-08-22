@@ -3371,6 +3371,12 @@
       border-color: var(--color-red-500);
     }
   }
+  .focus\:ring-0 {
+    &:focus {
+      --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(0px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
   .focus\:ring-1 {
     &:focus {
       --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
@@ -3423,14 +3429,6 @@
   .focus\:ring-primary {
     &:focus {
       --tw-ring-color: var(--color-primary);
-    }
-  }
-  .focus\:ring-primary\/50 {
-    &:focus {
-      --tw-ring-color: color-mix(in srgb, #0097B2 50%, transparent);
-      @supports (color: color-mix(in lab, red, red)) {
-        --tw-ring-color: color-mix(in oklab, var(--color-primary) 50%, transparent);
-      }
     }
   }
   .focus\:ring-red-300 {
