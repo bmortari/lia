@@ -451,11 +451,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 targetElement.focus();
                 targetElement.classList.remove('editable-content:disabled');
                 this.innerHTML = '<i class="las la-save mr-1"></i>Salvar';
+                this.classList.replace('btn-outlined', 'btn-primary');
             } else {
                 // Desabilitar edição
                 targetElement.disabled = true;
                 targetElement.classList.add('editable-content:disabled');
                 this.innerHTML = '<i class="las la-edit mr-1"></i>Editar';
+                this.classList.replace('btn-primary', 'btn-outlined');
             }
         });
     });
