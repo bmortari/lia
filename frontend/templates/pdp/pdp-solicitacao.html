@@ -21,7 +21,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Pesquisa de Preços</h1>
                     <p class="text-gray-600 mt-2">Análise de mercado baseada em contratos públicos</p>
                 </div>
-                <button id="voltar-inicio" class="flex items-center text-blue-600 hover:text-blue-800 transition-colors border border-current px-4 py-2 rounded-lg">
+                <button id="voltar-inicio" class="btn-back">
                     <i class="uil uil-arrow-left mr-2"></i>
                     Voltar ao início
                 </button>
@@ -32,7 +32,7 @@
         <div id="solucoes-ia-section" class="mb-8 hidden">
             <div class="mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center">
-                    <i class="uil uil-brain mr-3 text-blue-600"></i>
+                    <i class="uil uil-brain mr-3 text-primary"></i>
                     Soluções Identificadas pela IA
                 </h2>
                 <p class="text-gray-600 mt-2">Baseado na análise do seu projeto, encontramos as seguintes opções:</p>
@@ -67,7 +67,7 @@
                                 type="text" 
                                 id="palavras-chave" 
                                 name="palavras-chave" 
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 pr-12" 
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-2 focus:ring-primary block w-full p-4 pr-12" 
                                 placeholder="Ex: software, desenvolvimento, licença, manutenção"
                             >
                             <div class="absolute inset-y-0 right-0 flex items-center pr-4">
@@ -89,19 +89,19 @@
                             
                             <!-- Filtros em botões -->
                             <div class="flex flex-wrap gap-2 mb-4">
-                                <button type="button" id="filter-esfera-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="button" id="filter-esfera-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer">
                                     <i class="uil uil-building mr-2"></i>
                                     <span id="esfera-btn-text">Esfera</span>
                                     <span id="esfera-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">4</span>
                                 </button>
 
-                                <button type="button" id="filter-uf-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="button" id="filter-uf-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer">
                                     <i class="uil uil-map-marker mr-2"></i>
                                     <span id="uf-btn-text">UF</span>
                                     <span id="uf-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">27</span>
                                 </button>
 
-                                <button type="button" id="filter-modalidade-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="button" id="filter-modalidade-btn" class="inline-flex items-center px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
                                     <i class="uil uil-file-alt mr-2"></i>
                                     <span id="modalidade-btn-text">Modalidade</span>
                                     <span id="modalidade-count" class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">10</span>
@@ -110,7 +110,7 @@
                         </div>
 
                         <!-- Botão de Busca -->
-                        <button type="submit" id="enviar-pesquisa" class="w-full flex items-center justify-center text-white btn-custom font-medium rounded-lg text-lg px-6 py-4 transition-colors hover:shadow-lg">
+                        <button type="submit" id="enviar-pesquisa" class="w-full flex items-center justify-center text-white btn-primary font-medium rounded-lg text-lg px-6 py-4 transition-colors hover:shadow-lg cursor-pointer">
                             <i class="uil uil-search mr-2"></i>
                             Buscar Preços
                         </button>
@@ -134,7 +134,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
             <div class="mb-4">
                 <i class="uil uil-cog text-primary text-5xl animate-spin-icon"></i>
@@ -142,7 +142,7 @@
             <h3 class="text-xl font-bold text-gray-900 mb-2">Pesquisando Preços</h3>
             <p class="text-gray-600 mb-6">Analisando bases de dados de compras públicas...</p>
             <div class="w-full bg-gray-200 rounded-full h-2.5">
-                <div id="progress-bar" class="btn-custom h-2.5 rounded-full" style="width: 0%"></div>
+                <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
             </div>
         </div>
     </div>
@@ -150,18 +150,18 @@
     <!-- Filter Modals (mantidos iguais) -->
     
     <!-- Esfera Filter Modal -->
-    <div id="filter-esfera-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div id="filter-esfera-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-96 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900">Filtrar por Esfera</h3>
-                <button type="button" id="close-esfera-modal" class="text-gray-400 hover:text-gray-600">
+                <button type="button" id="close-esfera-modal" class="text-gray-400 hover:text-gray-600 cursor-pointer">
                     <i class="uil uil-times text-xl"></i>
                 </button>
             </div>
             <div class="p-6 max-h-80 overflow-y-auto">
                 <div class="space-y-3">
                     <label class="flex items-center">
-                        <input type="checkbox" id="esfera-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" id="esfera-all" class="checkbox-custom w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todas</span>
                     </label>
                     <div class="border-t border-gray-200 pt-3 space-y-2" id="esfera-options-modal">
@@ -170,10 +170,10 @@
                 </div>
             </div>
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-                <button type="button" id="cancel-esfera" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                <button type="button" id="cancel-esfera" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
                     Cancelar
                 </button>
-                <button type="button" id="apply-esfera" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                <button type="button" id="apply-esfera" class="px-4 py-2 text-sm font-medium text-white btn-primary border border-transparent rounded-md">
                     Aplicar
                 </button>
             </div>
@@ -181,18 +181,18 @@
     </div>
 
     <!-- UF Filter Modal -->
-    <div id="filter-uf-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div id="filter-uf-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900">Filtrar por UF</h3>
-                <button type="button" id="close-uf-modal" class="text-gray-400 hover:text-gray-600">
+                <button type="button" id="close-uf-modal" class="text-gray-400 hover:text-gray-600 cursor-pointer">
                     <i class="uil uil-times text-xl"></i>
                 </button>
             </div>
             <div class="p-6 overflow-y-auto">
                 <div class="space-y-3">
                     <label class="flex items-center">
-                        <input type="checkbox" id="uf-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" id="uf-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todos</span>
                     </label>
                     <div class="border-t border-gray-200 pt-3 space-y-2" id="uf-options-modal">
@@ -201,10 +201,10 @@
                 </div>
             </div>
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-                <button type="button" id="cancel-uf" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                <button type="button" id="cancel-uf" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
                     Cancelar
                 </button>
-                <button type="button" id="apply-uf" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                <button type="button" id="apply-uf" class="px-4 py-2 text-sm font-medium text-white btn-primary border border-transparent rounded-md">
                     Aplicar
                 </button>
             </div>
@@ -212,18 +212,18 @@
     </div>
 
     <!-- Modalidade Filter Modal -->
-    <div id="filter-modalidade-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div id="filter-modalidade-modal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full flex flex-col max-h-[90vh]">
             <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 class="text-lg font-semibold text-gray-900">Filtrar por Modalidade</h3>
-                <button type="button" id="close-modalidade-modal" class="text-gray-400 hover:text-gray-600">
+                <button type="button" id="close-modalidade-modal" class="text-gray-400 hover:text-gray-600 cursor-pointer">
                     <i class="uil uil-times text-xl"></i>
                 </button>
             </div>
             <div class="p-6 overflow-y-auto">
                 <div class="space-y-3">
                     <label class="flex items-center">
-                        <input type="checkbox" id="modalidade-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" id="modalidade-all" class="checkbox-custom w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm font-medium text-gray-900">Selecionar Todas</span>
                     </label>
                     <div class="border-t border-gray-200 pt-3 space-y-2" id="modalidade-options-modal">
@@ -232,10 +232,10 @@
                 </div>
             </div>
             <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-                <button type="button" id="cancel-modalidade" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
+                <button type="button" id="cancel-modalidade" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 cursor-pointer">
                     Cancelar
                 </button>
-                <button type="button" id="apply-modalidade" class="px-4 py-2 text-sm font-medium text-white btn-custom border border-transparent rounded-md hover:bg-blue-700">
+                <button type="button" id="apply-modalidade" class="px-4 py-2 text-sm font-medium text-white btn-primary border border-transparent rounded-md">
                     Aplicar
                 </button>
             </div>

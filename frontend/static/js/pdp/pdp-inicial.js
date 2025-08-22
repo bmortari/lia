@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             indicadoresHTML +
                         '</div>' +
                     '</div>' +
-                    '<button class="buscar-solucao-btn w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r ' + gradiente + ' rounded-lg hover:shadow-md transition-all duration-200" data-palavras="' + (solucao.palavrasChave ? solucao.palavrasChave.join(', ') : '') + '" onclick="event.stopPropagation()" title="Usar estas palavras-chave para buscar preços">' +
+                    '<button class="buscar-solucao-btn cursor-pointer w-full flex items-center justify-center px-3 py-2 text-xs font-medium text-white bg-gradient-to-r ' + gradiente + ' rounded-lg hover:shadow-md transition-all duration-200" data-palavras="' + (solucao.palavrasChave ? solucao.palavrasChave.join(', ') : '') + '" onclick="event.stopPropagation()" title="Usar estas palavras-chave para buscar preços">' +
                         '<i class="uil uil-search mr-1"></i>' +
                         'Buscar Preços' +
                     '</button>' +
@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para mostrar modal com dicas
     function mostrarModalDicas(recomendacoes) {
-        const modalHTML = '<div id="modal-dicas" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">' +
+        const modalHTML = '<div id="modal-dicas" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">' +
             '<div class="bg-white rounded-lg shadow-xl max-w-md w-full">' +
                 '<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">' +
                     '<h3 class="text-lg font-semibold text-gray-900 flex items-center">' +
@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alertasHTML += '<p class="text-sm text-amber-700 mb-2">• ' + escapeHtml(alerta) + '</p>';
         });
         
-        const modalHTML = '<div id="modal-alertas" class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center p-4">' +
+        const modalHTML = '<div id="modal-alertas" class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">' +
             '<div class="bg-white rounded-lg shadow-xl max-w-md w-full">' +
                 '<div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">' +
                     '<h3 class="text-lg font-semibold text-gray-900 flex items-center">' +
@@ -787,7 +787,7 @@ function testarDadosSimplificados() {
             for (const [valor, nome] of Object.entries(ESFERAS)) {
                 const checkboxHTML = `
                     <label class="flex items-center">
-                        <input type="checkbox" value="${valor}" class="checkbox-custom esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" value="${valor}" class="checkbox-custom text-primary esfera-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm text-gray-700">${nome}</span>
                     </label>
                 `;
@@ -799,7 +799,7 @@ function testarDadosSimplificados() {
             UFS.forEach(uf => {
                 const checkboxHTML = `
                     <label class="flex items-center">
-                        <input type="checkbox" value="${uf}" class="checkbox-custom uf-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" value="${uf}" class="checkbox-custom uf-option w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm text-gray-700">${uf}</span>
                     </label>
                 `;
@@ -811,7 +811,7 @@ function testarDadosSimplificados() {
             for (const [valor, nome] of Object.entries(MODALIDADES)) {
                 const checkboxHTML = `
                     <label class="flex items-center">
-                        <input type="checkbox" value="${valor}" class="checkbox-custom modalidade-option w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <input type="checkbox" value="${valor}" class="checkbox-custom modalidade-option w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary focus:ring-primary cursor-pointer" checked>
                         <span class="ml-3 text-sm text-gray-700">${nome}</span>
                     </label>
                 `;
