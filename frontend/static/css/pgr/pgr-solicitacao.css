@@ -34,34 +34,6 @@
             animation: spin 1.5s linear infinite;
         }
         
-        .btn-custom {
-            background-color: #dc2626;
-        }
-        .btn-custom:hover {
-            background-color: #b91c1c;
-        }
-        .btn-custom:focus {
-            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.3);
-        }
-        
-        .checkbox-custom:checked {
-            background-color: #dc2626;
-            border-color: #dc2626;
-        }
-        .checkbox-custom:focus {
-            box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.3);
-        }
-         
-        #voltar-inicio {
-            color: #dc2626;
-            border-color: #dc2626;
-            background-color: transparent;
-        }
-        #voltar-inicio:focus {
-            box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.3);
-            outline: none;
-        }
-        
         .gradient-bg {
             background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
         }

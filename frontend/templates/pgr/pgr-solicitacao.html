@@ -21,9 +21,10 @@
                     <h1 class="text-3xl font-bold text-gray-900">Plano de Gerenciamento de Riscos</h1>
                     <p class="text-gray-600 mt-2">Análise de riscos baseada nas soluções identificadas</p>
                 </div>
-                <button id="voltar-inicio" class="flex items-center text-red-600 hover:text-red-800 transition-colors border border-current px-4 py-2 rounded-lg">
-                    <i class="uil uil-arrow-left mr-2"></i>
-                    Voltar ao início
+                <button id="voltar-inicio"
+                class="btn-pgr-outlined">
+                <i class="uil uil-arrow-left mr-2"></i>
+                Voltar ao início
                 </button>
             </div>
         </div>
@@ -87,23 +88,23 @@
                             </label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
-                                    <input type="checkbox" value="tecnico" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <input type="checkbox" value="tecnico" class="checkbox-custom categoria-risco">
                                     <span class="ml-3 text-sm text-gray-700">Técnico</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" value="operacional" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <input type="checkbox" value="operacional" class="checkbox-custom categoria-risco">
                                     <span class="ml-3 text-sm text-gray-700">Operacional</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" value="financeiro" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <input type="checkbox" value="financeiro" class="checkbox-custom categoria-risco">
                                     <span class="ml-3 text-sm text-gray-700">Financeiro</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" value="legal" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <input type="checkbox" value="legal" class="checkbox-custom categoria-risco">
                                     <span class="ml-3 text-sm text-gray-700">Legal/Regulatório</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" value="estrategico" class="checkbox-custom categoria-risco w-4 h-4 bg-gray-100 border-gray-300 rounded focus:ring-red-500">
+                                    <input type="checkbox" value="estrategico" class="checkbox-custom categoria-risco">
                                     <span class="ml-3 text-sm text-gray-700">Estratégico</span>
                                 </label>
                             </div>
@@ -117,15 +118,15 @@
                             </label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
-                                    <input type="radio" name="nivel-detalhamento" value="basico" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
+                                    <input type="radio" name="nivel-detalhamento" value="basico" class="radio-pgr">
                                     <span class="ml-3 text-sm text-gray-700">Básico - Principais riscos</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="nivel-detalhamento" value="completo" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500" checked>
+                                    <input type="radio" name="nivel-detalhamento" value="completo" class="radio-pgr" checked>
                                     <span class="ml-3 text-sm text-gray-700">Completo - Análise detalhada</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="radio" name="nivel-detalhamento" value="executivo" class="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 focus:ring-red-500">
+                                    <input type="radio" name="nivel-detalhamento" value="executivo" class="radio-pgr">
                                     <span class="ml-3 text-sm text-gray-700">Executivo - Resumo estratégico</span>
                                 </label>
                             </div>
@@ -134,7 +135,7 @@
 
                     <!-- Botão de Gerar PGR -->
                     <div class="flex justify-center pt-4">
-                        <button type="submit" id="gerar-pgr" class="w-full md:w-auto flex items-center justify-center text-white btn-custom font-medium rounded-lg text-lg px-8 py-4 transition-colors hover:shadow-lg">
+                        <button type="submit" id="gerar-pgr" class="btn-pgr">
                             <i class="uil uil-shield-check mr-2"></i>
                             Gerar Plano de Gerenciamento de Riscos
                         </button>
@@ -161,7 +162,7 @@
     </div>
 
     <!-- Loading Overlay -->
-    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
             <div class="mb-4">
                 <i class="uil uil-shield-exclamation text-red-600 text-5xl animate-spin-icon"></i>
@@ -169,7 +170,7 @@
             <h3 class="text-xl font-bold text-gray-900 mb-2">Analisando Riscos</h3>
             <p class="text-gray-600 mb-6">Identificando e categorizando riscos das soluções...</p>
             <div class="w-full bg-gray-200 rounded-full h-2.5">
-                <div id="progress-bar" class="btn-custom h-2.5 rounded-full" style="width: 0%"></div>
+                <div id="progress-bar" class="bg-red-600 h-2.5 rounded-full" style="width: 0%"></div>
             </div>
         </div>
     </div>
