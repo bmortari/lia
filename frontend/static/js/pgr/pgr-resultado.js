@@ -134,7 +134,7 @@ function criarInterfacePGR(pgrDataArray) {
     .join("");
 
   container.innerHTML = `
-        <select id="pgrSelector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-400 focus:border-red-400 block w-full p-2.5">
+        <select id="pgrSelector" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5">
             ${optionsHtml}
         </select>
     `;
