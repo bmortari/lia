@@ -402,14 +402,14 @@ document.addEventListener("DOMContentLoaded", function () {
     );
     const div = document.createElement("div");
     div.className =
-      "flex items-center gap-3 p-2 border rounded-md alinhamento-row";
+      "flex items-center gap-3 p-2 border border-gray-200 rounded-md alinhamento-row";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = alinhamento;
     input.placeholder = "Alinhamento estratégico";
     input.className =
-      "flex-grow p-2 border-gray-300 border rounded-md alinhamento-input";
+      "flex-grow p-2 focus:ring-primary focus:border-primary border-gray-300 border rounded-md alinhamento-input";
     input.disabled = false; // Habilitado por padrão
 
     const removeBtn = document.createElement("button");
@@ -451,14 +451,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const container = document.getElementById("requisitos-container");
     const div = document.createElement("div");
     div.className =
-      "flex items-center gap-3 p-2 border rounded-md requisito-row";
+      "flex items-center gap-3 p-2 border border-gray-200 rounded-md requisito-row";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = requisito;
     input.placeholder = "Requisito para contratação";
     input.className =
-      "flex-grow p-2 border-gray-300 border rounded-md requisito-input";
+      "flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md requisito-input";
     input.disabled = false; // Habilitado por padrão
 
     const removeBtn = document.createElement("button");
@@ -486,13 +486,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function criarLinhaProvidenciaPre(providencia = "") {
     const container = document.getElementById("providencias-pre-container");
     const div = document.createElement("div");
-    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-pre-row";
+    div.className = "flex items-center gap-3 p-2 border border-gray-200 rounded-md providencia-pre-row";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = providencia;
     input.placeholder = "Providência (Pré-contratação)";
-    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-pre-input";
+    input.className = "flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md providencia-pre-input";
     input.disabled = false;
 
     const removeBtn = document.createElement("button");
@@ -519,13 +519,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function criarLinhaProvidenciaDurante(providencia = "") {
     const container = document.getElementById("providencias-durante-container");
     const div = document.createElement("div");
-    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-durante-row";
+    div.className = "flex items-center gap-3 p-2 border border-gray-200 rounded-md providencia-durante-row";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = providencia;
     input.placeholder = "Providência (Durante a execução)";
-    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-durante-input";
+    input.className = "flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md providencia-durante-input";
     input.disabled = false;
 
     const removeBtn = document.createElement("button");
@@ -552,13 +552,13 @@ document.addEventListener("DOMContentLoaded", function () {
   function criarLinhaProvidenciaPos(providencia = "") {
     const container = document.getElementById("providencias-pos-container");
     const div = document.createElement("div");
-    div.className = "flex items-center gap-3 p-2 border rounded-md providencia-pos-row";
+    div.className = "flex items-center gap-3 p-2 border border-gray-200 rounded-md providencia-pos-row";
 
     const input = document.createElement("input");
     input.type = "text";
     input.value = providencia;
     input.placeholder = "Providência (Pós-contratação)";
-    input.className = "flex-grow p-2 border-gray-300 border rounded-md providencia-pos-input";
+    input.className = "flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md providencia-pos-input";
     input.disabled = false;
 
     const removeBtn = document.createElement("button");
