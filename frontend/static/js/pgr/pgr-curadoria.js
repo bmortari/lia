@@ -617,7 +617,7 @@ document.addEventListener("DOMContentLoaded", function () {
         camposEditaveis.forEach((campo) => {
           campo.disabled = false;
           campo.classList.remove("readonly-content");
-          campo.classList.add("focus:ring-blue-500", "focus:border-blue-500");
+          campo.classList.add("focus:ring-red-400", "focus:border-red-400");
         });
 
         // Focar no primeiro campo
@@ -632,8 +632,8 @@ document.addEventListener("DOMContentLoaded", function () {
           campo.disabled = true;
           campo.classList.add("readonly-content");
           campo.classList.remove(
-            "focus:ring-blue-500",
-            "focus:border-blue-500"
+            "focus:ring-red-400",
+            "focus:border-red-400"
           );
         });
 

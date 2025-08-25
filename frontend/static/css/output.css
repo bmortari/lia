@@ -3359,6 +3359,11 @@
       border-color: var(--color-primary);
     }
   }
+  .focus\:border-red-400 {
+    &:focus {
+      border-color: var(--color-red-400);
+    }
+  }
   .focus\:border-red-500 {
     &:focus {
       border-color: var(--color-red-500);
@@ -3421,6 +3426,11 @@
   .focus\:ring-red-300 {
     &:focus {
       --tw-ring-color: var(--color-red-300);
+    }
+  }
+  .focus\:ring-red-400 {
+    &:focus {
+      --tw-ring-color: var(--color-red-400);
     }
   }
   .focus\:ring-red-500 {
