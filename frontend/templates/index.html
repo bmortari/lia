@@ -8,80 +8,91 @@
     <link rel="stylesheet" href="/static/css/output.css">    
 </head>
 <body class="bg-gray-50">
-    <!-- Elemento para a imagem de fundo -->
-    <div class="hidden lg:block lg:fixed lg:left-0 lg:top-0 lg:w-[300px] lg:h-screen bg-cover bg-center bg-no-repeat" style="background-image: url('/static/assets/img/abstract.jpg'); z-index: -1;"></div>
-    
-    <main class="lg:ml-[300px] min-h-screen">
-        <div class="layout-wrapper h-screen flex items-center justify-center">
-            <div class="grid-wrapper grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div class="container-introducao p-4">
-                    <div>
-                        <div class="mb-6 w-128">
-                         <img src="/static/assets/img/logo_lia.png" alt="LIA - Licitações com IA" class="h-30 w-auto pb-8">
-                        </div>
-                        <p class="text-2xl w-128 max-w-xl mb-6 pb-8">
-                          O LIA é a plataforma que simplifica a geração de documentos licitatórios. Mais eficiência. Mais segurança. Mais inovação.
+    <div class="flex h-screen">
+        <!-- Coluna da Imagem -->
+        <div class="hidden lg:block" style="width: 400px; flex-shrink: 0;">
+            <img src="/static/assets/img/abstract.jpg" alt="Abstract background" class="w-full h-full object-cover">
+        </div>
+
+        <!-- Coluna do Conteúdo -->
+        <div class="flex-grow h-full flex flex-col items-center justify-center">
+            <main class="flex-grow flex flex-col items-center justify-center p-4 w-full">
+                <div class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    
+                    <!-- Coluna da Esquerda: Introdução -->
+                    <div class="text-center lg:text-left">
+                        <img src="/static/assets/img/logo_lia.png" alt="LIA Logo" class="h-72 w-auto mx-auto lg:mx-0 mb-8">
+                        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                            Licitações com Inteligência Artificial
+                        </h1>
+                        <p class="text-lg text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0">
+                            O LIA simplifica a geração de documentos licitatórios. Mais eficiência, segurança e inovação para o seu processo.
                         </p>
-                        <div class="btn-group mb-8">
-                            <button type="button" class="btn-manual cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none">
+                        <div class="flex items-center justify-center lg:justify-start space-x-4">
+                            <button type="button" class="btn-manual h-12 cursor-pointer font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none flex items-center justify-center">
                                 Manual
                             </button>
-                            <button type="button" id="iniciar_projeto" class="btn-primary">
-                                Iniciar projeto
+                            <button type="button" id="iniciar_projeto" class="btn-primary h-12 flex items-center justify-center">
+                                Iniciar Projeto
                             </button>
-                            <button type="button" id="carregar_dados_demo" class="btn-demo cursor-pointer font-medium rounded-lg text-sm px-4 py-2.5 focus:outline-none">
-                                <span id="demo-btn-text">📦 Dados Demo</span>
+                            <button type="button" id="carregar_dados_demo" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-5 rounded-lg text-sm h-12 flex items-center justify-center">
+                                <span id="demo-btn-text" class="flex items-center">Dados Demo</span>
                                 <span id="demo-loading" class="hidden">
                                     <span class="loading-spinner"></span>Carregando...
                                 </span>
                             </button>
                         </div>
-                        
-                        <!-- Info para desenvolvedores -->
-                        <div class="debug-info" id="debug-info" style="display: none;">
-                            <div>
-                                <strong>Debug Info:</strong><br>
-                                Ctrl+Shift+V: Verificar arquivo seed<br>
-                                Ctrl+Shift+C: Verificar comandos SQL
+                    </div>
+
+                    <!-- Coluna da Direita: Projetos Recentes -->
+                    <div class="w-full max-w-md mx-auto">
+                        <div class="bg-white border border-gray-200 rounded-xl shadow-md h-full flex flex-col mt-12" style="height: 600px;">
+                            <div class="p-6 border-b border-gray-200">
+                                <h2 class="text-xl font-semibold text-gray-900">Projetos Recentes</h2>
+                                <p class="text-sm text-gray-500 mt-1">Selecione um projeto para continuar de onde parou.</p>
                             </div>
-                            <div class="debug-commands" id="debug-commands" style="display: none;">
-                                <!-- Comandos SQL serão mostrados aqui -->
+                            <ul id="lista-projetos" class="flex-grow p-4 space-y-2 overflow-y-auto">
+                                <!-- Estado inicial de carregamento -->
+                                <li class="flex justify-center items-center h-full text-gray-500">
+                                    <div role="status">
+                                        <svg aria-hidden="true" class="inline w-6 h-6 text-gray-200 animate-spin fill-primary" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                                        </svg>
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="p-4 text-center border-t border-gray-200">
+                                <a href="listar_projetos" class="text-sm font-medium text-primary hover:underline">
+                                    Ver todos os projetos
+                                </a>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Seção de créditos -->
-                    <div class="credits-section">
-                        <p class="credits-text">DESENVOLVIDO POR:</p>
-                        <img src="/static/assets/img/logo_tre.png" alt="Logo 1">
-                        <img src="/static/assets/img/logo_nativa.png" alt="Logo 2" id="logo-nativa">
+                </div>
+            </main>
+
+            <!-- Créditos e Debug Info no rodapé -->
+            <footer class="w-full px-4 py-2">
+                <div class="max-w-6xl mx-auto flex justify-between items-center">
+                    <div class="credits-section flex items-center gap-4">
+                        <p class="credits-text text-base text-gray-500 uppercase font-semibold">Desenvolvido por:</p>
+                        <img src="/static/assets/img/logo_tre.png" alt="Logo TRE" class="h-10">
+                        <img src="/static/assets/img/logo_nativa.png" alt="Logo Nativa" id="logo-nativa" class="h-16">
+                    </div>
+                    <div class="debug-info" id="debug-info" style="display: none;">
+                        <div>
+                            <strong>Debug:</strong>
+                            Ctrl+Shift+V: Chk Seed |
+                            Ctrl+Shift+C: Chk SQL
+                        </div>
+                        <div class="debug-commands" id="debug-commands" style="display: none;"></div>
                     </div>
                 </div>
-                <div class="container-projetos w-full max-w-sm h-[580px] max-h-[580px] flex-shrink-0 p-4 bg-white border-2 border-primary rounded-lg shadow-sm sm:p-6 flex flex-col">
-                    <div class="flex-shrink-0">
-                        <h5 class="mb-3 text-base font-semibold text-gray-900 md:text-xl">
-                            Projetos recentes
-                        </h5>
-                        <p class="text-sm font-normal text-gray-500 mb-4">
-                            Selecione um dos projetos recentes para acessar os serviços:
-                        </p>
-                    </div>
-                    <ul id="lista-projetos" class="space-y-3 gap-2 flex-grow">
-                        <!-- Itens do projeto serão inseridos aqui dinamicamente -->
-                        <li class="text-gray-500 text-center py-4">
-                            <div class="loading-spinner" style="border-color: #6b7280; border-top-color: transparent; margin: 0 auto 8px;"></div>
-                            Carregando projetos...
-                        </li>
-                    </ul>
-                    <div class="text-center mt-4 flex-shrink-0">
-                        <a href="listar_projetos" class="inline-flex items-center text-sm font-normal text-gray-500 hover:underline">
-                            Ver todos os projetos
-                        </a>
-                    </div>
-                </div>
-            </div>
+            </footer>
         </div>
-    </main>
+    </div>
     
     <script src="/static/js/flowbite.min.js"></script>
     <script src="/static/js/script.js"></script>
