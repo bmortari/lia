@@ -1,5 +1,6 @@
 from datetime import date, datetime
 from decimal import Decimal
+from enum import Enum
 from typing import Optional, List
 from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
 
@@ -115,10 +116,19 @@ class TRBase(BaseModel):
     #     return v
 
 
+class AquisicaoOuFormacao(str, Enum):
+    aquisicao = "Aquisição"
+    formacao = "Formação de registro de preços"
+
+class TipoContratacao(str, Enum):
+    objeto = "Objeto"
+    servico = "Serviço"
+
+
 class TRCreate(TRBase):
     """Schema para criação de TR"""
-    id_projeto: int = Field(..., description="ID do projeto associado")
-    user_created: str = Field(..., max_length=255, description="Usuário que criou o TR")
+    aquisicao_ou_formacao: AquisicaoOuFormacao = Field(..., description="Aquisição ou formação de registro de preços")
+    tipo_contratacao: TipoContratacao = Field(..., description="Contratação de objeto ou serviço")
 
 
 class TRUpdate(BaseModel):

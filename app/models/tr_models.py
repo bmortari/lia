@@ -79,6 +79,13 @@ class TR(Base):
 
     arquivo_docx_ref = Column("arquivo_docx_ref", String, nullable=True)
 
+    itens = relationship(
+        "TRItem",
+        back_populates="tr",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+
 class TRItem(Base):
     __tablename__ = "tr_item"
     __table_args__ = {"schema": "core"}
