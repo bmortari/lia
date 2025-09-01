@@ -49,4 +49,5 @@ class Projeto(Base):
     pdps = relationship("PDP", back_populates="projeto", cascade="all, delete-orphan")
     etps = relationship("ETP", back_populates="projeto", cascade="all, delete-orphan")
     pgrs = relationship("PGR", back_populates="projeto", cascade="all, delete-orphan")
+    trs = relationship("TR", back_populates="projeto", cascade="all, delete-orphan")
     
