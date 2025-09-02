@@ -248,6 +248,22 @@ class TRUpdate(BaseModel):
     adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
 
 
+class TRRead(BaseModel):
+    """
+    Schema para leitura de TR, usado principalmente no retorno da criação.
+    """
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    id_projeto: int
+    user_created: str
+    data_created: datetime
+    objeto_contratacao: Optional[str] = None
+    tipo_contratacao: Optional[str] = None
+    modalidade_licitacao: Optional[str] = None
+    responsavel: Optional[str] = None
+
+
 class TRResponse(TRBase):
     """Schema de resposta para TR"""
     model_config = ConfigDict(from_attributes=True)
