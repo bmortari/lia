@@ -29,7 +29,7 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
             select(Projeto).where(Projeto.id_projeto == project_id)
         )
         projeto = result.scalar_one_or_none()
-        if not projeto:
+        if not projeto: 
             raise ValueError("Projeto não encontrado.")
         
         # Verifica se o TR já existe

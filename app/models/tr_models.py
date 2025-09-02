@@ -23,7 +23,6 @@ class TR(Base):
     
     # === Informações Básicas ===
     orgao_contratante = Column(String)
-    numero_processo_sei = Column(String)
     tipo_contratacao = Column(String)  # 'compras' ou 'servicos'
     objeto_contratacao = Column(Text)
     modalidade_licitacao = Column(String)  # 'aquisicao_direta' ou 'registro_precos'

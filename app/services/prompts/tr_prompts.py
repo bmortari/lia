@@ -41,7 +41,6 @@ O JSON deve seguir esta estrutura:
 ```json
 {
   "orgao_contratante": "string",
-  "numero_processo_sei": "string ou null",
   "tipo_contratacao": "compras" | "servicos",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",

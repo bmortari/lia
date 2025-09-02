@@ -170,7 +170,6 @@ class TRBase(BaseModel):
     """Schema base para TR"""
     # Informações básicas
     orgao_contratante: Optional[str] = None
-    numero_processo_sei: Optional[str] = None
     tipo_contratacao: Optional[TipoContratacao] = None
     objeto_contratacao: Optional[str] = None
     modalidade_licitacao: Optional[ModalidadeLicitacao] = None
@@ -224,7 +223,6 @@ class TRCreate(TRBase):
 class TRUpdate(BaseModel):
     """Schema para atualização de TR"""
     orgao_contratante: Optional[str] = None
-    numero_processo_sei: Optional[str] = None
     tipo_contratacao: Optional[TipoContratacao] = None
     objeto_contratacao: Optional[str] = None
     modalidade_licitacao: Optional[ModalidadeLicitacao] = None
@@ -282,7 +280,6 @@ class TRSummary(BaseModel):
     
     id: int
     id_projeto: int
-    numero_processo_sei: Optional[str] = None
     objeto_contratacao: Optional[str] = None
     tipo_contratacao: Optional[str] = None
     modalidade_licitacao: Optional[str] = None
@@ -300,7 +297,6 @@ class TRFilter(BaseModel):
     tipo_contratacao: Optional[TipoContratacao] = None
     modalidade_licitacao: Optional[ModalidadeLicitacao] = None
     orgao_contratante: Optional[str] = None
-    numero_processo_sei: Optional[str] = None
     responsavel: Optional[str] = None
     data_inicio: Optional[date] = None
     data_fim: Optional[date] = None
@@ -323,7 +319,6 @@ class TRImportJSON(BaseModel):
     """Schema para importação de TR via JSON (formato do prompt)"""
     # Este schema representa exatamente o formato JSON definido no prompt
     orgao_contratante: str
-    numero_processo_sei: str
     tipo_contratacao: str  # "compras" ou "servicos"
     objeto_contratacao: str
     modalidade_licitacao: str  # "aquisicao_direta" ou "registro_precos"
@@ -357,7 +352,6 @@ class TRImportJSON(BaseModel):
         # Esta é uma implementação simplificada
         return TRCreate(
             orgao_contratante=self.orgao_contratante,
-            numero_processo_sei=self.numero_processo_sei,
             tipo_contratacao=TipoContratacao(self.tipo_contratacao),
             objeto_contratacao=self.objeto_contratacao,
             modalidade_licitacao=ModalidadeLicitacao(self.modalidade_licitacao),
