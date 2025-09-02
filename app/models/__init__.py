@@ -17,6 +17,7 @@ from app.models.dfd_models import DFD
 from app.models.etp_models import ETP
 from app.models.pdp_models import PDP
 from app.models.pgr_models import PGR
+from app.models.tr_models import TR
 from app.models.solucao_models import SolucaoIdentificada
 
 # Lista de todas as classes de modelo (útil para debugging)
@@ -27,6 +28,7 @@ __all__ = [
     "ETP", 
     "PDP",
     "PGR",
+    "TR",
     "SolucaoIdentificada"
 ]
 

@@ -112,6 +112,7 @@ async def buscar_artefatos(project_id: int, db: AsyncSession) -> Dict[str, any]:
     # Retorna os dados dos artefatos para serem usados no prompt (EDITAR COM OS ITENS NECESSÁRIOS)
     artefatos_dados = {}
     artefatos_dados['dfd'] = {
+        "objeto_contratado": dfd.objeto_contratado,
         "quantidade_contratada": dfd.quantidade_contratada,
         "justificativa_contratacao": dfd.justificativa_contratacao,
         "previsao_data_bem_servico": dfd.previsao_data_bem_servico,
@@ -132,98 +133,105 @@ async def buscar_artefatos(project_id: int, db: AsyncSession) -> Dict[str, any]:
         "info_contratacao": etp.info_contratacao,
         "previsto_pca": etp.previsto_pca,
         "solucao": etp.solucao,
+        "lev_mercado": etp.lev_mercado,
+        "posic_conclusivo": etp.posic_conclusivo,
+        "demonst_resultados": etp.demonst_resultados,
+        "providencias": etp.providencias,
+        "impac_ambientais": etp.impac_ambientais,
         "req_contratacao": etp.req_contratacao,
+        "quantidade_estimada": etp.quantidade_estimada,
         "just_nao_parc": etp.just_nao_parc,
         "valor_total": etp.valor_total,
+        "equipe_de_planejamento": etp.equipe_de_planejamento
     } if etp else None
 
     return artefatos_dados
 
 
-# async def gerar_dados_tr(prompt_usuario: str, artefatos: Dict) -> Dict:
-#     """
-#     Gera um JSON com os dados para o TR usando o modelo gemini-2.5-flash.
-#     """
-#     client = get_genai_client()
-#     model = "gemini-2.5-flash"
+async def gerar_dados_tr(prompt_usuario: str, artefatos: Dict) -> Dict:
+    """
+    Gera um JSON com dados para o TR.
+    """
+    client = get_genai_client()
+    model = "gemini-2.5-flash"
 
-#     # O prompt completo será implementado depois
-#     prompt_completo = f"""
-#     **Instrução:** Você é um assistente especialista em criar Termos de Referência (TR) para o setor público.
-#     Com base nos artefatos de planejamento (DFD, PGR, ETP) e na solicitação do usuário,
-#     gere uma estrutura JSON detalhada para um Termo de Referência.
+    # O prompt completo será implementado depois
+    prompt_completo = f"""
+    **Instrução:** Você é um assistente especialista em criar Termos de Referência (TR) para o setor público.
+    Com base nos artefatos de planejamento (DFD, PGR, ETP) e na solicitação do usuário,
+    gere uma estrutura JSON detalhada para um Termo de Referência.
 
-#     **Artefatos Fornecidos (resumo):**
-#     - DFD (Documento de Formalização da Demanda): {json.dumps(artefatos.get('dfd'), indent=2, ensure_ascii=False)}
-#     - PGR (Plano de Gerenciamento de Riscos): {json.dumps(artefatos.get('pgr'), indent=2, ensure_ascii=False)}
-#     - ETP (Estudo Técnico Preliminar): {json.dumps(artefatos.get('etp'), indent=2, ensure_ascii=False)}
+    **Artefatos Fornecidos (resumo):**
+    - DFD (Documento de Formalização da Demanda): {json.dumps(artefatos.get('dfd'), indent=2, ensure_ascii=False)}
+    - PGR (Plano de Gerenciamento de Riscos): {json.dumps(artefatos.get('pgr'), indent=2, ensure_ascii=False)}
+    - ETP (Estudo Técnico Preliminar): {json.dumps(artefatos.get('etp'), indent=2, ensure_ascii=False)}
 
-#     **Solicitação do Usuário:**
-#     "{prompt_usuario}"
+    **Solicitação do Usuário:**
+    "{prompt_usuario}"
 
-#     **Formato de Saída Obrigatório (JSON):**
-#     Responda estritamente com um objeto JSON contendo as seções principais de um TR, como:
-#     {{
-#       "objeto": "Descrição clara e concisa do objeto da contratação.",
-#       "justificativa": "Justificativa detalhada da necessidade da contratação.",
-#       "especificacoes_tecnicas": "Lista de especificações técnicas detalhadas do objeto/serviço.",
-#       "obrigacoes_contratada": "Lista de obrigações da empresa contratada.",
-#       "obrigacoes_contratante": "Lista de obrigações do órgão contratante.",
-#       "criterios_aceitacao": "Critérios para aceitação e recebimento do objeto/serviço.",
-#       "modelo_execucao": "Descrição de como o serviço será executado e gerenciado.",
-#       "estimativa_valor": "Estimativa de valor, se disponível nos artefatos.",
-#       "prazo_execucao": "Prazo de execução do contrato."
-#     }}
-#     """
+    **Formato de Saída Obrigatório (JSON):**
+    Responda estritamente com um objeto JSON contendo as seções principais de um TR, como:
+    {{
+      "objeto": "Descrição clara e concisa do objeto da contratação.",
+      "justificativa": "Justificativa detalhada da necessidade da contratação.",
+      "especificacoes_tecnicas": "Lista de especificações técnicas detalhadas do objeto/serviço.",
+      "obrigacoes_contratada": "Lista de obrigações da empresa contratada.",
+      "obrigacoes_contratante": "Lista de obrigações do órgão contratante.",
+      "criterios_aceitacao": "Critérios para aceitação e recebimento do objeto/serviço.",
+      "modelo_execucao": "Descrição de como o serviço será executado e gerenciado.",
+      "estimativa_valor": "Estimativa de valor, se disponível nos artefatos.",
+      "prazo_execucao": "Prazo de execução do contrato."
+    }}
+    """
 
-#     generate_content_config = types.GenerateContentConfig(
-#         response_mime_type="application/json"
-#     )
-#     contents = [types.Content(role="user", parts=[types.Part.from_text(text=prompt_completo)])]
+    generate_content_config = types.GenerateContentConfig(
+        response_mime_type="application/json"
+    )
+    contents = [types.Content(role="user", parts=[types.Part.from_text(text=prompt_completo)])]
 
-#     try:
-#         response = client.models.generate_content(
-#             model=model,
-#             contents=contents,
-#             config=generate_content_config
-#         )
-#         return json.loads(response.text)
-#     except Exception as e:
-#         logger.error(f"Erro ao gerar dados para o TR com IA: {e}")
-#         raise
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=contents,
+            config=generate_content_config
+        )
+        return json.loads(response.text)
+    except Exception as e:
+        logger.error(f"Erro ao gerar dados para o TR com IA: {e}")
+        raise
 
 
-# async def gerar_tr_ia(dados_json: Dict, prompt: str) -> str:
-#     """
-#     Recebe os dados do JSON, um prompt e gera um texto bruto com markdowns.
-#     """
-#     client = get_genai_client()
-#     model = "gemini-2.5-flash"
+async def gerar_tr_ia(dados_json: Dict, prompt: str) -> str:
+    """
+    Recebe os dados do JSON, um prompt e gera um texto bruto com markdowns.
+    """
+    client = get_genai_client()
+    model = "gemini-2.5-flash"
 
-#     prompt_completo = f"""
-#     **Instrução:** Você é um redator técnico especialista em documentos de licitação.
-#     Com base na estrutura JSON fornecida, elabore o texto completo de um Termo de Referência (TR).
-#     O texto deve ser claro, bem formatado com markdown (títulos, listas, negrito) e seguir
-#     as melhores práticas para documentos oficiais.
+    prompt_completo = f"""
+    **Instrução:** Você é um redator técnico especialista em documentos de licitação.
+    Com base na estrutura JSON fornecida, elabore o texto completo de um Termo de Referência (TR).
+    O texto deve ser claro, bem formatado com markdown (títulos, listas, negrito) e seguir
+    as melhores práticas para documentos oficiais.
 
-#     **Prompt Adicional:**
-#     "{prompt}"
+    **Prompt Adicional:**
+    "{prompt}"
 
-#     **Dados Estruturados (JSON):**
-#     {json.dumps(dados_json, indent=2, ensure_ascii=False)}
+    **Dados Estruturados (JSON):**
+    {json.dumps(dados_json, indent=2, ensure_ascii=False)}
 
-#     **Resultado Esperado:**
-#     Um documento de texto completo, formatado com markdown, que represente o Termo de Referência.
-#     """
+    **Resultado Esperado:**
+    Um documento de texto completo, formatado com markdown, que represente o Termo de Referência.
+    """
 
-#     contents = [types.Content(role="user", parts=[types.Part.from_text(text=prompt_completo)])]
+    contents = [types.Content(role="user", parts=[types.Part.from_text(text=prompt_completo)])]
 
-#     try:
-#         response = client.models.generate_content(
-#             model=model,
-#             contents=contents
-#         )
-#         return response.text
-#     except Exception as e:
-#         logger.error(f"Erro ao gerar texto do TR com IA: {e}")
-#         raise
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=contents
+        )
+        return response.text
+    except Exception as e:
+        logger.error(f"Erro ao gerar texto do TR com IA: {e}")
+        raise

@@ -1,84 +1,151 @@
-from sqlalchemy import Column, Date, Integer, ForeignKey, Numeric, String, DateTime, JSON, Boolean, ARRAY, Text
+from sqlalchemy import (
+    Column, Integer, String, Text, Boolean, Date, DateTime, 
+    Numeric, ForeignKey, ARRAY, JSON, func
+)
 from sqlalchemy.orm import relationship, column_property
-from sqlalchemy.sql import func
-from app.database import Base
+from sqlalchemy.ext.declarative import declarative_base
 
-# class TR(Base):
-#     """
-#     Termo de Referência (TR)
-#     Relacionamento EXCLUSIVO com Projeto - Artefato independente
-#     """
-#     __tablename__ = "tr"
-#     __table_args__ = {"schema": "core"}
-
-#     id = Column("id_tr", Integer, primary_key=True, index=True)
-    
-#     # RELACIONAMENTO EXCLUSIVO COM PROJETO
-#     id_projeto = Column(Integer, ForeignKey("core.projeto.id_projeto", ondelete="CASCADE"), nullable=False)
-#     projeto = relationship("Projeto", back_populates="trs")
-
-#     # Campos de auditoria
-#     user_created = Column("usuario_criacao", String(255), nullable=False)
-#     data_created = Column("data_criacao", DateTime(timezone=True), server_default=func.now())
-
-#     # Campos de dados específicos do TR
-#     tipo_contratacao = Column("tipo_contratacao", String) # objeto ou serviço
-#     objeto_contratacao = Column("objeto_contratacao", String) # o que vai ser contratado
-#     #justificativa_necessidade = Column("justificativa_necessidade", String) # finalidade
-#     # tabela_itens = Column(JSON, nullable=False) // criar tabela TRItem
-#     detalhes_solucao = Column("detalhes_solucao", JSON)
-#     srp = Column("srp", JSON)
-#     prazos = Column("prazos", JSON)
-#     requisitos_contratacao = Column("requisitos_contratacao", JSON)
-#     modelo_execucao = Column("modelo_execucao", JSON)
-#     estimativa_valor = Column("estimativa_valor", JSON)
-#     criterios_pagamento = Column("criterios_pagamento", JSON)
-#     criterios_selecao = Column("criterios_selecao", JSON)
-#     equipe_planejamento = Column("equipe_planejamento", String)
-    
-    # status = Column(Boolean, default=True)
+Base = declarative_base()
 
 class TR(Base):
     __tablename__ = "tr"
     __table_args__ = {"schema": "core"}
 
     id = Column("id_tr", Integer, primary_key=True, index=True)
-
+    
+    # Relacionamento com Projeto
     id_projeto = Column(Integer, ForeignKey("core.projeto.id_projeto", ondelete="CASCADE"), nullable=False)
     projeto = relationship("Projeto", back_populates="trs")
-
+    
+    # Metadados
     user_created = Column("usuario_criacao", String(255), nullable=False)
     data_created = Column("data_criacao", DateTime(timezone=True), server_default=func.now())
-
+    
+    # === Informações Básicas ===
     orgao_contratante = Column(String)
-    numero_processo = Column(String)
-
-    aquisicao_ou_formacao = Column(String) #  aquisição ou formação de registro de preços
-    tipo_contratacao  = Column("tipo_contratacao", String) # objeto ou serviço
-    objeto_contratacao = Column("objeto_contracao", String) # itens ou serviços a serem contratados #ok
-    modalidade_contratacao = Column(String, nullable=False) 
-
-    fundamentacao_legal = Column(Text, nullable=True)
-
-    prazo_vigencia_contrato = Column(String, nullable=True)
-    obrigacoes_contratante = Column(ARRAY(String),  nullable=True)
-    obrigacoes_contratada = Column(ARRAY(String), nullable=True)
-
-    admite_subcontratacao = Column(Boolean, nullable=False)
-    exige_garantia_contratual = Column(Boolean, nullable=False)
-
-    # TR pode ser apenas para registro de preços, portanto nullable
-    local_entrega_prestacao = Column(String, nullable=True) 
-    prazo_entrega_prestacao = Column(Date, nullable=True)
-
-    condicoes_pagamento = Column(Text, nullable=True)
-    sancoes_administrativas = Column(Text, nullable=True)
-
+    numero_processo_sei = Column(String)
+    tipo_contratacao = Column(String)  # 'compras' ou 'servicos'
+    objeto_contratacao = Column(Text)
+    modalidade_licitacao = Column(String)  # 'aquisicao_direta' ou 'registro_precos'
+    fundamentacao_legal = Column(Text)
+    
+    # === Vigência e Prazos ===
+    prazo_vigencia_contrato = Column(String)
+    prazo_entrega_prestacao = Column(String)
+    local_entrega_prestacao = Column(Text)
+    
+    # === Obrigações ===
+    obrigacoes_contratante = Column(ARRAY(String))
+    obrigacoes_contratada = Column(ARRAY(String))
+    
+    # === Flags Booleanas ===
+    admite_subcontratacao = Column(Boolean, default=False)
+    exige_garantia_contratual = Column(Boolean, default=False)
+    
+    # === Pagamento e Sanções ===
+    condicoes_pagamento = Column(Text)
+    sancoes_administrativas = Column(Text)
+    
+    # === Responsável ===
     responsavel = Column(String)
     cargo_responsavel = Column(String)
-
-    arquivo_docx_ref = Column("arquivo_docx_ref", String, nullable=True)
-
+    
+    # === Sistema de Registro de Preços (armazenado como JSON) ===
+    sistema_registro_precos = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "adota_srp": bool,
+    #     "tipo_srp": str,
+    #     "quantidade_maxima": bool,
+    #     "quantidade_minima_cotacao": str,
+    #     "permite_precos_diferentes": bool,
+    #     "justificativa_precos_diferentes": str,
+    #     "permite_proposta_inferior": bool,
+    #     "criterio_julgamento": "item" | "grupo",
+    #     "registro_limitado": bool,
+    #     "criterio_reajuste": str,
+    #     "vigencia_ata": str
+    # }
+    
+    # === Requisitos da Contratação (armazenado como JSON) ===
+    requisitos_contratacao = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "sustentabilidade": str,
+    #     "indicacao_marcas": str,
+    #     "vedacao_marca_produto": str,
+    #     "exige_amostra": bool,
+    #     "exige_carta_solidariedade": bool,
+    #     "garantia_produto_servico": str,
+    #     "exige_vistoria": bool
+    # }
+    
+    # === Modelo de Execução (armazenado como JSON) ===
+    modelo_execucao = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "condicoes_entrega": str,
+    #     "garantia_manutencao": str,
+    #     "materiais_fornecidos": str,
+    #     "informacoes_proposta": str
+    # }
+    
+    # === Gestão do Contrato (armazenado como JSON) ===
+    gestao_contrato = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "modelo_gestao": str,
+    #     "papeis_responsabilidades": str
+    # }
+    
+    # === Critérios de Pagamento (armazenado como JSON) ===
+    criterios_pagamento = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "recebimento_objeto": str,
+    #     "liquidacao": str,
+    #     "prazo_pagamento": str,
+    #     "forma_pagamento": str,
+    #     "antecipacao_pagamento": bool,
+    #     "cessao_credito": str
+    # }
+    
+    # === Seleção do Fornecedor (armazenado como JSON) ===
+    selecao_fornecedor = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "forma_selecao": str,
+    #     "criterio_julgamento": str,
+    #     "exigencias_habilitacao": {
+    #         "juridica": [],
+    #         "fiscal_trabalhista": [],
+    #         "economico_financeira": [],
+    #         "tecnica": []
+    #     }
+    # }
+    
+    # === Estimativa de Valor (armazenado como JSON) ===
+    estimativa_valor = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "valor_total": float,
+    #     "valor_unitario": float,
+    #     "metodologia_pesquisa": str
+    # }
+    
+    # === Adequação Orçamentária (armazenado como JSON) ===
+    adequacao_orcamentaria = Column(JSON, nullable=True)
+    # Estrutura esperada:
+    # {
+    #     "fonte_recursos": str,
+    #     "classificacao_orcamentaria": str,
+    #     "previsao_pca": str
+    # }
+    
+    # Referência ao arquivo gerado
+    arquivo_docx_ref = Column(String, nullable=True)
+    
+    # Relacionamento com itens
     itens = relationship(
         "TRItem",
         back_populates="tr",
@@ -86,24 +153,23 @@ class TR(Base):
         passive_deletes=True
     )
 
+
 class TRItem(Base):
     __tablename__ = "tr_item"
     __table_args__ = {"schema": "core"}
 
     id = Column("id_item", Integer, primary_key=True, index=True)
-
+    
     # FK para o TR
     id_tr = Column(Integer, ForeignKey("core.tr.id_tr", ondelete="CASCADE"), nullable=False)
     tr = relationship("TR", back_populates="itens")
-
-    # Campos específicos do item
-    descricao = Column(String, nullable=False)        # descrição do bem/serviço
-    cod_catmat = Column(String, nullable=True)        # catalogo de materiais sustentaveis
-    unidade_medida = Column(String, nullable=False)   # unidade, metro, etc
-    quantidade = Column(Integer, nullable=False)
-    valor_unitario = Column(Numeric(14, 2))
-    valor_total = column_property(quantidade * valor_unitario)
     
-    finalidade = Column(Text, nullable=False)         # finalidade específica do item
-
-
+    # === Campos do Item ===
+    descricao = Column(Text, nullable=False)
+    especificacoes_tecnicas = Column(ARRAY(String), nullable=True)
+    quantidade = Column(Numeric(10, 3), nullable=False)
+    valor_unitario = Column(Numeric(14, 2), nullable=True)
+    valor_total = column_property(quantidade * valor_unitario)
+    unidade_medida = Column(String, nullable=False)
+    codigo_catmat_catser = Column(String, nullable=True)
+    finalidade = Column(Text, nullable=True)
