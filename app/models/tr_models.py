@@ -3,9 +3,7 @@ from sqlalchemy import (
     Numeric, ForeignKey, ARRAY, JSON, func
 )
 from sqlalchemy.orm import relationship, column_property
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.database import Base
 
 class TR(Base):
     __tablename__ = "tr"
@@ -65,6 +63,8 @@ class TR(Base):
     #     "criterio_reajuste": str,
     #     "vigencia_ata": str
     # }
+
+    descricao_solucao = Column(String)
     
     # === Requisitos da Contratação (armazenado como JSON) ===
     requisitos_contratacao = Column(JSON, nullable=True)
@@ -138,7 +138,8 @@ class TR(Base):
     # {
     #     "fonte_recursos": str,
     #     "classificacao_orcamentaria": str,
-    #     "previsao_pca": str
+    #     "previsao_pca": bool,
+    #     "codigo_pca": str | None
     # }
     
     # Referência ao arquivo gerado

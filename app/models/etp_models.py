@@ -48,4 +48,37 @@ class ETP(Base):
     
     status = Column(Boolean, default=True)
 
+    def to_dict(self):
+        """Convert the ETP instance to a dictionary."""
+        return {
+            'id': self.id,
+            'id_projeto': self.id_projeto,
+            'user_created': self.user_created,
+            'data_created': self.data_created.isoformat() if self.data_created else None,
+            'unidade_demandante': self.unidade_demandante,
+            'objeto_contratado': self.objeto_contratado,
+            'sist_reg_preco': self.sist_reg_preco,
+            'necessidade_contratacao': self.necessidade_contratacao,
+            'alinhamento_estrategico': self.alinhamento_estrategico,
+            'info_contratacao': self.info_contratacao,
+            'previsto_pca': self.previsto_pca,
+            'item': self.item,
+            'req_contratacao': self.req_contratacao,
+            'lev_mercado': self.lev_mercado,
+            'solucao': self.solucao,
+            'quantidade_estimada': self.quantidade_estimada,
+            'just_nao_parc': self.just_nao_parc,
+            'valor_total': self.valor_total,
+            'demonst_resultados': self.demonst_resultados,
+            'serv_continuo': self.serv_continuo,
+            'justif_serv_continuo': self.justif_serv_continuo,
+            'providencias': self.providencias,
+            'impac_ambientais': self.impac_ambientais,
+            'alinhamento_pls': self.alinhamento_pls,
+            'posic_conclusivo': self.posic_conclusivo,
+            'justif_posic_conclusivo': self.justif_posic_conclusivo,
+            'equipe_de_planejamento': self.equipe_de_planejamento,
+            'status': self.status
+        }
+
 # Sem imports circulares - SQLAlchemy resolve as referências por string
