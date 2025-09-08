@@ -70,6 +70,15 @@ O JSON deve seguir esta estrutura:
     "criterio_reajuste": "IPCA" | "INCC" | "outro índice" | null,
     "vigencia_ata": "12 meses" | "outro prazo"
   },
+
+  "descricao_solucao": "texto sobre a descrição da solução a ser adotada. por exemplo:
+  (Texto exemplar abaixo)
+  Consiste na aquisição de (item) para atender às necessidades (local a ser atendido).
+  Deverá ser entregue (condições de entrega) e em conformidade com as especificações técnicas
+  detalhadas no item 1.2 deste Termo de Referência.
+  (Fim do texto)
+  As informações devem ser extraídas do DFD e PGR informados.
+  ",
   
   "requisitos_contratacao": {
     "sustentabilidade": "texto sobre requisitos de sustentabilidade",
@@ -122,7 +131,8 @@ O JSON deve seguir esta estrutura:
   "adequacao_orcamentaria": {
     "fonte_recursos": "string",
     "classificacao_orcamentaria": "string",
-    "previsao_pca": "string com detalhes do PCA"
+    "previsao_pca": boolean,
+    "codigo_pca": string ou null
   },
   
   "itens": [
@@ -163,6 +173,7 @@ Antes de retornar o JSON, certifique-se de que:
 - Todos os campos relevantes do ETP foram mapeados
 - Não há duplicação desnecessária de informações
 - Os valores estão no formato correto (string, número, boolean, array)
+- Escape todas as aspas duplas dentro de strings usando \ (barra invertida) a fim de não quebrar o funcionamento do JSON
 - Placeholders são claros e informativos quando a informação não está disponível
 
 ## Formato da Saída:

@@ -1,9 +1,11 @@
 from datetime import datetime
+import os
 from fastapi import HTTPException
 from app.client import get_genai_client
 from app.dependencies import RemoteUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from typing import Dict
 from google.genai import types
 from app.models.projects_models import Projeto
@@ -11,7 +13,7 @@ from app.models.tr_models import TR, TRItem
 from app.models.dfd_models import DFD
 from app.models.pgr_models import PGR
 from app.models.etp_models import ETP
-from app.schemas.tr_schemas import TRCreate, TRRead
+from app.schemas.tr_schemas import TRCreate
 from app.services.prompts.tr_prompts import prompt_tr
 from app.config import acre_tz
 
@@ -19,9 +21,11 @@ import json
 import logging
 
 logger = logging.getLogger(__name__)
+temp_dir = os.path.join("frontend", "static", "docs")
+os.makedirs(temp_dir, exist_ok=True)
 
 
-async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: RemoteUser, project_id: int) -> TRRead:
+async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: RemoteUser, project_id: int):
     """
     Cria um Termo de Referência (TR) a partir dos artefatos do projeto,
     utilizando IA para gerar os dados estruturados.
@@ -51,7 +55,7 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
 
         # Gera os dados estruturados para o TR via IA
         logger.info(f"Gerando dados do TR para o projeto {project_id}...")
-        dados_tr_json = await gerar_dados_tr(artefatos)
+        dados_tr_json = await gerar_dados_tr(artefatos, tr_in)
         logger.info("Dados do TR gerados com sucesso.")
 
         # Mapeia o JSON para o modelo SQLAlchemy
@@ -61,7 +65,7 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
         # O operador ** desempacota o dicionário nos argumentos do construtor
         novo_tr = TR(
             id_projeto=project_id,
-            user_created=current_user.username,
+            user_created="teste",
             data_created=datetime.now(acre_tz),
             **dados_tr_json
         )
@@ -78,11 +82,8 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
         projeto.exist_tr = True
 
         await db.commit()
-        await db.refresh(novo_tr)
 
-        logger.info(f"TR {novo_tr.id} criado com sucesso para o projeto {project_id}.")
-
-        return TRRead.model_validate(novo_tr)
+        return novo_tr
 
     except Exception as e:
         await db.rollback()
@@ -127,12 +128,13 @@ async def buscar_artefatos(project_id: int, db: AsyncSession) -> Dict[str, any]:
     return artefatos_dados
 
 
-async def gerar_dados_tr(artefatos: Dict) -> Dict:
+async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     """
     Gera um JSON estruturado para o TR usando o modelo Gemini.
     """
     client = get_genai_client()
     model = "gemini-2.5-flash"  # Modelo de IA
+
 
     # Monta o prompt final com as instruções e os dados dos artefatos
     prompt_completo = f"""
@@ -141,18 +143,44 @@ async def gerar_dados_tr(artefatos: Dict) -> Dict:
     **Artefatos Fornecidos (JSON):**
 
     {json.dumps(artefatos, indent=2, ensure_ascii=False)}
+
+    **Dados fornecidos pelo usuário:**
+    Órgão contratante: {tr_in.orgao_contratante}
+    Modalidade licitação: {tr_in.modalidade_licitacao}
     """
 
-    generation_config = types.GenerationConfig(
+    files = [
+        client.files.upload(file=os.path.join(temp_dir, f"MODELO-TR-COMPRAS.html")),
+        client.files.upload(file=os.path.join(temp_dir, f"MODELO-TR-SERVICOS.html"))    
+    ]
+
+    generate_content_config = types.GenerateContentConfig(
         response_mime_type="application/json"
     )
-    contents = [types.Content(role="user", parts=[types.Part.from_text(text=prompt_completo)])]
-
+    contents = [
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_uri(
+                    file_uri=files[0].uri,
+                    mime_type=files[0].mime_type
+                ),
+                types.Part.from_uri(
+                    file_uri=files[1].uri,
+                    mime_type=files[1].mime_type
+                ),
+                types.Part.from_text(
+                    text=prompt_completo
+                )
+            ]
+        )
+    ]
+ 
     try:
-        response = await client.models.generate_content_async(
+        response = client.models.generate_content(
             model=model,
             contents=contents,
-            generation_config=generation_config
+            config=generate_content_config
         )
         return json.loads(response.text)
     except Exception as e:

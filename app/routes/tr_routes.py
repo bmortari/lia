@@ -18,7 +18,8 @@ async def create_tr(
     project_id: int,
     tr_in: TRCreate,
     db: AsyncSession = Depends(get_db),
-    current_user: RemoteUser = Depends(get_current_remote_user)
+    #current_user: RemoteUser = Depends(get_current_remote_user)
+    current_user: str = ""
 ):
     """
     Cria um JSON do TR que retorna os dados necessários para construir o documento final
@@ -29,7 +30,7 @@ async def create_tr(
     except ValueError as ve:
         raise HTTPException(status_code=404, detail=str(ve))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao criar DFD: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao criar TR: {str(e)}")
 
 @router.get("projetos/{projeto_id}/criar_tr")
 async def criar_tr(

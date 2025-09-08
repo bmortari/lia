@@ -30,4 +30,16 @@ class PGR(Base):
     objeto = Column(Text, nullable=True, comment="Objeto do contrato extraído do DFD")
     risco = Column(JSON, nullable=True, comment="JSON contendo a análise de riscos detalhada")
 
+    def to_dict(self):
+        """Convert the PGR instance to a dictionary."""
+        return {
+            'id_pgr': self.id_pgr,
+            'id_projeto': self.id_projeto,
+            'id_solucao': self.id_solucao,
+            'usuario_criacao': self.usuario_criacao,
+            'data_criacao': self.data_criacao.isoformat() if self.data_criacao else None,
+            'objeto': self.objeto,
+            'risco': self.risco
+        }
+
 # Sem imports circulares - SQLAlchemy resolve as referências por string

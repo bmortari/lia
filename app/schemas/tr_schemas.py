@@ -2,7 +2,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from enum import Enum
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field
+from pydantic import BaseModel, Field, ConfigDict, field_validator, computed_field, ValidationInfo
 
 
 # ==================== Enums ====================
@@ -114,7 +114,8 @@ class AdequacaoOrcamentaria(BaseModel):
     """Schema para Adequação Orçamentária"""
     fonte_recursos: Optional[str] = Field(None, description="Fonte de recursos")
     classificacao_orcamentaria: Optional[str] = Field(None, description="Classificação orçamentária")
-    previsao_pca: Optional[str] = Field(None, description="Previsão no PCA")
+    previsao_pca: Optional[bool] = Field(None, description="Previsão no PCA")
+    codigo_pca: Optional[str] = Field(None, description="Código da contratação no PCA")
 
 
 # ==================== Schemas de Item ====================
@@ -174,6 +175,9 @@ class TRBase(BaseModel):
     objeto_contratacao: Optional[str] = None
     modalidade_licitacao: Optional[ModalidadeLicitacao] = None
     fundamentacao_legal: Optional[str] = None
+
+    # Solução
+    descricao_solucao: Optional[str] = None
     
     # Vigência e prazos
     prazo_vigencia_contrato: Optional[str] = None
@@ -207,17 +211,23 @@ class TRBase(BaseModel):
     adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
 
 
-class TRCreate(TRBase):
-    """Schema para criação de TR (JSON input)"""
-    itens: List[TRItemCreate] = Field(..., min_items=1, description="Lista de itens do TR")
+class TRCreate(BaseModel):
+    """Dados que necessitam ser enviados para a geração dos dados do TR"""
+    orgao_contratante: str = Field(..., description="Órgão contratante")
+    modalidade_licitacao: str = Field(..., description="Termo de referência referente à aquisição ou formação de registro de preços")
+    #itens: List[TRItemCreate] = Field(..., min_items=1, description="Lista de itens do TR")
     
-    @field_validator('sistema_registro_precos')
-    @classmethod
-    def validate_srp(cls, v: Optional[SistemaRegistroPrecos], values: Dict[str, Any]) -> Optional[SistemaRegistroPrecos]:
-        """Valida Sistema de Registro de Preços"""
-        if values.get('modalidade_licitacao') == ModalidadeLicitacao.registro_precos and not v:
-            raise ValueError("Sistema de Registro de Preços é obrigatório quando modalidade é 'registro_precos'")
-        return v
+    # @field_validator('sistema_registro_precos')
+    # @classmethod
+    # def validate_srp(cls, v: Optional[SistemaRegistroPrecos], info: ValidationInfo) -> Optional[SistemaRegistroPrecos]:
+    #     """Valida Sistema de Registro de Preços"""
+    #     if info.data.get('modalidade_licitacao') == ModalidadeLicitacao.registro_precos and not v:
+    #         raise ValueError("Sistema de Registro de Preços é obrigatório quando modalidade é 'registro_precos'")
+    #     return v
+    
+class TRRead(TRBase):
+    """Schema de leitura para recebimento de dados do TR da IA"""
+    pass
 
 
 class TRUpdate(BaseModel):
@@ -246,150 +256,3 @@ class TRUpdate(BaseModel):
     selecao_fornecedor: Optional[SelecaoFornecedor] = None
     estimativa_valor: Optional[EstimativaValor] = None
     adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
-
-
-class TRRead(BaseModel):
-    """
-    Schema para leitura de TR, usado principalmente no retorno da criação.
-    """
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
-    id_projeto: int
-    user_created: str
-    data_created: datetime
-    objeto_contratacao: Optional[str] = None
-    tipo_contratacao: Optional[str] = None
-    modalidade_licitacao: Optional[str] = None
-    responsavel: Optional[str] = None
-
-
-class TRResponse(TRBase):
-    """Schema de resposta para TR"""
-    model_config = ConfigDict(from_attributes=True)
-    
-    id: int
-    id_projeto: int
-    user_created: str
-    data_created: datetime
-    arquivo_docx_ref: Optional[str] = None
-    itens: List[TRItemResponse] = Field(default_factory=list)
-    
-    @computed_field
-    @property
-    def valor_total_tr(self) -> Decimal:
-        """Calcula o valor total do TR somando todos os itens"""
-        if not self.itens:
-            return Decimal('0.00')
-        return sum(item.valor_total_calculado for item in self.itens)
-    
-    @computed_field
-    @property
-    def quantidade_itens(self) -> int:
-        """Retorna a quantidade de itens no TR"""
-        return len(self.itens)
-
-
-class TRSummary(BaseModel):
-    """Schema resumido para listagem de TRs"""
-    model_config = ConfigDict(from_attributes=True)
-    
-    id: int
-    id_projeto: int
-    objeto_contratacao: Optional[str] = None
-    tipo_contratacao: Optional[str] = None
-    modalidade_licitacao: Optional[str] = None
-    responsavel: Optional[str] = None
-    data_created: datetime
-    quantidade_itens: int = 0
-    valor_total: Decimal = Decimal('0.00')
-
-
-# ==================== Schemas de Filtro e Paginação ====================
-
-class TRFilter(BaseModel):
-    """Schema para filtros de busca de TR"""
-    id_projeto: Optional[int] = None
-    tipo_contratacao: Optional[TipoContratacao] = None
-    modalidade_licitacao: Optional[ModalidadeLicitacao] = None
-    orgao_contratante: Optional[str] = None
-    responsavel: Optional[str] = None
-    data_inicio: Optional[date] = None
-    data_fim: Optional[date] = None
-    admite_subcontratacao: Optional[bool] = None
-    exige_garantia_contratual: Optional[bool] = None
-
-
-class PaginatedTRResponse(BaseModel):
-    """Schema para resposta paginada de TRs"""
-    total: int
-    page: int = Field(..., ge=1)
-    per_page: int = Field(..., ge=1, le=100)
-    pages: int
-    items: List[TRSummary]
-
-
-# ==================== Schema JSON para Importação ====================
-
-class TRImportJSON(BaseModel):
-    """Schema para importação de TR via JSON (formato do prompt)"""
-    # Este schema representa exatamente o formato JSON definido no prompt
-    orgao_contratante: str
-    tipo_contratacao: str  # "compras" ou "servicos"
-    objeto_contratacao: str
-    modalidade_licitacao: str  # "aquisicao_direta" ou "registro_precos"
-    fundamentacao_legal: str
-    prazo_vigencia_contrato: str
-    obrigacoes_contratante: List[str]
-    obrigacoes_contratada: List[str]
-    admite_subcontratacao: bool
-    exige_garantia_contratual: bool
-    local_entrega_prestacao: str
-    prazo_entrega_prestacao: str
-    condicoes_pagamento: str
-    sancoes_administrativas: str
-    responsavel: str
-    cargo_responsavel: str
-    
-    sistema_registro_precos: Optional[Dict[str, Any]] = None
-    requisitos_contratacao: Dict[str, Any]
-    modelo_execucao: Dict[str, Any]
-    gestao_contrato: Dict[str, Any]
-    criterios_pagamento: Dict[str, Any]
-    selecao_fornecedor: Dict[str, Any]
-    estimativa_valor: Dict[str, Any]
-    adequacao_orcamentaria: Dict[str, Any]
-    
-    itens: List[Dict[str, Any]]
-    
-    def to_tr_create(self) -> TRCreate:
-        """Converte o JSON de importação para o schema de criação do TR"""
-        # Aqui seria feita a conversão do formato JSON para TRCreate
-        # Esta é uma implementação simplificada
-        return TRCreate(
-            orgao_contratante=self.orgao_contratante,
-            tipo_contratacao=TipoContratacao(self.tipo_contratacao),
-            objeto_contratacao=self.objeto_contratacao,
-            modalidade_licitacao=ModalidadeLicitacao(self.modalidade_licitacao),
-            fundamentacao_legal=self.fundamentacao_legal,
-            prazo_vigencia_contrato=self.prazo_vigencia_contrato,
-            obrigacoes_contratante=self.obrigacoes_contratante,
-            obrigacoes_contratada=self.obrigacoes_contratada,
-            admite_subcontratacao=self.admite_subcontratacao,
-            exige_garantia_contratual=self.exige_garantia_contratual,
-            local_entrega_prestacao=self.local_entrega_prestacao,
-            prazo_entrega_prestacao=self.prazo_entrega_prestacao,
-            condicoes_pagamento=self.condicoes_pagamento,
-            sancoes_administrativas=self.sancoes_administrativas,
-            responsavel=self.responsavel,
-            cargo_responsavel=self.cargo_responsavel,
-            sistema_registro_precos=SistemaRegistroPrecos(**self.sistema_registro_precos) if self.sistema_registro_precos else None,
-            requisitos_contratacao=RequisitosContratacao(**self.requisitos_contratacao),
-            modelo_execucao=ModeloExecucao(**self.modelo_execucao),
-            gestao_contrato=GestaoContrato(**self.gestao_contrato),
-            criterios_pagamento=CriteriosPagamento(**self.criterios_pagamento),
-            selecao_fornecedor=SelecaoFornecedor(**self.selecao_fornecedor),
-            estimativa_valor=EstimativaValor(**self.estimativa_valor),
-            adequacao_orcamentaria=AdequacaoOrcamentaria(**self.adequacao_orcamentaria),
-            itens=[TRItemCreate(**item) for item in self.itens]
-        )

@@ -35,4 +35,23 @@ class DFD(Base):
     
     status = Column(Boolean, default=True)
 
+    def to_dict(self):
+        """Convert the DFD instance to a dictionary."""
+        return {
+            'id': self.id,
+            'id_projeto': self.id_projeto,
+            'user_created': self.user_created,
+            'data_created': self.data_created.isoformat() if self.data_created else None,
+            'previsto_pca': self.previsto_pca,
+            'codigo_pca': self.item,
+            'unidade_demandante': self.unidade_demandante,
+            'objeto_contratado': self.objeto_contratado,
+            'justificativa_contratacao': self.justificativa_contratacao,
+            'quantidade_contratada': self.quantidade_contratada,
+            'previsao_data_bem_servico': self.previsao_data_bem_servico.isoformat() if self.previsao_data_bem_servico else None,
+            'alinhamento_estrategico': self.alinhamento_estrategico,
+            'equipe_de_planejamento': self.equipe_de_planejamento,
+            'status': self.status
+        }
+
 # Sem imports circulares - SQLAlchemy resolve as referências por string
