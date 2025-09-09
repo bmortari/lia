@@ -4,7 +4,8 @@ from fastapi import HTTPException
 from app.client import get_genai_client
 from app.dependencies import RemoteUser
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 from typing import Dict
 from google.genai import types
@@ -13,7 +14,7 @@ from app.models.tr_models import TR, TRItem
 from app.models.dfd_models import DFD
 from app.models.pgr_models import PGR
 from app.models.etp_models import ETP
-from app.schemas.tr_schemas import TRCreate
+from app.schemas.tr_schemas import TRCreate, TRRead
 from app.services.prompts.tr_prompts import prompt_tr
 from app.config import acre_tz
 
@@ -79,11 +80,37 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
 
         # Adiciona ao banco de dados
         db.add(novo_tr)
-        projeto.exist_tr = True
 
-        await db.commit()
+        try:
+            await db.commit()
+            await db.refresh(novo_tr)
+            
+            # Atualiza o campo exist_tr do projeto para True
+            update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_tr=True)
+            await db.execute(update_stmt)
+            await db.commit()
 
-        return novo_tr
+        except IntegrityError:
+            await db.rollback()
+            raise HTTPException(
+                status_code=409,
+                detail="Já existe um TR cadastrado para este projeto."
+            )
+        except Exception:
+            await db.rollback()
+            raise
+
+        # Recupera do banco e retorna como json
+        stmt = (
+            select(TR)
+            .options(selectinload(TR.projeto))
+            .options(selectinload(TR.itens))
+            .where(TR.id_projeto == project_id)
+        )
+        result = await db.execute(stmt)
+        tr_criado = result.scalars().first()
+
+        return TRRead.model_validate(tr_criado).model_dump()
 
     except Exception as e:
         await db.rollback()

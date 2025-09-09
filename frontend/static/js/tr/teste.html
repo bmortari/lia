@@ -46,116 +46,157 @@
     document.getElementById('generate-pdf-btn').addEventListener('click', () => {
         // JSON com os dados para o template
         const jsonData = {
-            "orgao_contratante": "Tribunal Regional Eleitoral do Acre",
-            "tipo_contratacao": "servicos",
-            "objeto_contratacao": "Contratação de empresa especializada para desenvolvimento de sistema de gestão de contratos com integração aos sistemas existentes",
-            "modalidade_licitacao": "aquisicao_direta",
-            "fundamentacao_legal": "A contratação fundamenta-se na Lei nº 14.133, de 2021, especialmente em seus artigos referentes à contratação de serviços, conforme detalhado no Estudo Técnico Preliminar e demais documentos do processo.",
-            "descricao_solucao": "A solução consiste na contratação de empresa especializada para o desenvolvimento de um sistema de gestão de contratos com integração aos sistemas existentes, conforme detalhado no Estudo Técnico Preliminar. Trata-se de um sistema web responsivo com módulos de cadastro, gestão e relatórios de contratos. A contratação visa modernizar o processo de gestão de contratos, atualmente manual e propenso a erros, alinhando-se aos objetivos de Modernização Tecnológica, Transparência Pública e Eficiência Operacional. Esta contratação é tecnicamente viável, economicamente vantajosa, com previsão de economia anual de R$ 120.000,00 e redução de 60% no tempo de processos, e estrategicamente alinhada aos objetivos institucionais, com um ROI estimado em 18 meses.",
-            "prazo_vigencia_contrato": "Inicialmente 9 meses para desenvolvimento e implantação (6 meses para desenvolvimento + 3 meses para implantação), com possibilidade de prorrogação para o serviço de manutenção e suporte contínuos, até o limite de 5 anos, prorrogáveis por até 10 anos no total, conforme os artigos 106 e 107 da Lei nº 14.133/2021.",
-            "prazo_entrega_prestacao": "O prazo para desenvolvimento é de 6 meses, seguido de 3 meses para implantação. A manutenção e suporte serão contínuos após a implantação inicial.",
-            "local_entrega_prestacao": "As entregas do sistema e a prestação de serviços ocorrerão nas instalações do Tribunal Regional Eleitoral do Acre, ou remotamente, conforme acordado e compatível com a natureza do serviço e as políticas de segurança da informação.",
-            "obrigacoes_contratante": [
-                "Fiscalizar a execução do contrato.",
-                "Realizar o pagamento dos serviços contratados nos prazos e condições estabelecidos.",
-                "Prestar as informações e os esclarecimentos necessários à Contratada.",
-                "Disponibilizar acesso à equipe da Contratada aos sistemas e dados necessários para a execução dos serviços, observando as políticas de segurança da informação.",
-                "Acompanhar o cronograma de desenvolvimento e implantação, participando das reuniões e homologações necessárias."
+        "id": 13,
+        "id_projeto": 4,
+        "user_created": "teste",
+        "data_created": "2025-09-09T20:38:19.026110Z",
+        "orgao_contratante": "Tribunal Regional Eleitoral do Acre",
+        "tipo_contratacao": "compras",
+        "objeto_contratacao": "Contratação de motocicleta para transporte de servidores públicos, visando otimizar o deslocamento e agilizar as atividades administrativas.",
+        "modalidade_licitacao": "aquisicao_direta",
+        "fundamentacao_legal": "A presente contratação encontra fundamento no Art. 40 da Lei nº 14.133, de 2021, e nas informações detalhadas no Estudo Técnico Preliminar e demais documentos anexos a este processo.",
+        "descricao_solucao": "A solução consiste na aquisição de motocicleta para transporte de servidores públicos, visando otimizar o deslocamento e agilizar as atividades administrativas, atendendo à necessidade de um meio de transporte ágil e eficiente para os servidores públicos. A motocicleta será utilizada para o deslocamento entre diferentes unidades administrativas, para a realização de serviços externos e para o atendimento de demandas urgentes. Deverá ser entregue conforme as especificações técnicas detalhadas no item deste Termo de Referência e no Estudo Técnico Preliminar.",
+        "prazo_vigencia_contrato": "O prazo de vigência da contratação será o necessário para a entrega do objeto e adoção das providências contratuais, conforme o Art. 105 da Lei nº 14.133, de 2021. Estima-se 90 (noventa) dias contados da assinatura do contrato.",
+        "prazo_entrega_prestacao": "30 (trinta) dias úteis após a assinatura do contrato ou recebimento da Ordem de Fornecimento.",
+        "local_entrega_prestacao": "Tribunal Regional Eleitoral do Acre, [ENDEREÇO COMPLETO A SER ESPECIFICADO NO EDITAL].",
+        "obrigacoes_contratante": [
+            "Efetuar o pagamento nos prazos e condições estabelecidas em contrato.",
+            "Prestar as informações e esclarecimentos necessários para a execução contratual.",
+            "Designar fiscal(is) para acompanhar e fiscalizar a execução do contrato.",
+            "Receber o objeto nos termos e condições estabelecidas neste Termo de Referência e no contrato."
+        ],
+        "obrigacoes_contratada": [
+            "Entregar o objeto conforme as especificações técnicas, prazos e locais estabelecidos.",
+            "Garantir a qualidade do bem fornecido, responsabilizando-se por vícios e defeitos.",
+            "Manter todas as condições de habilitação e qualificação exigidas durante toda a execução do contrato.",
+            "Assumir a responsabilidade por todos os encargos fiscais, comerciais, sociais e trabalhistas decorrentes da contratação."
+        ],
+        "admite_subcontratacao": false,
+        "exige_garantia_contratual": true,
+        "condicoes_pagamento": "O pagamento será efetuado após o recebimento definitivo do objeto, mediante apresentação da nota fiscal ou documento equivalente, devidamente atestados pelo fiscal do contrato, em até [DEFINIR PRAZO, EX: 5 dias úteis] após a liquidação da despesa.",
+        "sancoes_administrativas": "As sanções administrativas aplicáveis à Contratada serão aquelas previstas na Lei nº 14.133/2021 (Capítulo IX, Arts. 155 a 163), no edital e no contrato, incluindo advertência, multa, impedimento de licitar e contratar com a Administração Pública e declaração de inidoneidade.",
+        "responsavel": "Vinicius Santos Machado",
+        "cargo_responsavel": "[CARGO DO RESPONSÁVEL]",
+        "sistema_registro_precos": {
+            "adota_srp": false,
+            "tipo_srp": null,
+            "quantidade_maxima": false,
+            "quantidade_minima_cotacao": null,
+            "permite_precos_diferentes": false,
+            "justificativa_precos_diferentes": null,
+            "permite_proposta_inferior": false,
+            "criterio_julgamento": null,
+            "registro_limitado": false,
+            "criterio_reajuste": null,
+            "vigencia_ata": null
+        },
+        "requisitos_contratacao": {
+            "sustentabilidade": "Serão adotadas medidas para mitigar impactos ambientais, priorizando modelos de motocicleta com menor emissão de gases poluentes e maior eficiência energética, incentivando o uso de combustíveis renováveis, realizando manutenções preventivas e garantindo o descarte adequado de peças. Além disso, a contratação deverá estar alinhada ao Plano de Logística Sustentável (PLS) da Administração Pública, priorizando fornecedores que adotem práticas de sustentabilidade e utilizem materiais e componentes reciclados ou de origem renovável.",
+            "indicacao_marcas": "Não há indicação de marcas ou modelos específicos, visando ampla competitividade e conformidade com a Lei nº 14.133/2021, priorizando a adequação às especificações técnicas e o menor custo total de propriedade.",
+            "vedacao_marca_produto": "Não há vedação à utilização de qualquer marca ou produto, desde que atenda integralmente às especificações técnicas e de desempenho exigidas no edital e neste Termo de Referência.",
+            "exige_amostra": false,
+            "exige_carta_solidariedade": false,
+            "garantia_produto_servico": "Garantia mínima de 12 (doze) meses contra defeitos de fabricação, com exigência de garantia estendida e ampla rede de assistência técnica, conforme o Plano de Gerenciamento de Riscos (PGR) para garantir a disponibilidade e a continuidade dos serviços.",
+            "exige_vistoria": false
+        },
+        "modelo_execucao": {
+            "condicoes_entrega": "A entrega da motocicleta deverá ocorrer no local indicado pelo Contratante, em condições de uso imediato, acompanhada de toda a documentação legal (nota fiscal, manual, chave reserva, certificado de garantia e documentação de licenciamento/emplacamento, se aplicável). A entrega deverá ser precedida de comunicação formal e agendamento.",
+            "garantia_manutencao": "O fornecedor deverá oferecer garantia mínima de 12 (doze) meses. Será avaliada a possibilidade de contratação de serviço de manutenção preventiva e corretiva, ou a inclusão de cláusulas robustas de manutenção e SLA (Service Level Agreement) no contrato de aquisição, conforme as recomendações do Plano de Gerenciamento de Riscos.",
+            "materiais_fornecidos": "A Contratada deverá fornecer a motocicleta completa, nova, zero quilômetro, com todos os equipamentos e acessórios necessários para o seu funcionamento e segurança, conforme especificações técnicas detalhadas.",
+            "informacoes_proposta": "As propostas deverão conter as especificações técnicas detalhadas da motocicleta ofertada, comprovando o atendimento a todos os requisitos mínimos estabelecidos no Termo de Referência, além da proposta de preços e da documentação de habilitação exigida. Devem também apresentar comprovação de homologação e certificações de segurança e durabilidade."
+        },
+        "gestao_contrato": {
+            "modelo_gestao": "A gestão e fiscalização do contrato serão realizadas por servidor(es) designado(s) pela Administração, que acompanhará(ão) o cumprimento das especificações, prazos e condições contratuais. O monitoramento será contínuo, com revisões formais periódicas e relatórios de desempenho, conforme as diretrizes do Plano de Gerenciamento de Riscos.",
+            "papeis_responsabilidades": "O Gestor do Contrato será o responsável geral pela coordenação das atividades de fiscalização e pelo acompanhamento da execução, enquanto o Fiscal Técnico será o encarregado da verificação do cumprimento das especificações técnicas do objeto e da qualidade do bem entregue. Ambos atuarão em conformidade com o Manual de Gestão e Fiscalização de Contratos do TRE-AC."
+        },
+        "criterios_pagamento": {
+            "recebimento_objeto": "O recebimento do objeto será realizado em duas etapas: provisório, pelo fiscal do contrato, mediante termo circunstanciado, para verificação inicial; e definitivo, após a verificação da conformidade completa com as especificações e a aprovação pela área técnica, em até 5 (cinco) dias úteis após o recebimento provisório.",
+            "liquidacao": "A liquidação da despesa ocorrerá após o recebimento definitivo do objeto e a apresentação da nota fiscal ou documento equivalente, devidamente atestados pelo fiscal do contrato e aprovados pela área responsável.",
+            "prazo_pagamento": "O pagamento será efetuado em até [DEFINIR PRAZO, EX: 5 dias úteis] após a liquidação da despesa, mediante crédito em conta corrente da Contratada.",
+            "forma_pagamento": "Ordem Bancária/SIAFI",
+            "antecipacao_pagamento": false,
+            "cessao_credito": "A cessão de crédito pela Contratada deverá obedecer às disposições legais pertinentes e às condições estabelecidas em contrato, mediante prévia e expressa anuência da Contratante."
+        },
+        "selecao_fornecedor": {
+            "forma_selecao": "Pregão Eletrônico",
+            "criterio_julgamento": "Menor Preço por Item",
+            "exigencias_habilitacao": {
+            "juridica": [
+                "Ato constitutivo, estatuto ou contrato social em vigor, devidamente registrado;",
+                "Decreto de autorização, em se tratando de empresa ou sociedade estrangeira em funcionamento no País, e ato de registro ou autorização para funcionamento, expedido pelo órgão competente, quando a atividade assim o exigir."
             ],
-            "obrigacoes_contratada": [
-                "Desenvolver o sistema conforme as especificações técnicas e funcionais acordadas.",
-                "Garantir a integração do novo sistema com os sistemas legados existentes.",
-                "Realizar a implantação e configuração do sistema nos ambientes definidos.",
-                "Prestar serviços de manutenção e suporte contínuos, conforme acordado em contrato.",
-                "Capacitar os usuários e a equipe técnica do Contratante para a utilização e administração do sistema.",
-                "Cumprir todas as leis e regulamentos aplicáveis, incluindo os de segurança da informação e proteção de dados."
+            "fiscal_trabalhista": [
+                "Comprovação de regularidade fiscal perante a Fazenda Federal, Estadual e Municipal do domicílio ou sede do licitante;",
+                "Comprovação de regularidade para com o Fundo de Garantia do Tempo de Serviço (FGTS);",
+                "Comprovação de regularidade para com a Justiça do Trabalho."
             ],
-            "admite_subcontratacao": false,
-            "exige_garantia_contratual": true,
-            "condicoes_pagamento": "O pagamento será efetuado após o ateste de recebimento definitivo de cada etapa ou parcela do serviço, mediante apresentação de nota fiscal ou documento de cobrança equivalente, conforme cronograma de pagamentos estabelecido em contrato.",
-            "sancoes_administrativas": "As sanções administrativas aplicáveis são aquelas previstas na Lei nº 14.133/2021 e demais normas pertinentes, incluindo advertência, multa, suspensão temporária de participação em licitação e impedimento de contratar com a Administração, e declaração de inidoneidade, conforme a gravidade da infração.",
-            "responsavel": "João Silva, Maria Santos, Pedro Costa",
-            "cargo_responsavel": "Coordenador TI, Analista de Sistemas, Arquiteto de Software (Equipe de Planejamento da Contratação)",
-            "sistema_registro_precos": {
-                "adota_srp": false,
-                "tipo_srp": null,
-                "quantidade_maxima": null,
-                "quantidade_minima_cotacao": null,
-                "permite_precos_diferentes": null,
-                "justificativa_precos_diferentes": null,
-                "permite_proposta_inferior": null,
-                "criterio_julgamento": null,
-                "registro_limitado": null,
-                "criterio_reajuste": null,
-                "vigencia_ata": null
-            },
-            "requisitos_contratacao": {
-                "sustentabilidade": "A contratação contribuirá para a redução do uso de papel através da digitalização de processos, minimizando impactos ambientais negativos e promovendo a sustentabilidade.",
-                "indicacao_marcas": "Não há indicação de marcas ou modelos específicos, priorizando a funcionalidade e o atendimento às especificações técnicas e requisitos de integração.",
-                "vedacao_marca_produto": "Não há vedação específica de utilização de marca/produto, desde que atendam aos requisitos de compatibilidade e desempenho exigidos.",
-                "exige_amostra": false,
-                "exige_carta_solidariedade": false,
-                "garantia_produto_servico": "A empresa contratada deverá oferecer garantia dos serviços de desenvolvimento por um período mínimo de 12 meses após a implantação e homologação, além de garantia de manutenção e assistência técnica contínuas conforme estabelecido em contrato.",
-                "exige_vistoria": false
-            },
-            "modelo_execucao": {
-                "condicoes_entrega": "A entrega da solução será realizada em fases, incluindo desenvolvimento e implantação, conforme cronograma aprovado. O sistema deverá ser entregue funcional e integrado aos sistemas legados, passando por testes e homologações por parte do Contratante.",
-                "garantia_manutencao": "O sistema requer manutenção e suporte contínuos para garantir seu funcionamento adequado, conforme justificado no Estudo Técnico Preliminar. A contratada deverá oferecer serviços de manutenção preventiva, corretiva e evolutiva, além de suporte técnico aos usuários.",
-                "materiais_fornecidos": "O Contratante não fornecerá materiais físicos para a execução dos serviços de desenvolvimento de sistema. A Contratada será responsável por todos os recursos tecnológicos (hardware, software de desenvolvimento, etc.) e humanos necessários.",
-                "informacoes_proposta": "Os requisitos para a contratação incluem: Experiência comprovada em sistemas públicos, Certificação ISO 27001 e Equipe técnica qualificada. A proposta deve detalhar a metodologia de desenvolvimento, cronograma, equipe alocada, e plano de manutenção e suporte."
-            },
-            "gestao_contrato": {
-                "modelo_gestao": "O modelo de gestão do contrato será baseado no acompanhamento e fiscalização contínuos da execução dos serviços, com reuniões periódicas para alinhamento e resolução de questões. Será nomeado um gestor e fiscais do contrato para monitorar o cumprimento das obrigações contratuais.",
-                "papeis_responsabilidades": "O Gestor do Contrato será o responsável geral pelo acompanhamento, garantindo a conformidade e os resultados esperados. Os Fiscais do Contrato (administrativo e técnico) serão responsáveis pela verificação da execução dos serviços e pela atestação de qualidade e conformidade das entregas."
-            },
-            "criterios_pagamento": {
-                "recebimento_objeto": "O recebimento do objeto será provisório no momento da conclusão de cada etapa de desenvolvimento/implantação e definitivo após a homologação e testes de aceitação, e cumprimento de todos os requisitos contratuais, no prazo máximo de 30 dias após o recebimento provisório.",
-                "liquidacao": "A liquidação da despesa ocorrerá após o recebimento definitivo dos serviços, com a verificação do cumprimento das condições contratuais e legais.",
-                "prazo_pagamento": "O prazo para pagamento será de até 5 (cinco) dias úteis contados da data de liquidação da despesa.",
-                "forma_pagamento": "Ordem Bancária/SIAFI",
-                "antecipacao_pagamento": false,
-                "cessao_credito": "A cessão de crédito será admitida apenas nas condições expressamente previstas na Lei nº 14.133/2021 e demais regulamentos aplicáveis, mediante comunicação formal e anuência do Contratante."
-            },
-            "selecao_fornecedor": {
-                "forma_selecao": "Pregão Eletrônico",
-                "criterio_julgamento": "Menor Preço",
-                "exigencias_habilitacao": {
-                "juridica": [
-                    "Registro comercial, no caso de empresa individual ou sociedade limitada.",
-                    "Ato constitutivo, estatuto ou contrato social em vigor, devidamente registrado.",
-                    "Decreto de autorização, em se tratando de empresa ou sociedade estrangeira em funcionamento no País.",
-                    "Inscrição do ato constitutivo, no caso de sociedades civis, acompanhada de prova de diretoria em exercício."
-                ],
-                "fiscal_trabalhista": [
-                    "Prova de inscrição no Cadastro Nacional de Pessoas Jurídicas (CNPJ).",
-                    "Prova de regularidade para com a Fazenda Federal, Estadual e Municipal do domicílio ou sede do licitante.",
-                    "Prova de regularidade para com o Fundo de Garantia do Tempo de Serviço (FGTS).",
-                    "Prova de inexistência de débitos inadimplidos perante a Justiça do Trabalho, mediante a apresentação de certidão negativa."
-                ],
-                "economico_financeira": [
-                    "Balanço patrimonial e demonstrações contábeis do último exercício social.",
-                    "Certidão negativa de falência, recuperação judicial ou extrajudicial.",
-                    "Capital social ou patrimônio líquido mínimo, conforme exigido no edital, para comprovar a capacidade financeira."
-                ],
-                "tecnica": [
-                    "Comprovação de aptidão para desempenho de atividade pertinente e compatível em características, quantidades e prazos com o objeto da licitação, por meio de atestados ou declarações de capacidade técnica.",
-                    "Apresentação de Certificação ISO 27001.",
-                    "Indicação de equipe técnica qualificada para a execução dos serviços, com currículos e comprovação de experiência."
-                ]
-                }
-            },
-            "estimativa_valor": {
-                "valor_total": "211000.0",
-                "valor_unitario": null,
-                "metodologia_pesquisa": "A estimativa de valor foi obtida por meio de pesquisa de mercado, consultando 5 empresas especializadas e utilizando fontes como ComprasNet e Painel de Preços, resultando em um preço médio de R$ 211.000,00 com variação de 15%."
-            },
-            "adequacao_orcamentaria": {
-                "fonte_recursos": "[A SER DEFINIDO PELA UNIDADE ORÇAMENTÁRIA]",
-                "classificacao_orcamentaria": "[A SER DEFINIDO PELA UNIDADE ORÇAMENTÁRIA]",
-                "previsao_pca": true,
-                "codigo_pca": "125"
+            "economico_financeira": [
+                "Balanço patrimonial e demonstrações contábeis do último exercício social, que comprovem boa situação financeira;",
+                "Certidão negativa de falência, recuperação judicial ou extrajudicial, expedida pelo distribuidor da sede da pessoa jurídica."
+            ],
+            "tecnica": [
+                "Atestados de capacidade técnica, emitidos por pessoas jurídicas de direito público ou privado, que comprovem a experiência da licitante no fornecimento de motocicletas similares, em características e quantidades compatíveis com o objeto desta contratação;",
+                "Certificações de qualidade do fabricante da motocicleta, atestando a conformidade com as normas técnicas e de segurança vigentes (Ex: INMETRO, CONTRAN);",
+                "Declaração do fabricante ou de seu representante legal de que a motocicleta possui garantia e rede de assistência técnica no território nacional."
+            ]
             }
+        },
+        "estimativa_valor": {
+            "valor_total": "42662.17",
+            "valor_unitario": "42662.17",
+            "metodologia_pesquisa": "A estimativa de valor foi baseada em pesquisa de mercado realizada com dados de contratos similares, atas de registro de preços e consulta direta a fornecedores, incluindo o Painel de Preços e dados históricos. Foi identificada uma variação percentual de até 30% nos preços pesquisados, buscando os valores mais competitivos e a garantia da qualidade."
+        },
+        "adequacao_orcamentaria": {
+            "fonte_recursos": "[DEFINIR FONTE DE RECURSOS ORÇAMENTÁRIOS]",
+            "classificacao_orcamentaria": "[DEFINIR CLASSIFICAÇÃO ORÇAMENTÁRIA - EX: 44.90.52 - Equipamentos e Material Permanente]",
+            "previsao_pca": false,
+            "codigo_pca": null
+        },
+        "itens": [
+            {
+            "descricao": "Motocicleta para transporte de servidores públicos, conforme especificações detalhadas no item de solução do Estudo Técnico Preliminar e neste Termo de Referência.",
+            "especificacoes_tecnicas": [
+                "Motor 4 tempos, arrefecido a ar, com cilindrada não inferior a 150cc e potência não inferior a 14cv;",
+                "Sistema de partida elétrica e injeção eletrônica;",
+                "Transmissão de cinco velocidades;",
+                "Freios a disco nas duas rodas com sistema ABS;",
+                "Painel de instrumentos digital completo;",
+                "Suspensão dianteira telescópica e traseira monoamortecida;",
+                "Pneus de uso misto (on/off road);",
+                "Capacidade do tanque de combustível de no mínimo 12 litros;",
+                "Farol e lanterna traseira em LED;",
+                "Protetor de motor e carenagem;",
+                "Bauleto traseiro com capacidade mínima de 30 litros."
+            ],
+            "quantidade": "1.000",
+            "valor_unitario": "42662.17",
+            "valor_total": "42662.17000",
+            "unidade_medida": "Unidade",
+            "codigo_catmat_catser": "[A DEFINIR CATMAT]",
+            "finalidade": "Transporte ágil e eficiente de servidores públicos entre diferentes locais de trabalho, para realização de serviços externos e atendimento de demandas urgentes, otimizando o deslocamento e agilizando as atividades administrativas do Tribunal Regional Eleitoral do Acre."
+            },
+            {
+                "descricao": "Capacete de segurança para motociclista, modelo fechado (integral), com viseira antirrisco e sistema de ventilação.",
+                "especificacoes_tecnicas": [ "Certificação pelo INMETRO.", "Casco em resina termoplástica ABS.", "Forro removível e lavável." ],
+                "quantidade": "2.000",
+                "valor_unitario": "450.00",
+                "valor_total": "900.00000",
+                "unidade_medida": "Unidade",
+                "codigo_catmat_catser": "[A DEFINIR CATMAT]",
+                "finalidade": "Garantir a segurança do servidor público durante o deslocamento."
+            },
+            {
+                "descricao": "Jaqueta de proteção para motociclista, confeccionada em tecido de alta resistência à abrasão, com proteções internas.",
+                "especificacoes_tecnicas": [ "Tecido poliéster 600D.", "Proteções removíveis nos ombros e cotovelos.", "Faixas refletivas." ],
+                "quantidade": "2.000",
+                "valor_unitario": "600.00",
+                "valor_total": "1200.00000",
+                "unidade_medida": "Unidade",
+                "codigo_catmat_catser": "[A DEFINIR CATMAT]",
+                "finalidade": "Prover proteção contra intempéries e em caso de queda."
             }
+        ]
+        }
 
         generatePdf(jsonData);
     });
@@ -292,18 +333,84 @@
             // Subseção 1.2
             checkPageBreak(30);
             y += addSubsection("1.2", "Detalhamento dos bens que compõem a solução:", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            const tableHeaders = ["Item/Grupo", "Descrição", "CATMAT", "Unidade", "Qtd", "V. Unit.", "V. Total"];
-            const colWidths = [20, 50, 20, 20, 15, 20, 25];
-            let currentX = margin + subsectionIndent;
+            
+            // Table Headers
+            const tableHeaders = ["Item", "Descrição", "CATMAT", "Unidade", "Qtd", "V. Unit.", "V. Total"];
+            const colWidths = [15, 55, 20, 20, 15, 25, 25]; // Total width = 175
+            const tableStartX = margin + subsectionIndent;
+
+            let currentX = tableStartX;
             doc.setFont("times", "bold");
+            doc.setFontSize(10);
+            const headerHeight = 8;
             tableHeaders.forEach((header, i) => {
-                doc.rect(currentX, y, colWidths[i], 10);
-                doc.text(header, currentX + 2, y + 6);
+                doc.rect(currentX, y, colWidths[i], headerHeight);
+                const textWidth = doc.getStringUnitWidth(header) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+                const textX = currentX + (colWidths[i] - textWidth) / 2;
+                doc.text(header, textX, y + headerHeight / 2 + 3);
                 currentX += colWidths[i];
             });
-            doc.rect(margin + subsectionIndent, y + 10, contentWidth - subsectionIndent, 10);
-            y += 25;
+            y += headerHeight;
+
+            // Table Body
             doc.setFont("times", "normal");
+            doc.setFontSize(10);
+
+            jsonData.itens.forEach((item, index) => {
+                const rowData = [
+                    (index + 1).toString(),
+                    item.descricao,
+                    item.codigo_catmat_catser || '[A DEFINIR]',
+                    item.unidade_medida,
+                    item.quantidade.toString(),
+                    `R$ ${parseFloat(item.valor_unitario).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+                    `R$ ${parseFloat(item.valor_total).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+                ];
+
+                let maxLines = 0;
+                const cellPadding = 2;
+                const lineHeight = 4;
+
+                // Calculate the required height for the row by finding the cell with the most lines
+                rowData.forEach((text, i) => {
+                    const lines = doc.splitTextToSize(String(text), colWidths[i] - (cellPadding * 2));
+                    if (lines.length > maxLines) {
+                        maxLines = lines.length;
+                    }
+                });
+                
+                const rowHeight = maxLines * lineHeight + (cellPadding * 2);
+                
+                checkPageBreak(rowHeight);
+                
+                currentX = tableStartX;
+                
+                // Draw row cells and text
+                rowData.forEach((text, i) => {
+                    doc.rect(currentX, y, colWidths[i], rowHeight);
+                    const lines = doc.splitTextToSize(String(text), colWidths[i] - (cellPadding * 2));
+                    
+                    // CORREÇÃO: Adicionar cellPadding na posição vertical inicial do texto
+                    const textY = y + cellPadding + lineHeight;
+                    
+                    // Para células com alinhamento à direita (valores monetários)
+                    if (i >= 5) { // Colunas de valores (V. Unit. e V. Total)
+                        lines.forEach((line, lineIndex) => {
+                            const textWidth = doc.getStringUnitWidth(line) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+                            const textX = currentX + colWidths[i] - cellPadding - textWidth;
+                            doc.text(line, textX, textY + (lineIndex * lineHeight));
+                        });
+                    } else {
+                        doc.text(lines, currentX + cellPadding, textY);
+                    }
+                    
+                    currentX += colWidths[i];
+                });
+
+                y += rowHeight;
+            });
+            doc.setFontSize(11);
+            y += 10;
             
             // Subseção 1.3
             checkPageBreak(15);
@@ -406,7 +513,7 @@
                 // X
                 y += addWrappedText(`X - O prazo de vigência da ata de registro de preços será de ${srpData.vigencia_ata || '[Prazo não definido].'}`, textIndent, y, textWidth);
             } else {
-                y += addWrappedText(`Não será adotado o Sistema de Registro de Preços. Justificativa: ${srpData.justificativa_srp || '[Justificativa não informada]'}`, textIndent, y, textWidth);
+                y += addWrappedText(`Não será adotado o Sistema de Registro de Preços.`, textIndent, y, textWidth);
             }
 
             y += sectionSpacing;
@@ -633,7 +740,9 @@
 
         const addHeaderAndSave = () => {
             const brasaoImg = new Image();
-            brasaoImg.src = "/static/assets/img/brasao_oficial_republica.png";
+            brasaoImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Coat_of_arms_of_Brazil.svg/150px-Coat_of_arms_of_Brazil.svg.png"; // Usando uma URL pública para o brasão
+            brasaoImg.crossOrigin = "Anonymous";
+
 
             const drawContentAndSave = () => {
                 doc.setFontSize(9);

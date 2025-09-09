@@ -13,7 +13,7 @@ class TR(Base):
     
     # Relacionamento com Projeto
     id_projeto = Column(Integer, ForeignKey("core.projeto.id_projeto", ondelete="CASCADE"), nullable=False)
-    projeto = relationship("Projeto", back_populates="trs")
+    projeto = relationship("Projeto", back_populates="trs", lazy="selectin")
     
     # Metadados
     user_created = Column("usuario_criacao", String(255), nullable=False)
@@ -162,7 +162,7 @@ class TRItem(Base):
     
     # FK para o TR
     id_tr = Column(Integer, ForeignKey("core.tr.id_tr", ondelete="CASCADE"), nullable=False)
-    tr = relationship("TR", back_populates="itens")
+    tr = relationship("TR", back_populates="itens", lazy="selectin")
     
     # === Campos do Item ===
     descricao = Column(Text, nullable=False)
