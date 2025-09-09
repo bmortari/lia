@@ -322,7 +322,7 @@
             checkPageBreak(15);
             y += addSubsection("1.6", "", "O contrato oferece maior detalhamento das regras que serão aplicadas em relação à vigência da contratação.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
-            // Notas Explicativas
+            /* Notas Explicativas
             addNotaExplicativa(
                 "Nota Explicativa 1: Enquadramento da Contratação para fins de vigência",
                 "Há dois tipos de contratação por licitação para aquisição de bens, no que tange à vigência:\na) Há fornecimento não-contínuo quando se trata de uma entrega de bens sem que haja uma demanda de caráter permanente. Uma vez finalizada a entrega, resolve-se a necessidade que deu azo ao contrato. Estes usam o art. 105 da Lei nº 14.133, de 2021, como fundamento e partem apenas de créditos do exercício corrente, salvo se inscritos no Plano Plurianual.\nb) Há fornecimento contínuo quando a entrega dos bens é uma necessidade permanente. É o caso, por exemplo, de unidades hospitalares que demandam sempre insumos de saúde específicos para seu próprio funcionamento contínuo. Nessas situações, findado o contrato, haverá sua substituição por um novo e assim, sucessivamente, pois a necessidade em si é permanente. Contratações dessa natureza são atendidas pelo art. 106 da Lei nº 14.133, de 2021."
@@ -330,13 +330,13 @@
             
             addNotaExplicativa(
                 "Nota Explicativa 2: Prazo de Vigência e Empenho - art. 105 da Lei nº 14.133, de 2021",
-                "Fornecimento Não-Contínuo: Em caso de fornecimento não-contínuo, o prazo de vigência deve ser o suficiente para a entrega do objeto e adoção das providências previstas no contrato, sendo a contratação limitada pelos respectivos créditos orçamentários.\nUma contratação que não tenha previsão no Plano Plurianual deve ter a sua integralidade empenhada antes ou de modo concomitante à celebração, conforme Lei nº 4.320, de 17 de março 1964, e Decreto nº 93.872, de 23 de dezembro de 1986, e a partir de tal empenho ter a vigência necessária prevista, utilizando-se de restos a pagar, se for o caso (art. 30, §2º do Decreto nº 93.872, de 1986).\nJá a contratação prevista no Plano Plurianual pode ter empenhos em anos distintos, considerando a despesa de cada exercício, apenas quanto ao período abrangido pelo PPA."
+                "Fornecimento Não-Contínuo: Em caso de fornecimento não-contínuo, o prazo de vigência deve ser o suficiente para a entrega do objeto e adoção das Comovidências previstas no contrato, sendo a contratação limitada pelos respectivos créditos orçamentários.\nUma contratação que não tenha previsão no Plano Plurianual deve ter a sua integralidade empenhada antes ou de modo concomitante à celebração, conforme Lei nº 4.320, de 17 de março 1964, e Decreto nº 93.872, de 23 de dezembro de 1986, e a partir de tal empenho ter a vigência necessária prevista, utilizando-se de restos a pagar, se for o caso (art. 30, §2º do Decreto nº 93.872, de 1986).\nJá a contratação prevista no Plano Plurianual pode ter empenhos em anos distintos, considerando a despesa de cada exercício, apenas quanto ao período abrangido pelo PPA."
             );
             
             addNotaExplicativa(
                 "Nota Explicativa 3: Prazo de Vigência – arts. 106 e 107 - Fornecimento Contínuo",
                 'A definição de fornecimento contínuo consta no art. 6º, XV da Lei nº 14.133, de 2021, sendo as "compras realizadas pela Administração Pública para a manutenção da atividade administrativa, decorrentes de necessidades permanentes ou prolongadas".\nA utilização do prazo de vigência plurianual no caso de fornecimento contínuo é condicionada ao ateste de maior vantagem econômica, a ser feita pela autoridade competente no processo respectivo, conforme art. 106, I da Lei nº 14.133, de 2021.\nDe acordo com o artigo 107 da Lei nº 14.133, de 2021, será possível que contratos de fornecimento contínuo sejam prorrogados por até 10 anos, desde que haja previsão no edital e/ou contrato e que a autoridade competente ateste que as condições e os preços permanecem vantajosos para a Administração, permitida a negociação com o contratado ou a extinção contratual sem ônus para qualquer das partes.'
-            );
+            );*/
 
             y += sectionSpacing;
             
@@ -361,9 +361,9 @@
             y += addSubsection("2.2", "", previsaoPCATexto, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
-            addNotaExplicativa(
-              "Nota Explicativa:", "De acordo com o artigo 6º, inciso XXIII, alínea 'c', da Lei nº 14.133, de 2021, a fundamentação da contratação é realizada mediante 'referência aos estudos técnicos preliminares (ETP) correspondentes ou, quando não for possível divulgar esses estudos, no extrato das partes que não contiverem informações sigilosas'. A Instrução Normativa SEGES/ME nº 58, de 8 de agosto de 2022 dispõe sobre a 'elaboração do ETP para a aquisição de bens e a contratação de serviços e obras no âmbito da administração pública federal direta, autárquica e fundacional, e sobre o Sistema ETP digital'. No mesmo sentido é a previsão do art. 9º, inciso II, da Instrução Normativa SEGES/ME nº 81, de 2022."
-            )
+           //addNotaExplicativa(
+           //  "Nota Explicativa:", "De acordo com o artigo 6º, inciso XXIII, alínea 'c', da Lei nº 14.133, de 2021, a fundamentação da contratação é realizada mediante 'referência aos estudos técnicos preliminares (ETP) correspondentes ou, quando não for possível divulgar esses estudos, no extrato das partes que não contiverem informações sigilosas'. A Instrução Normativa SEGES/ME nº 58, de 8 de agosto de 2022 dispõe sobre a 'elaboração do ETP para a aquisição de bens e a contratação de serviços e obras no âmbito da administração pública federal direta, autárquica e fundacional, e sobre o Sistema ETP digital'. No mesmo sentido é a previsão do art. 9º, inciso II, da Instrução Normativa SEGES/ME nº 81, de 2022."
+           // )
 
             y += sectionSpacing;    
 
@@ -435,10 +435,14 @@
             checkPageBreak(30);
             doc.setFontSize(12);
             doc.setFont("times", "bold");
-            doc.text("3. DA DESCRIÇÃO DA SOLUÇÃO COMO UM TODO CONSIDERADO O CICLO DE VIDA DO OBJETO E ESPECIFICAÇÃO DO PRODUTO", margin, y);
-            y += 7;
+
+            const section3Title = "3. DA DESCRIÇÃO DA SOLUÇÃO COMO UM TODO CONSIDERADO O CICLO DE VIDA DO OBJETO E ESPECIFICAÇÃO DO PRODUTO";
+            const titleHeight = addWrappedText(section3Title, margin, y, contentWidth);
+            y += titleHeight;
+
             doc.setFontSize(11);
             doc.setFont("times", "normal");
+
             y += addWrappedText(jsonData.descricao_solucao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
