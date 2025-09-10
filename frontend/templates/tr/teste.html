@@ -280,7 +280,7 @@
 
         // Function to check for new page
         const checkPageBreak = (heightNeeded) => {
-            if (y + heightNeeded > 280) { // 297mm page height, with margin
+            if (y + heightNeeded > 282) { // 297mm - 15mm bottom margin
                 doc.addPage();
                 y = 15;
             }
@@ -342,7 +342,7 @@
             let currentX = tableStartX;
             doc.setFont("times", "bold");
             doc.setFontSize(10);
-            const headerHeight = 8;
+            const headerHeight = 10;
             tableHeaders.forEach((header, i) => {
                 doc.rect(currentX, y, colWidths[i], headerHeight);
                 const textWidth = doc.getStringUnitWidth(header) * doc.internal.getFontSize() / doc.internal.scaleFactor;
@@ -369,7 +369,7 @@
 
                 let maxLines = 0;
                 const cellPadding = 2;
-                const lineHeight = 4;
+                const lineHeight = 6;
 
                 // Calculate the required height for the row by finding the cell with the most lines
                 rowData.forEach((text, i) => {
@@ -544,25 +544,39 @@
             doc.setFont("times", "normal");
             
             // ADICIONAR 4.1.1, 4.2.1, etc.
+            checkPageBreak(15);
             y += addSubsection("4.1", "DA SUSTENTABILIDADE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(30);
             y += addSubsection("4.1.1", "", jsonData.requisitos_contratacao.sustentabilidade, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.2", "DA INDICAÇÃO DE MARCAS OU MODELOS", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("4.2.1", "", jsonData.requisitos_contratacao.indicacao_marcas, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.3", "DA VEDAÇÃO DE UTILIZAÇÃO DE MARCA/PRODUTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("4.3.1", "", jsonData.requisitos_contratacao.vedacao_marca_produto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.4", "DA AMOSTRA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
             y += addSubsection("4.4.1", "", jsonData.requisitos_contratacao.exige_amostra ? 'Será exigida apresentação de amostra.' : 'Não será exigida apresentação de amostra.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.5", "DA CARTA DE SOLIDARIEDADE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
             y += addSubsection("4.5.1", "", jsonData.requisitos_contratacao.exige_carta_solidariedade ? 'Será exigida carta de solidariedade.' : 'Não será exigida carta de solidariedade.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.6", "DA SUBCONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
             y += addSubsection("4.6.1", "", jsonData.admite_subcontratacao ? 'Admite-se subcontratação.' : 'Não se admite subcontratação.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("4.7", "DA GARANTIA DA CONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("4.7.1", "", jsonData.exige_garantia_contratual ? jsonData.requisitos_contratacao.garantia_produto_servico : 'Não se exige garantia contratual.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
 
             y += sectionSpacing;
@@ -618,28 +632,40 @@
             doc.setFont("times", "normal");
             
             // ADICIONAR 7.1.1, 7.2.1, etc.
+            checkPageBreak(15);
             y += addSubsection("7.1", "DO RECEBIMENTO DO OBJETO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("7.1.1", "", jsonData.criterios_pagamento.recebimento_objeto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("7.2", "DA LIQUIDAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("7.2.1", "", jsonData.criterios_pagamento.liquidacao, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("7.3", "DO PRAZO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("7.3.1", "", jsonData.criterios_pagamento.prazo_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("7.4", "DA FORMA DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
             y += addSubsection("7.4.1", "", jsonData.criterios_pagamento.forma_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("7.5", "DA ANTECIPAÇÃO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
             y += addSubsection("7.5.1", "", jsonData.criterios_pagamento.antecipacao_pagamento ? 'Sim' : 'Não', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
+            checkPageBreak(15);
             y += addSubsection("7.6", "DA CESSÃO DE CRÉDITO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(20);
             y += addSubsection("7.6.1", "", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             y += sectionSpacing;
 
             // Section 8: DA FORMA E CRITÉRIO DE SELEÇÃO DO FORNECEDOR
-            checkPageBreak(120);
+            checkPageBreak(20);
             doc.setFontSize(12);
             doc.setFont("times", "bold");
             doc.text("8. DA FORMA E CRITÉRIO DE SELEÇÃO DO FORNECEDOR", margin, y);
@@ -740,9 +766,7 @@
 
         const addHeaderAndSave = () => {
             const brasaoImg = new Image();
-            brasaoImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Coat_of_arms_of_Brazil.svg/150px-Coat_of_arms_of_Brazil.svg.png"; // Usando uma URL pública para o brasão
-            brasaoImg.crossOrigin = "Anonymous";
-
+            brasaoImg.src = "/static/assets/img/brasao_oficial_republica.png";
 
             const drawContentAndSave = () => {
                 doc.setFontSize(9);
