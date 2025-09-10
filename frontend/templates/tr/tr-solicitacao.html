@@ -1,12 +1,119 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIA - Solicitação de TR</title>
+    <title>TR - Solicitação</title>
+    <!-- Unicons -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
+    <link rel="stylesheet" href="/static/css/output.css">
+    <link rel="stylesheet" href="/static/css/input.css">
 </head>
-<body>
-    <h1>Solicitação de Termo de Referência (TR)</h1>
-    <p>Em desenvolvimento...</p>
+<body class="bg-gray-50 text-gray-800 h-screen flex items-center justify-center">
+
+    <!-- Main Container -->
+    <div class="container mx-auto p-8 max-w-6xl">
+
+        <form id="tr-solicitacao-form">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">TR - Solicitação</h1>
+                    <p class="text-gray-600 mt-2">Criação de Termo de Referência</p>
+                </div>
+                <button type="button" id="voltar-inicio" class="btn-back">
+                    <i class="uil uil-arrow-left mr-2"></i>
+                    Voltar ao início
+                </button>
+            </div>
+
+            <!-- Main Content -->
+            <main class="grid grid-cols-1 gap-8">
+                <!-- Form Section -->
+                <div class="h-full">
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-6 h-full">
+                        <!-- Project and Type Info -->
+                        <div class="space-y-6">
+                            <div>
+                                <label for="project-name" class="block mb-2 text-sm font-medium text-gray-900">PROJETO</label>
+                                <input type="text" id="project-name" name="project_name" value="{{ projeto.nome }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 cursor-not-allowed" disabled>
+                            </div>
+                            <div>
+                                <label for="item-type" class="block mb-2 text-sm font-medium text-gray-900">TIPO</label>
+                                <input type="text" id="item-type" name="item_type" value="{{ projeto.tipo }}" class="bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5 cursor-not-allowed" disabled>
+                            </div>
+                        </div>
+
+                        <!-- Órgão Contratante Input -->
+                        <div>
+                            <label for="orgao-contratante" class="block mb-2 text-sm font-medium text-gray-900">Órgão Contratante</label>
+                            <input type="text" id="orgao-contratante" name="orgao_contratante" required class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" placeholder="Digite o Órgão Contratante">
+                        </div>
+
+                        <!-- Solicitation Text Area (Prompt) -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label for="prompt" class="block text-sm font-medium text-gray-900">Envie sua solicitação:</label>
+                                <button data-tooltip-target="tooltip-info" type="button" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                                    </svg>
+                                    <span class="sr-only">Info</span>
+                                </button>
+                                <div id="tooltip-info" role="tooltip" class="absolute z-10 invisible inline-block px-4 py-3 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip max-w-sm text-left">
+                                    <!-- Tooltip content empty as per instructions -->
+                                    <div class="tooltip-arrow" data-popper-arrow></div>
+                                </div>
+                            </div>
+                            <textarea id="prompt" name="prompt" rows="8" required class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary resize-none" placeholder="Descreva sua solicitação aqui..."></textarea>
+                        </div>
+
+                        <!-- Modalidade de Licitação Radio Buttons -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900">Modalidade de licitação</label>
+                            <div class="flex space-x-8">
+                                <div class="flex items-center">
+                                    <input id="aquisicao_direta" type="radio" name="modalidade_licitacao" value="aquisicao_direta" required class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary">
+                                    <label for="aquisicao_direta" class="ml-2 block text-sm font-medium text-gray-900">Aquisição direta</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="registro_precos" type="radio" name="modalidade_licitacao" value="registro_precos" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary">
+                                    <label for="registro_precos" class="ml-2 block text-sm font-medium text-gray-900">Registro de preços</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end mt-4">
+                            <button type="submit" id="gerar-button" class="btn-primary text-white font-medium rounded-lg text-sm px-8 py-2.5">
+                                Gerar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </form>
+
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-xl text-center max-w-sm w-full">
+            <!-- Spinning Gear Icon -->
+            <div class="mb-4">
+                <i class="uil uil-cog text-primary text-5xl animate-spin-icon"></i>
+            </div>
+            
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Gerando TR</h3>
+            <p class="text-gray-600 mb-6">Isso pode levar alguns minutos. Por favor, aguarde.</p>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                <div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/flowbite.min.js" defer></script>
+    <script src="/static/js/tr/tr-solicitacao.js" defer></script>
 </body>
 </html>

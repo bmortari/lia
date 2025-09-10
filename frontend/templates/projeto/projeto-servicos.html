@@ -348,10 +348,10 @@
                     <h5 class="text-center text-xl font-bold tracking-tight text-gray-900 mb-2">T. R.</h5>
                     <p class="text-center text-sm text-gray-600 mb-4 h-12">Gera um Termo de Referência.</p>
                     
-                    <button class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
-                                   {% if projeto.exist_tr %}btn-custom btn-disabled{% else %}btn-custom-dev{% endif %}"
-                            {% if projeto.exist_tr %}disabled{% endif %}>
-                        {% if projeto.exist_tr %}Já Criado{% else %}Em Desenvolvimento{% endif %}
+                    <button id="gera_tr" class="w-full text-white focus:ring-4 font-medium rounded-lg text-sm px-5 py-2 mb-2 focus:outline-none cursor-pointer
+                           {% if projeto.exist_tr %}btn-custom btn-disabled{% else %}btn-custom{% endif %}"
+                    {% if projeto.exist_tr %}disabled{% endif %}>
+                {% if projeto.exist_tr %}Já Criado{% else %}Gerar{% endif %}
                     </button>
                     
                     <div class="flex gap-2">

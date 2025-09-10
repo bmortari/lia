@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 from fastapi import HTTPException
+from pydantic import BaseModel
 from app.client import get_genai_client
 from app.dependencies import RemoteUser
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,9 +15,11 @@ from app.models.tr_models import TR, TRItem
 from app.models.dfd_models import DFD
 from app.models.pgr_models import PGR
 from app.models.etp_models import ETP
-from app.schemas.tr_schemas import TRCreate, TRRead
+from app.schemas.tr_schemas import TRCreate, TRRead, TRUpdate
 from app.services.prompts.tr_prompts import prompt_tr
 from app.config import acre_tz
+from app.models.tr_models import TRItem
+from sqlalchemy import delete
 
 import json
 import logging
@@ -24,6 +27,43 @@ import logging
 logger = logging.getLogger(__name__)
 temp_dir = os.path.join("frontend", "static", "docs")
 os.makedirs(temp_dir, exist_ok=True)
+
+
+async def delete_tr_service(project_id: int, db: AsyncSession, current_user: str = ""):
+    """
+    Deleta o Termo de Referência (TR) do projeto e atualiza o flag exist_tr.
+    """
+    try:
+        # Verifica se o projeto existe
+        result = await db.execute(
+            select(Projeto).where(Projeto.id_projeto == project_id)
+        )
+        projeto = result.scalar_one_or_none()
+        if not projeto:
+            raise ValueError("Projeto não encontrado.")
+
+        # Busca o TR
+        stmt = select(TR).where(TR.id_projeto == project_id)
+        result = await db.execute(stmt)
+        tr = result.scalars().first()
+        if not tr:
+            raise ValueError("TR não encontrado para este projeto.")
+
+        # Deleta o TR (cascade deleta itens)
+        await db.delete(tr)
+        await db.commit()
+
+        # Atualiza o flag exist_tr do projeto para False
+        update_stmt = update(Projeto).where(Projeto.id_projeto == project_id).values(exist_tr=False)
+        await db.execute(update_stmt)
+        await db.commit()
+
+        logger.info(f"TR deletado com sucesso para o projeto {project_id}")
+
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Erro ao deletar TR para o projeto {project_id}: {e}", exc_info=True)
+        raise
 
 
 async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: RemoteUser, project_id: int):
@@ -66,7 +106,7 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
         # O operador ** desempacota o dicionário nos argumentos do construtor
         novo_tr = TR(
             id_projeto=project_id,
-            user_created="teste",
+            user_created=current_user.username,
             data_created=datetime.now(acre_tz),
             **dados_tr_json
         )
@@ -213,3 +253,62 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     except Exception as e:
         logger.error(f"Erro ao gerar dados para o TR com IA: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Erro na comunicação com a IA para gerar o TR.")
+
+
+async def update_tr_for_project(
+    project_id: int, 
+    tr_upd: TRUpdate, 
+    db: AsyncSession, 
+    current_user: RemoteUser  
+) -> TR:
+    """
+    Atualiza o TR do projeto com os dados fornecidos.
+    """
+    # 1. Busca o TR existente
+    stmt = (
+        select(TR)
+        .options(selectinload(TR.projeto), selectinload(TR.itens))
+        .where(TR.id_projeto == project_id)
+    )
+    result = await db.execute(stmt)
+    tr: TR | None = result.scalars().first()
+    
+    if not tr:
+        raise HTTPException(status_code=404, detail="TR não encontrado para este projeto.")
+    
+    # 2. Verifica permissão
+    if tr.user_created != current_user.username and tr.projeto.user_created != current_user.username:
+        raise HTTPException(status_code=403, detail="Você não tem permissão para alterar este TR.")
+    
+    # 3. Atualiza todos os campos (simples e aninhados) em um único loop
+    update_data = json.loads(tr_upd.model_dump_json(exclude_unset=True))
+    
+    for field, value in update_data.items():
+        if field == 'itens':
+            continue  # Itens são tratados separadamente abaixo
+
+        # Se o valor for um modelo Pydantic, converte para dict antes de atribuir
+        if isinstance(value, BaseModel):
+            setattr(tr, field, value.model_dump())
+        elif hasattr(tr, field):
+            setattr(tr, field, value)
+            
+    # 4. Trata a atualização da lista de itens (lógica de substituição completa)
+    if 'itens' in update_data: # Verifica se a chave 'itens' foi enviada na requisição
+        # Deleta os itens existentes associados a este TR
+        await db.execute(delete(TRItem).where(TRItem.id_tr == tr.id))
+        
+        # Limpa a coleção na memória e adiciona os novos itens
+        tr.itens = []
+        for item_data in tr_upd.itens or []:
+            new_item = TRItem(**item_data.model_dump())
+            tr.itens.append(new_item)
+            
+    # 5. Commit das alterações
+    try:
+        await db.commit()
+        await db.refresh(tr)
+        return tr
+    except Exception:
+        await db.rollback()
+        raise

@@ -148,16 +148,17 @@ class TRItemBase(BaseModel):
 #     pass
 
 
-# class TRItemUpdate(BaseModel):
-#     """Schema para atualização de item do TR"""
-#     descricao: Optional[str] = None
-#     especificacoes_tecnicas: Optional[List[str]] = None
-#     quantidade: Optional[Decimal] = Field(None, decimal_places=3, gt=0)
-#     valor_unitario: Optional[Decimal] = Field(None, decimal_places=2)
-#     valor_total: Optional[Decimal] = Field(None, decimal_places=2)
-#     unidade_medida: Optional[str] = None
-#     codigo_catmat_catser: Optional[str] = None
-#     finalidade: Optional[str] = None
+class TRItemUpdate(BaseModel):
+    """Schema para atualização de um item do TR. Todos os campos são opcionais."""
+    model_config = ConfigDict(from_attributes=True)
+    descricao: Optional[str] = None
+    especificacoes_tecnicas: Optional[List[str]] = None
+    quantidade: Optional[Decimal] = None
+    valor_unitario: Optional[Decimal] = None
+    valor_total: Optional[Decimal] = None
+    unidade_medida: Optional[str] = None
+    codigo_catmat_catser: Optional[str] = None
+    finalidade: Optional[str] = None
 
 
 # class TRItemResponse(TRItemBase):
@@ -180,7 +181,12 @@ class TRItemBase(BaseModel):
 
 class TRBase(BaseModel):
     """Schema base para TR"""
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={
+            Decimal: lambda v: round(float(v), 2)
+        }
+    )
     id: int
     id_projeto: int
     user_created: str
@@ -227,10 +233,13 @@ class TRBase(BaseModel):
     estimativa_valor: Optional[EstimativaValor] = None
     adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
 
+    itens: Optional[List[TRItemBase]] = Field(None, description="Lista de itens do TR")
+
 
 class TRCreate(BaseModel):
     """Dados que necessitam ser enviados para a geração dos dados do TR"""
     orgao_contratante: str = Field(..., description="Órgão contratante")
+    prompt: Optional[str] = Field(None, description="Prompt/solicitação do usuário")
     modalidade_licitacao: str = Field(..., description="Termo de referência referente à aquisição ou formação de registro de preços")
     #itens: List[TRItemCreate] = Field(..., min_items=1, description="Lista de itens do TR")
     
@@ -245,7 +254,6 @@ class TRCreate(BaseModel):
 class TRRead(TRBase):
     """Schema de leitura para recebimento de dados do TR da IA"""
     model_config = ConfigDict(from_attributes=True)
-    itens: Optional[List[TRItemBase]] = Field(None, description="Lista de itens do TR")
     
     @field_validator('itens')
     @classmethod
@@ -255,29 +263,50 @@ class TRRead(TRBase):
             return None
         return v
 
-# class TRUpdate(BaseModel):
-#     """Schema para atualização de TR"""
-#     orgao_contratante: Optional[str] = None
-#     tipo_contratacao: Optional[TipoContratacao] = None
-#     objeto_contratacao: Optional[str] = None
-#     modalidade_licitacao: Optional[ModalidadeLicitacao] = None
-#     fundamentacao_legal: Optional[str] = None
-#     prazo_vigencia_contrato: Optional[str] = None
-#     prazo_entrega_prestacao: Optional[str] = None
-#     local_entrega_prestacao: Optional[str] = None
-#     obrigacoes_contratante: Optional[List[str]] = None
-#     obrigacoes_contratada: Optional[List[str]] = None
-#     admite_subcontratacao: Optional[bool] = None
-#     exige_garantia_contratual: Optional[bool] = None
-#     condicoes_pagamento: Optional[str] = None
-#     sancoes_administrativas: Optional[str] = None
-#     responsavel: Optional[str] = None
-#     cargo_responsavel: Optional[str] = None
-#     sistema_registro_precos: Optional[SistemaRegistroPrecos] = None
-#     requisitos_contratacao: Optional[RequisitosContratacao] = None
-#     modelo_execucao: Optional[ModeloExecucao] = None
-#     gestao_contrato: Optional[GestaoContrato] = None
-#     criterios_pagamento: Optional[CriteriosPagamento] = None
-#     selecao_fornecedor: Optional[SelecaoFornecedor] = None
-#     estimativa_valor: Optional[EstimativaValor] = None
-#     adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
+class TRUpdate(BaseModel):
+    """Schema para atualização de TR"""
+    model_config = ConfigDict(
+        from_attributes=True,
+        json_encoders={
+            Decimal: lambda v: round(float(v))
+        }
+    )
+
+    # Informações básicas que podem ser alteradas
+    orgao_contratante: Optional[str] = None
+    tipo_contratacao: Optional[TipoContratacao] = None
+    objeto_contratacao: Optional[str] = None
+    modalidade_licitacao: Optional[ModalidadeLicitacao] = None
+    fundamentacao_legal: Optional[str] = None
+
+    descricao_solucao: Optional[str] = None
+    
+    # Adicione todos os outros campos que o usuário pode editar, sempre como Opcionais
+    prazo_vigencia_contrato: Optional[str] = None
+    prazo_entrega_prestacao: Optional[str] = None
+    local_entrega_prestacao: Optional[str] = None
+
+    obrigacoes_contratante: Optional[List[str]] = None
+    obrigacoes_contratada: Optional[List[str]] = None
+
+    admite_subcontratacao: Optional[bool] = None
+    exige_garantia_contratual: Optional[bool] = None
+
+    condicoes_pagamento: Optional[str] = None
+    sancoes_administrativas: Optional[str] = None
+
+    responsavel: Optional[str] = None
+    cargo_responsavel: Optional[str] = None
+
+    # Seções estruturadas (assumindo que podem ser atualizadas)
+    sistema_registro_precos: Optional[SistemaRegistroPrecos] = None
+    requisitos_contratacao: Optional[RequisitosContratacao] = None
+    modelo_execucao: Optional[ModeloExecucao] = None
+    gestao_contrato: Optional[GestaoContrato] = None
+    criterios_pagamento: Optional[CriteriosPagamento] = None
+    selecao_fornecedor: Optional[SelecaoFornecedor] = None
+    estimativa_valor: Optional[EstimativaValor] = None
+    adequacao_orcamentaria: Optional[AdequacaoOrcamentaria] = None
+
+    # Lista de itens
+    itens: Optional[List[TRItemUpdate]] = None

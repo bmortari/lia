@@ -32,19 +32,22 @@ function setupGenerateButtons() {
         'gera_ed': 'ed'
     };
 
-    const availableServices = ['dfd', 'pdp', 'pgr', 'etp'];
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp', 'tr'];
 
     Object.entries(generateButtons).forEach(([buttonId, service]) => {
         const button = document.getElementById(buttonId);
         if (button) {
+            console.log(`🔍 Encontrado botão ${buttonId} para serviço ${service}, disabled: ${button.disabled}, classes: ${button.className}`);
             const newButton = button.cloneNode(true);
             button.parentNode.replaceChild(newButton, button);
 
             const isServiceAvailable = availableServices.includes(service);
+            console.log(`🔍 Serviço ${service} disponível: ${isServiceAvailable}, disabled: ${newButton.disabled}, has btn-disabled: ${newButton.classList.contains('btn-disabled')}`);
 
             if (!newButton.disabled && !newButton.classList.contains('btn-disabled') && isServiceAvailable) {
                 newButton.addEventListener('click', function(e) {
                     e.preventDefault();
+                    console.log(`🔘 Botão ${buttonId} clicado`);
                     const route = serviceRoutes[service]?.create;
                     if (route) {
                         console.log(`🚀 Redirecionando para: ${route}`);
@@ -126,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     // === SERVIÇOS DISPONÍVEIS ===
-    const availableServices = ['dfd', 'pdp', 'pgr', 'etp']; // ✅ ETP ADICIONADO
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp', 'tr'];
     
     // === EVENT LISTENERS PARA BOTÕES DE GERAÇÃO ===
     setupGenerateButtons();
@@ -560,7 +563,7 @@ window.updateCardState = function(cardType, hasArtifact) {
 
 // Função para verificar se um serviço está disponível
 window.isServiceAvailable = function(service) {
-    const availableServices = ['dfd', 'pdp', 'pgr', 'etp']; // ✅ ETP incluído
+    const availableServices = ['dfd', 'pdp', 'pgr', 'etp', 'tr'];
     return availableServices.includes(service);
 };
 
