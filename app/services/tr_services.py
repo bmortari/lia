@@ -65,7 +65,6 @@ async def delete_tr_service(project_id: int, db: AsyncSession, current_user: str
         logger.error(f"Erro ao deletar TR para o projeto {project_id}: {e}", exc_info=True)
         raise
 
-
 async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: RemoteUser, project_id: int):
     """
     Cria um Termo de Referência (TR) a partir dos artefatos do projeto,

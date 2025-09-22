@@ -33,6 +33,7 @@ async def create_tr(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"{str(e)}")
 
+
 @router.get("/projetos/{projeto_id}/criar_tr")
 async def criar_tr(
     request: Request,

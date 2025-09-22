@@ -236,6 +236,7 @@ class TRBase(BaseModel):
     itens: Optional[List[TRItemBase]] = Field(None, description="Lista de itens do TR")
 
 
+
 class TRCreate(BaseModel):
     """Dados que necessitam ser enviados para a geração dos dados do TR"""
     orgao_contratante: str = Field(..., description="Órgão contratante")
@@ -310,3 +311,4 @@ class TRUpdate(BaseModel):
 
     # Lista de itens
     itens: Optional[List[TRItemUpdate]] = None
+

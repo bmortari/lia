@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Geração de PDF com jsPDF</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Teste de Geração de PDF</h1>
+    <p>Clique no botão abaixo para gerar e baixar o "Termo de Referência" em PDF.</p>
+    <button id="generate-pdf-btn">Gerar PDF</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    // Adiciona o evento de clique ao botão
+    document.getElementById('generate-pdf-btn').addEventListener('click', () => {
+        // JSON com os dados para o template
+        const jsonData = {
+            "orgao_contratante": "Tribunal Regional Eleitoral do Acre",
+            "tipo_contratacao": "compras",
+            "objeto_contratacao": "Aquisição de motocicleta para o transporte dos servidores públicos, visando otimizar a mobilidade e agilizar as atividades administrativas, conforme condições, quantidades e exigências estabelecidas neste Termo de Referência.",
+            "modalidade_licitacao": "aquisicao_direta",
+            "fundamentacao_legal": "A fundamentação da contratação e de seus quantitativos encontra-se pormenorizada em tópico específico dos Estudos Técnicos Preliminares, apêndice deste Termo de Referência, em conformidade com o Art. 6º, inciso XXIII, alínea 'c', e demais dispositivos aplicáveis da Lei nº 14.133, de 2021.",
+            "prazo_vigencia_contrato": "90 dias contados da assinatura do contrato, na forma do artigo 105 da Lei n. 14.133, de 2021.",
+            "prazo_entrega_prestacao": "30 dias úteis após a assinatura do contrato e emissão da Ordem de Fornecimento.",
+            "local_entrega_prestacao": "[A DEFINIR PELO TRE-AC]",
+            "obrigacoes_contratante": [
+                "Designar Gestor e Fiscal do Contrato.",
+                "Aprovar o Termo de Referência/Projeto Básico.",
+                "Realizar o processo licitatório adequado.",
+                "Verificar a dotação orçamentária.",
+                "Obter parecer jurídico favorável.",
+                "Acompanhar sistematicamente a execução contratual.",
+                "Gerir os riscos identificados no PGR.",
+                "Avaliar os resultados obtidos com a aquisição.",
+                "Documentar o processo de contratação."
+            ],
+            "obrigacoes_contratada": [
+                "Fornecer motocicleta nova, zero quilômetro, conforme especificações técnicas do Termo de Referência.",
+                "Garantir a qualidade, desempenho e durabilidade da motocicleta.",
+                "Oferecer garantia mínima de 12 meses e assistência técnica necessária.",
+                "Disponibilizar peças de reposição.",
+                "Realizar a entrega do bem no local e prazo estabelecidos.",
+                "Cumprir todas as exigências legais e regulamentares aplicáveis."
+            ],
+            "admite_subcontratacao": false,
+            "exige_garantia_contratual": true,
+            "condicoes_pagamento": "O pagamento será efetuado em parcela única, após o recebimento definitivo do objeto e apresentação da nota fiscal/fatura devidamente atestada pelo fiscal do contrato.",
+            "sancoes_administrativas": "As sanções administrativas aplicáveis serão aquelas previstas na Lei nº 14.133/2021 e demais normas pertinentes, incluindo advertência, multa, suspensão temporária de participação em licitações e impedimento de contratar com a Administração, e declaração de inidoneidade.",
+            "responsavel": "Equipe de Planejamento da Contratação",
+            "cargo_responsavel": "Membros da Equipe de Planejamento",
+            "sistema_registro_precos": {
+                "adota_srp": false,
+                "tipo_srp": null,
+                "quantidade_maxima": false,
+                "quantidade_minima_cotacao": null,
+                "permite_precos_diferentes": false,
+                "justificativa_precos_diferentes": null,
+                "permite_proposta_inferior": false,
+                "criterio_julgamento": "item",
+                "registro_limitado": false,
+                "criterio_reajuste": null,
+                "vigencia_ata": null
+            },
+            "requisitos_contratacao": {
+                "sustentabilidade": "Será dada preferência a modelos que apresentem baixo consumo de combustível e emissão de poluentes. O fornecedor deverá adotar práticas de gestão ambiental e reciclagem de resíduos. A manutenção preventiva da motocicleta será realizada para garantir seu bom funcionamento e reduzir a emissão de poluentes, em conformidade com o Plano de Logística Sustentável da Administração Pública.",
+                "indicacao_marcas": "Não haverá indicação de marcas ou modelos específicos no Termo de Referência, sendo admitidas propostas equivalentes que atendam às especificações técnicas exigidas.",
+                "vedacao_marca_produto": "Não há vedação à utilização de marca/produto, desde que o produto atenda plenamente às especificações técnicas e requisitos de desempenho.",
+                "exige_amostra": false,
+                "exige_carta_solidariedade": false,
+                "garantia_produto_servico": "Garantia mínima de 12 meses do fabricante. A empresa deverá ter experiência comprovada na comercialização de motocicletas e assistência técnica.",
+                "exige_vistoria": false
+            },
+            "modelo_execucao": {
+                "condicoes_entrega": "A motocicleta deverá ser entregue nova, zero quilômetro, com toda a documentação legal (nota fiscal, manual, chave reserva, etc.) e em perfeitas condições de uso, no local e prazo a serem definidos na Ordem de Fornecimento.",
+                "garantia_manutencao": "A contratação incluirá a garantia mínima de 12 meses do fabricante e a assistência técnica necessária para a manutenção preventiva e corretiva do veículo, com disponibilidade de peças de reposição.",
+                "materiais_fornecidos": "Nenhum material será fornecido pelo contratante para a execução do objeto.",
+                "informacoes_proposta": "As propostas deverão detalhar as características técnicas da motocicleta ofertada, incluindo modelo, cilindrada, tipo de freios, capacidade do tanque, tipo de pneus, suspensão e garantia. Deverá ser comprovada a experiência na comercialização de motocicletas e a capacidade de assistência técnica."
+            },
+            "gestao_contrato": {
+                "modelo_gestao": "A gestão e fiscalização do contrato serão realizadas por servidor designado como Gestor do Contrato, com o apoio de Fiscal Técnico, conforme estabelecido na Lei nº 14.133/2021. Será realizado acompanhamento sistemático da execução contratual, com registro de todas as ocorrências em relatórios e atas.",
+                "papeis_responsabilidades": "O Gestor do Contrato será um servidor com experiência em gestão de contratos administrativos e conhecimento das normas aplicáveis. O Fiscal Técnico será um servidor com formação técnica na área de veículos automotores. A equipe de apoio será composta por servidores das áreas de compras, finanças e jurídica."
+            },
+            "criterios_pagamento": {
+                "recebimento_objeto": "O recebimento do objeto será realizado em duas etapas: provisório, pelo Fiscal Técnico, no ato da entrega e verificação das especificações, e definitivo, após a entrega da documentação e testes de funcionamento, em até 10 dias úteis.",
+                "liquidacao": "A liquidação da despesa ocorrerá após o recebimento definitivo do objeto e a atestação da nota fiscal/fatura pelo Fiscal do Contrato, comprovando a execução do objeto e o cumprimento das obrigações contratuais.",
+                "prazo_pagamento": "Até 5 dias úteis após a liquidação da despesa.",
+                "forma_pagamento": "Ordem Bancária/SIAFI",
+                "antecipacao_pagamento": false,
+                "cessao_credito": "A cessão de crédito será admitida nos termos da legislação vigente, mediante notificação formal à Administração e atendimento das condições contratuais e legais."
+            },
+            "selecao_fornecedor": {
+                "forma_selecao": "Pregão Eletrônico",
+                "criterio_julgamento": "Menor Preço por Item",
+                "exigencias_habilitacao": {
+                "juridica": [
+                    "Registro comercial ou social no órgão competente.",
+                    "Apresentação de Ato Constitutivo, Estatuto ou Contrato Social em vigor.",
+                    "Decreto de autorização (se for o caso) e registro ou inscrição na entidade profissional competente."
+                ],
+                "fiscal_trabalhista": [
+                    "Prova de inscrição no Cadastro Nacional de Pessoas Jurídicas (CNPJ).",
+                    "Prova de regularidade para com a Fazenda Federal, Estadual e Municipal do domicílio ou sede do licitante.",
+                    "Prova de regularidade relativa à Seguridade Social e ao Fundo de Garantia por Tempo de Serviço (FGTS).",
+                    "Declaração de inexistência de débitos trabalhistas."
+                ],
+                "economico_financeira": [
+                    "Balanço patrimonial e demonstrações contábeis do último exercício social.",
+                    "Certidão negativa de falência ou recuperação judicial.",
+                    "Comprovação de Capital Social ou Patrimônio Líquido mínimo (se exigido no edital)."
+                ],
+                "tecnica": [
+                    "Comprovação de aptidão para desempenho de atividade pertinente e compatível com o objeto da licitação, através de atestados fornecidos por pessoas jurídicas de direito público ou privado.",
+                    "Registro ou inscrição na entidade profissional competente (se aplicável)."
+                ]
+                }
+            },
+            "estimativa_valor": {
+                "valor_total": "32400.0",
+                "valor_unitario": "32400.0",
+                "metodologia_pesquisa": "A pesquisa de mercado foi realizada com base em contratos similares de aquisição de motocicletas por órgãos públicos, consultas a fornecedores e dados históricos de preços. As fontes incluíram PDP - Análise de contratos similares, Consulta ao mercado e Dados históricos. A variação de preços observada reflete as diferentes especificações técnicas e acessórios dos modelos de motocicleta pesquisados. É importante considerar essa variação ao definir o preço máximo da licitação."
+            },
+            "adequacao_orcamentaria": {
+                "fonte_recursos": "[A DEFINIR NO PROCESSO ORÇAMENTÁRIO]",
+                "classificacao_orcamentaria": "[A DEFINIR NO PROCESSO ORÇAMENTÁRIO]",
+                "previsao_pca": false
+            }
+            }
+
+        generatePdf(jsonData);
+    });
+
+    /**
+     * Generates a PDF document from a JSON object using jsPDF.
+     *
+     * @param {object} jsonData The JSON data to populate the PDF.
+     */
+    function generatePdf(jsonData) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const margin = 15;
+        let y = 15; // Posição vertical inicial
+
+        const subsectionIndent = 5; // Indentação para as subseções inteiras
+
+        // Helper function for adding text with line wrapping
+        const addWrappedText = (text, x, y, maxWidth) => {
+            if (typeof text !== 'string') {
+                text = String(text);
+            }
+            const lines = doc.splitTextToSize(text, maxWidth);
+            doc.text(lines, x, y);
+            return (lines.length * 6) + 2; // Approximate height of the text block + margin
+        };
+        
+        // Helper for adding a numbered subsection with an optional title.
+        // Handles text wrapping and vertical spacing.
+        const addSubsection = (number, title, content, x, y, maxWidth) => {
+            if (title) {
+                doc.setFont("times", "bold");
+                // If there is a title, the number and title are on the first line, bold.
+                const fullText = `${number} ${title}`;
+                doc.text(fullText, x, y);
+                let currentY = y + 6; // Move down for the content
+                
+                doc.setFont("times", "normal");
+
+                if (content && content.length > 0) {
+                    const lines = doc.splitTextToSize(content, maxWidth);
+                    doc.text(lines, x, currentY);
+                    // Return total height used: title + content + margin
+                    return 6 + (lines.length * 6) + 2;
+                }
+                // Return height for title only + margin
+                return 6 + 2;
+            } else {
+                // If there is no title, number and content are on the same line.
+                doc.setFont("times", "bold");
+                const numberText = `${number} `;
+                doc.text(numberText, x, y); // Draw bold number
+                
+                // Calculate width of the number to position the content correctly
+                const numberWidth = doc.getStringUnitWidth(numberText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+                
+                doc.setFont("times", "normal");
+                // Add the wrapped content next to the number
+                const textHeight = addWrappedText(content, x + numberWidth, y, maxWidth - numberWidth);
+
+                // Return the height of the content
+                return textHeight;
+            }
+        };
+
+        // Helper for adding numbered list items
+        const addNumberedItem = (number, content, x, y, maxWidth) => {
+            doc.setFont("times", "bold");
+            const numberText = `${number} `;
+            doc.text(numberText, x, y);
+            
+            const numberWidth = doc.getStringUnitWidth(numberText) * doc.internal.getFontSize() / doc.internal.scaleFactor;
+            
+            doc.setFont("times", "normal");
+            const lines = doc.splitTextToSize(content, maxWidth - numberWidth);
+            doc.text(lines, x + numberWidth, y);
+            
+            return (lines.length * 6) + 2;
+        };
+
+        // Function to check for new page
+        const checkPageBreak = (heightNeeded) => {
+            if (y + heightNeeded > 280) { // 297mm page height, with margin
+                doc.addPage();
+                y = 15;
+            }
+        };
+        
+        // Helper function for adding explanatory notes without background
+        const addNotaExplicativa = (title, content) => {
+            const contentWidth = pageWidth - margin * 2;
+            
+            doc.setFont("times", "bold");
+            const titleLines = doc.splitTextToSize(title, contentWidth);
+            const titleHeight = (titleLines.length * 6);
+            
+            doc.setFont("times", "normal");
+            const contentLines = doc.splitTextToSize(content, contentWidth);
+            const contentHeight = (contentLines.length * 6);
+
+            const notaHeight = titleHeight + contentHeight - 5;
+
+            checkPageBreak(notaHeight + 5);
+            
+            let currentY = y + 5;
+            
+            doc.setFont("times", "bold");
+            doc.text(titleLines, margin, currentY);
+            currentY += titleHeight;
+            
+            doc.setFont("times", "normal");
+            doc.text(contentLines, margin, currentY);
+            
+            y += notaHeight;
+        };
+
+        const addContent = () => {
+            const contentWidth = pageWidth - margin * 2;
+            const sectionSpacing = 4;
+
+            // Section 1: DA DEFINIÇÃO DO OBJETO
+            checkPageBreak(20);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("1. DA DEFINIÇÃO DO OBJETO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            
+            // Subseção 1.1
+            y += addSubsection("1.1", "", jsonData.objeto_contratacao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+
+            // Subseção 1.2
+            checkPageBreak(30);
+            y += addSubsection("1.2", "Detalhamento dos bens que compõem a solução:", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            const tableHeaders = ["Item/Grupo", "Descrição", "CATMAT", "Unidade", "Qtd", "V. Unit.", "V. Total"];
+            const colWidths = [20, 50, 20, 20, 15, 20, 25];
+            let currentX = margin + subsectionIndent;
+            doc.setFont("times", "bold");
+            tableHeaders.forEach((header, i) => {
+                doc.rect(currentX, y, colWidths[i], 10);
+                doc.text(header, currentX + 2, y + 6);
+                currentX += colWidths[i];
+            });
+            doc.rect(margin + subsectionIndent, y + 10, contentWidth - subsectionIndent, 10);
+            y += 25;
+            doc.setFont("times", "normal");
+            
+            // Subseção 1.3
+            checkPageBreak(15);
+            y += addSubsection("1.3", "", "Os bens objeto desta contratação são caracterizados como comuns, conforme indicado no Estudo Técnico Preliminar.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // Subseção 1.4
+            checkPageBreak(15);
+            y += addSubsection("1.4", "", "Demais regras das condições e especificações da solução: [acrescentar outras se houve alterações em relação às indicada no Estudo Técnico Preliminar]", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+
+            // Subseção 1.5
+            checkPageBreak(15);
+            const prazoVigencia = `O prazo de vigência da contratação é de ${jsonData.prazo_vigencia_contrato}`;
+            y += addSubsection("1.5", "", prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // Subseção 1.6
+            checkPageBreak(15);
+            y += addSubsection("1.6", "", "O contrato oferece maior detalhamento das regras que serão aplicadas em relação à vigência da contratação.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // Notas Explicativas
+            addNotaExplicativa(
+                "Nota Explicativa 1: Enquadramento da Contratação para fins de vigência",
+                "Há dois tipos de contratação por licitação para aquisição de bens, no que tange à vigência:\na) Há fornecimento não-contínuo quando se trata de uma entrega de bens sem que haja uma demanda de caráter permanente. Uma vez finalizada a entrega, resolve-se a necessidade que deu azo ao contrato. Estes usam o art. 105 da Lei nº 14.133, de 2021, como fundamento e partem apenas de créditos do exercício corrente, salvo se inscritos no Plano Plurianual.\nb) Há fornecimento contínuo quando a entrega dos bens é uma necessidade permanente. É o caso, por exemplo, de unidades hospitalares que demandam sempre insumos de saúde específicos para seu próprio funcionamento contínuo. Nessas situações, findado o contrato, haverá sua substituição por um novo e assim, sucessivamente, pois a necessidade em si é permanente. Contratações dessa natureza são atendidas pelo art. 106 da Lei nº 14.133, de 2021."
+            );
+            
+            addNotaExplicativa(
+                "Nota Explicativa 2: Prazo de Vigência e Empenho - art. 105 da Lei nº 14.133, de 2021",
+                "Fornecimento Não-Contínuo: Em caso de fornecimento não-contínuo, o prazo de vigência deve ser o suficiente para a entrega do objeto e adoção das providências previstas no contrato, sendo a contratação limitada pelos respectivos créditos orçamentários.\nUma contratação que não tenha previsão no Plano Plurianual deve ter a sua integralidade empenhada antes ou de modo concomitante à celebração, conforme Lei nº 4.320, de 17 de março 1964, e Decreto nº 93.872, de 23 de dezembro de 1986, e a partir de tal empenho ter a vigência necessária prevista, utilizando-se de restos a pagar, se for o caso (art. 30, §2º do Decreto nº 93.872, de 1986).\nJá a contratação prevista no Plano Plurianual pode ter empenhos em anos distintos, considerando a despesa de cada exercício, apenas quanto ao período abrangido pelo PPA."
+            );
+            
+            addNotaExplicativa(
+                "Nota Explicativa 3: Prazo de Vigência – arts. 106 e 107 - Fornecimento Contínuo",
+                'A definição de fornecimento contínuo consta no art. 6º, XV da Lei nº 14.133, de 2021, sendo as "compras realizadas pela Administração Pública para a manutenção da atividade administrativa, decorrentes de necessidades permanentes ou prolongadas".\nA utilização do prazo de vigência plurianual no caso de fornecimento contínuo é condicionada ao ateste de maior vantagem econômica, a ser feita pela autoridade competente no processo respectivo, conforme art. 106, I da Lei nº 14.133, de 2021.\nDe acordo com o artigo 107 da Lei nº 14.133, de 2021, será possível que contratos de fornecimento contínuo sejam prorrogados por até 10 anos, desde que haja previsão no edital e/ou contrato e que a autoridade competente ateste que as condições e os preços permanecem vantajosos para a Administração, permitida a negociação com o contratado ou a extinção contratual sem ônus para qualquer das partes.'
+            );
+
+            y += sectionSpacing;
+            
+            // Section 2: DA FUNDAMENTAÇÃO E DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO
+            checkPageBreak(40);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("2. DA FUNDAMENTAÇÃO E DESCRIÇÃO DA NECESSIDADE DA CONTRATAÇÃO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addSubsection("2.1", "", jsonData.fundamentacao_legal, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            let previsaoPCATexto;
+            if (jsonData.adequacao_orcamentaria.previsao_pca === true) {
+                const codigoPCA = jsonData.adequacao_orcamentaria.codigo_pca || "[não informado]";
+                previsaoPCATexto = `O objeto da contratação está previsto no Plano de Contratações Anual (PCA), sob o código PCA ${codigoPCA}.`;
+            } else {
+                previsaoPCATexto = `O objeto da contratação não está previsto no Plano de Contratações Anual (PCA).`;
+            }
+
+            y += addSubsection("2.2", "", previsaoPCATexto, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+
+            addNotaExplicativa(
+              "Nota Explicativa:", "De acordo com o artigo 6º, inciso XXIII, alínea 'c', da Lei nº 14.133, de 2021, a fundamentação da contratação é realizada mediante 'referência aos estudos técnicos preliminares (ETP) correspondentes ou, quando não for possível divulgar esses estudos, no extrato das partes que não contiverem informações sigilosas'. A Instrução Normativa SEGES/ME nº 58, de 8 de agosto de 2022 dispõe sobre a 'elaboração do ETP para a aquisição de bens e a contratação de serviços e obras no âmbito da administração pública federal direta, autárquica e fundacional, e sobre o Sistema ETP digital'. No mesmo sentido é a previsão do art. 9º, inciso II, da Instrução Normativa SEGES/ME nº 81, de 2022."
+            )
+
+            y += sectionSpacing;    
+
+            checkPageBreak(120);
+            doc.setFont("times", "bold");
+            doc.text("2.3 DO CABIMENTO DO SISTEMA DE REGISTRO DE PREÇOS", margin + subsectionIndent, y);
+            y += 7;
+            doc.setFont("times", "normal");
+
+            const srpData = jsonData.sistema_registro_precos;
+            const textIndent = margin + subsectionIndent + 5;
+            const textWidth = contentWidth - subsectionIndent - 5;
+
+            if (srpData.adota_srp) {
+                // I
+                y += addWrappedText(`I - Será adotado o Sistema de Registro de Preços (SRP) (art. 78, IV, Lei 14.133/2021) para a contratação pretendida.`, textIndent, y, textWidth);
+
+                // II
+                const quantidadeMaximaTexto = srpData.tem_quantidade_maxima
+                    ? 'Será prevista uma quantidade máxima a ser adquirida para cada item/grupo, de acordo com o quadro que constará no edital.'
+                    : 'Não haverá quantidade máxima a ser adquirida para cada item/grupo.';
+                y += addWrappedText(`II - ${quantidadeMaximaTexto}`, textIndent, y, textWidth);
+
+                // III
+                const quantidadeMinimaTexto = srpData.tem_quantidade_minima
+                    ? `A quantidade mínima de unidades de bens a serem cotadas será de ${srpData.quantidade_minima_cotacao} unidade(s).`
+                    : 'Não se aplica a previsão de quantidade mínima de unidades de bens a serem cotadas.';
+                y += addWrappedText(`III - ${quantidadeMinimaTexto}`, textIndent, y, textWidth);
+
+                // IV
+                const precosDiferentesTexto = srpData.permite_precos_diferentes
+                    ? `Será permitida a previsão de preços diferentes. ${srpData.justificativa_precos_diferentes || '[justificativa não informada].'}`
+                    : 'Não será permitida a previsão de preços diferentes.';
+                y += addWrappedText(`IV - ${precosDiferentesTexto}`, textIndent, y, textWidth);
+
+                // V
+                const propostaInferiorTexto = srpData.permite_proposta_inferior
+                    ? 'O licitante poderá oferecer proposta com quantitativo inferior ao máximo previsto.'
+                    : `O licitante não poderá oferecer proposta com quantitativo inferior ao máximo previsto. Justificativa: ${srpData.justificativa_nao_proposta_inferior || '[justificativa não informada].'}`;
+                y += addWrappedText(`V - ${propostaInferiorTexto}`, textIndent, y, textWidth);
+
+                // VI
+                const criterioJulgamentoTexto = srpData.criterio_julgamento === 'grupo'
+                    ? 'Menor preço por Grupo de Itens.'
+                    : 'Menor preço por Item.';
+                y += addWrappedText(`VI - O critério de julgamento a ser adotado será o de ${criterioJulgamentoTexto}`, textIndent, y, textWidth);
+
+                // VII
+                const registroLimitadoTexto = srpData.registro_limitado
+                    ? `Será permitido o registro de preços com indicação limitada a unidades de contratação porque ${srpData.justificativa_registro_limitado || '[justificativa não informada].'}`
+                    : 'Não será permitido o registro de preços com indicação limitada a unidades de contratação.';
+                y += addWrappedText(`VII - ${registroLimitadoTexto}`, textIndent, y, textWidth);
+
+                // VIII
+                y += addWrappedText(`VIII - Os preços registrados poderão ser objeto de reajustamento, observados os requisitos exigidos pela Lei n. 14.133, de 2021.`, textIndent, y, textWidth);
+
+                // IX
+                y += addWrappedText(`IX - Para fins de reajustamento, será adotado o seguinte critério: ${srpData.criterio_reajuste || '[Critério não definido].'}`, textIndent, y, textWidth);
+                
+                // X
+                y += addWrappedText(`X - O prazo de vigência da ata de registro de preços será de ${srpData.vigencia_ata || '[Prazo não definido].'}`, textIndent, y, textWidth);
+            } else {
+                y += addWrappedText(`Não será adotado o Sistema de Registro de Preços. Justificativa: ${srpData.justificativa_srp || '[Justificativa não informada]'}`, textIndent, y, textWidth);
+            }
+
+            y += sectionSpacing;
+
+            // Seção 3: DA DESCRIÇÃO DA SOLUÇÃO COMO UM TODO
+            checkPageBreak(30);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("3. DA DESCRIÇÃO DA SOLUÇÃO COMO UM TODO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addWrappedText(jsonData.descricao_solucao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+
+            // Section 4: DOS REQUISITOS DA CONTRATAÇÃO
+            checkPageBreak(60);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("4. DOS REQUISITOS DA CONTRATAÇÃO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addSubsection("4.1", "DA SUSTENTABILIDADE", jsonData.requisitos_contratacao.sustentabilidade, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("4.2", "DA INDICAÇÃO DE MARCAS OU MODELOS", jsonData.requisitos_contratacao.indicacao_marcas, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("4.3", "DA VEDAÇÃO DE UTILIZAÇÃO DE MARCA/PRODUTO", jsonData.requisitos_contratacao.vedacao_marca_produto, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("4.6", "DA SUBCONTRATAÇÃO", jsonData.admite_subcontratacao ? 'Admite-se subcontratação.' : 'Não se admite subcontratação.', margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection(
+              "4.7",
+              "DA GARANTIA DA CONTRATAÇÃO",
+              jsonData.exige_garantia_contratual ? jsonData.requisitos_contratacao.garantia_produto_servico : 'Não se exige garantia contratual.',
+              margin + subsectionIndent,
+              y,
+              contentWidth - subsectionIndent
+            );
+
+            y += sectionSpacing;
+
+            // Section 5: DO MODELO DE EXECUÇÃO DO OBJETO
+            checkPageBreak(100);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("5. DO MODELO DE EXECUÇÃO DO OBJETO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addSubsection("5.1", "DAS CONDIÇÕES DE ENTREGA", jsonData.modelo_execucao.condicoes_entrega, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("5.2", "DA GARANTIA, MANUTENÇÃO E ASSISTÊNCIA TÉCNICA", jsonData.modelo_execucao.garantia_manutencao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // Subseção 5.3 com numeração
+            checkPageBreak(15);
+            y += addSubsection("5.3", "DOS DEVERES E RESPONSABILIDADES DO CONTRATANTE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            jsonData.obrigacoes_contratante.forEach((item, index) => {
+                checkPageBreak(10);
+                y += addNumberedItem(`5.3.${index + 1}`, item, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            });
+            
+            // Subseção 5.4 com numeração
+            checkPageBreak(15);
+            y += addSubsection("5.4", "DOS DEVERES E RESPONSABILIDADES DA CONTRATADA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            jsonData.obrigacoes_contratada.forEach((item, index) => {
+                checkPageBreak(10);
+                y += addNumberedItem(`5.4.${index + 1}`, item, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            });
+            y += sectionSpacing;
+
+            // Section 6: DO MODELO DE GESTÃO DO CONTRATO
+            checkPageBreak(20);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("6. DO MODELO DE GESTÃO DO CONTRATO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addWrappedText(jsonData.gestao_contrato.modelo_gestao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+            
+            // Section 7: DOS CRITÉRIOS DE PAGAMENTO
+            checkPageBreak(50);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("7. DOS CRITÉRIOS DE PAGAMENTO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addSubsection("7.1", "DO RECEBIMENTO DO OBJETO", jsonData.criterios_pagamento.recebimento_objeto, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.2", "DA LIQUIDAÇÃO", jsonData.criterios_pagamento.liquidacao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.3", "DO PRAZO DE PAGAMENTO", jsonData.criterios_pagamento.prazo_pagamento, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.4", "DA FORMA DE PAGAMENTO", jsonData.criterios_pagamento.forma_pagamento, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.5", "DA ANTECIPAÇÃO DE PAGAMENTO", jsonData.criterios_pagamento.antecipacao_pagamento ? 'Sim' : 'Não', margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.6", "DA CESSÃO DE CRÉDITO", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+
+            // Section 8: DA FORMA E CRITÉRIO DE SELEÇÃO DO FORNECEDOR
+            checkPageBreak(120);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("8. DA FORMA E CRITÉRIO DE SELEÇÃO DO FORNECEDOR", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addSubsection("8.1", "DA FORMA DE SELEÇÃO E CRITÉRIO DE JULGAMENTO DA PROPOSTA", `${jsonData.selecao_fornecedor.forma_selecao} - ${jsonData.selecao_fornecedor.criterio_julgamento}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // Subseção 8.2 com numeração
+            checkPageBreak(15);
+            y += addSubsection("8.2", "DAS EXIGÊNCIAS DE HABILITAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
+            // 8.2.1 - Jurídica
+            y += addNumberedItem("8.2.1", "Jurídica:", margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            jsonData.selecao_fornecedor.exigencias_habilitacao.juridica.forEach((item) => {
+                checkPageBreak(10);
+                y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
+            });
+            
+            // 8.2.2 - Fiscal e Trabalhista
+            checkPageBreak(15);
+            y += addNumberedItem("8.2.2", "Fiscal e Trabalhista:", margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            jsonData.selecao_fornecedor.exigencias_habilitacao.fiscal_trabalhista.forEach((item) => {
+                checkPageBreak(10);
+                y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
+            });
+
+            // 8.2.3 - Econômico-Financeira
+            checkPageBreak(15);
+            y += addNumberedItem("8.2.3", "Econômico-Financeira:", margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            jsonData.selecao_fornecedor.exigencias_habilitacao.economico_financeira.forEach((item) => {
+                checkPageBreak(10);
+                y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
+            });
+
+            // 8.2.4 - Técnica
+            checkPageBreak(15);
+            y += addNumberedItem("8.2.4", "Técnica:", margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            jsonData.selecao_fornecedor.exigencias_habilitacao.tecnica.forEach((item) => {
+                checkPageBreak(10);
+                y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
+            });
+            y += sectionSpacing;
+
+            // Section 9: DA ESTIMATIVA DO VALOR DA CONTRATAÇÃO
+            checkPageBreak(30);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("9. DA ESTIMATIVA DO VALOR DA CONTRATAÇÃO", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addWrappedText(`Valor Total: R$ ${jsonData.estimativa_valor.valor_total}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addWrappedText(`Valor Unitário: R$ ${jsonData.estimativa_valor.valor_unitario}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addWrappedText(`Metodologia da Pesquisa: ${jsonData.estimativa_valor.metodologia_pesquisa}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+
+            // Section 10: DA ADEQUAÇÃO ORÇAMENTÁRIA
+            checkPageBreak(20);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("10. DA ADEQUAÇÃO ORÇAMENTÁRIA", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addWrappedText(`Fonte de Recursos: ${jsonData.adequacao_orcamentaria.fonte_recursos}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addWrappedText(`Classificação Orçamentária: ${jsonData.adequacao_orcamentaria.classificacao_orcamentaria}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;
+
+            // Section 11: DAS INFRAÇÕES E SANÇÕES APLICÁVEIS
+            checkPageBreak(20);
+            doc.setFontSize(12);
+            doc.setFont("times", "bold");
+            doc.text("11. DAS INFRAÇÕES E SANÇÕES APLICÁVEIS", margin, y);
+            y += 7;
+            doc.setFontSize(11);
+            doc.setFont("times", "normal");
+            y += addWrappedText(jsonData.sancoes_administrativas, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += 20;
+
+            // Signature
+            checkPageBreak(20);
+            doc.text("________________________________________", pageWidth / 2, y, { align: "center" });
+            y += 7;
+            doc.text(jsonData.responsavel, pageWidth / 2, y, { align: "center" });
+            y += 5;
+            doc.text(jsonData.cargo_responsavel, pageWidth / 2, y, { align: "center" });
+        }
+
+        const addHeaderAndSave = () => {
+            const brasaoImg = new Image();
+            brasaoImg.src = "/static/assets/img/brasao_oficial_republica.png";
+
+            const drawContentAndSave = () => {
+                doc.setFontSize(9);
+                doc.setFont("times", "normal");
+                doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, y, { align: "center" });
+                y += 10;
+
+                doc.setFontSize(8);
+                doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth / 2, y, { align: "center" });
+                y += 10;
+
+                doc.setFontSize(11);
+                doc.text("ANEXO VIII", pageWidth / 2, y, { align: "center" });
+                y += 15;
+
+                doc.setFontSize(11);
+                doc.setFont("times", "bold");
+                doc.text("TERMO DE REFERÊNCIA (TR) PARA COMPRAS", pageWidth / 2, y, { align: "center" });
+                y += 15;
+
+                doc.setFontSize(11);
+                doc.setFont("times", "bold");
+                doc.text("TERMO DE REFERÊNCIA", pageWidth / 2, y, { align: "center" });
+                y += 15;
+
+                addContent();
+                doc.save("Termo_de_Referencia.pdf");
+            };
+
+            brasaoImg.onload = () => {
+                const targetWidth = 40;
+                const aspectRatio = brasaoImg.height / brasaoImg.width;
+                const targetHeight = targetWidth * aspectRatio;
+                const xPosition = pageWidth / 2 - targetWidth / 2;
+
+                y = 15;
+
+                doc.addImage(brasaoImg, "PNG", xPosition, y, targetWidth, targetHeight);
+                y += targetHeight + 10;
+
+                drawContentAndSave();
+            };
+
+            brasaoImg.onerror = () => {
+                console.error("Falha ao carregar imagem do brasão.");
+                y = 15; // Reset Y position if image fails
+                y += 40; // Approximate space for the missing image
+                drawContentAndSave();
+            };
+        };
+
+        addHeaderAndSave();
+    }
+</script>
+
+</body>
+</html>
