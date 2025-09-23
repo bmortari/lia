@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'tr': {
             create: `/projetos/${projectId}/criar_tr`,
-            edit: `/projetos/${projectId}/criar_tr`,
+            edit: `/projetos/${projectId}/confere_tr`,
             view: `/projetos/${projectId}/visualizacao_tr`,
             delete: `/projetos/${projectId}/tr`
         },
