@@ -1,61 +1,63 @@
-    // ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
-    function obterTokenAutenticacao() {
-        // Tenta buscar token em várias fontes
-        const tokenLocalStorage = localStorage.getItem('access_token') || localStorage.getItem('token');
-        const tokenSessionStorage = sessionStorage.getItem('access_token') || sessionStorage.getItem('token');
-        
-        // Função para buscar cookie por nome
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(';').shift();
-            return null;
-        }
-        
-        const tokenCookie = getCookie('access_token') || getCookie('token') || getCookie('auth_token');
-        
-        return tokenLocalStorage || tokenSessionStorage || tokenCookie;
-    }
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
 
-    // ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
-    async function fazerRequisicaoAutenticada(url, options = {}) {
-        const token = obterTokenAutenticacao();
-        
-        // Configuração base da requisição
-        const requestConfig = {
-            ...options,
-            credentials: 'include', // Inclui cookies automaticamente
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-                ...options.headers
-            }
-        };
-        
-        // Se tiver token, adiciona ao header Authorization
-        if (token) {
-            requestConfig.headers['Authorization'] = `Bearer ${token}`;
-        }
-        
-        console.log('Fazendo requisição com config:', requestConfig);
-        
-        try {
-            const response = await fetch(url, requestConfig);
-            
-            // Se retornar 401, tenta sem token (talvez use só cookies)
-            if (response.status === 401 && token) {
-                console.log('Tentativa com token falhou, tentando só com cookies...');
-                delete requestConfig.headers['Authorization'];
-                return await fetch(url, requestConfig);
-            }
-            
-            return response;
-            
-        } catch (error) {
-            console.error('Erro na requisição:', error);
-            throw error;
-        }
+// ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
+function obterTokenAutenticacao() {
+    // Tenta buscar token em várias fontes
+    const tokenLocalStorage = localStorage.getItem('access_token') || localStorage.getItem('token');
+    const tokenSessionStorage = sessionStorage.getItem('access_token') || sessionStorage.getItem('token');
+    
+    // Função para buscar cookie por nome
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
     }
+    
+    const tokenCookie = getCookie('access_token') || getCookie('token') || getCookie('auth_token');
+    
+    return tokenLocalStorage || tokenSessionStorage || tokenCookie;
+}
+
+// ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
+async function fazerRequisicaoAutenticada(url, options = {}) {
+    const token = obterTokenAutenticacao();
+    
+    // Configuração base da requisição
+    const requestConfig = {
+        ...options,
+        credentials: 'include', // Inclui cookies automaticamente
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            ...options.headers
+        }
+    };
+    
+    // Se tiver token, adiciona ao header Authorization
+    if (token) {
+        requestConfig.headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    console.log('Fazendo requisição com config:', requestConfig);
+    
+    try {
+        const response = await fetch(url, requestConfig);
+        
+        // Se retornar 401, tenta sem token (talvez use só cookies)
+        if (response.status === 401 && token) {
+            console.log('Tentativa com token falhou, tentando só com cookies...');
+            delete requestConfig.headers['Authorization'];
+            return await fetch(url, requestConfig);
+        }
+        
+        return response;
+        
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        throw error;
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔄 tr-solicitacao.js carregado');
@@ -71,14 +73,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Extrair ID do projeto da URL
-    function getProjectId() {
-        const pathname = window.location.pathname;
-        const matches = pathname.match(/\/projetos\/(\d+)/);
-        return matches ? matches[1] : null;
-    }
-
-    const projectId = getProjectId();
+    const projectId = getProjectIdFromUrl();
     if (!projectId) {
         console.error('❌ ID do projeto não encontrado na URL');
         return;

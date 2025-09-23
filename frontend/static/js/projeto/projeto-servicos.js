@@ -1,14 +1,10 @@
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
 // Função para configurar os botões de geração
 function setupGenerateButtons() {
     console.log('🔄 Configurando botões de geração...');
 
-    function getProjectId() {
-        const pathname = window.location.pathname;
-        const matches = pathname.match(/\/projetos\/(\d+)/);
-        return matches ? matches[1] : null;
-    }
-
-    const projectId = getProjectId();
+    const projectId = getProjectIdFromUrl();
     if (!projectId) {
         console.error('❌ ID do projeto não encontrado na URL ao configurar botões.');
         return;
@@ -71,14 +67,7 @@ function setupGenerateButtons() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📄 projeto-servicos.js carregado (versão PGR + ETP)');
     
-    // Extrair ID do projeto da URL
-    function getProjectId() {
-        const pathname = window.location.pathname;
-        const matches = pathname.match(/\/projetos\/(\d+)/);
-        return matches ? matches[1] : null;
-    }
-    
-    const projectId = getProjectId();
+    const projectId = getProjectIdFromUrl();
     console.log('🔍 ID do projeto extraído:', projectId);
     
     if (!projectId) {

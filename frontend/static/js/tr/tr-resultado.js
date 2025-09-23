@@ -1,3 +1,5 @@
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
 // Inicializar jsPDF
 const { jsPDF } = window.jspdf;
 
@@ -56,13 +58,6 @@ async function fazerRequisicaoAutenticada(url, options = {}) {
         console.error('Erro na requisição:', error);
         throw error;
     }
-}
-
-// Função para extrair project_id da URL
-function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)\//);
-    return match ? match[1] : null;
 }
 
  // Função para obter token de autenticação

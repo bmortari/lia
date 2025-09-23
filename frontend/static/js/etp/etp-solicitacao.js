@@ -1,13 +1,8 @@
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
 const URL = window.location.origin;
 const pathParts = window.location.pathname.split('/');
 const idProjeto = parseInt(pathParts[2]);
-
-// Função para extrair ID do projeto da URL
-function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)/);
-    return match ? match[1] : null;
-}
 
 // Função para atualizar status dos artefatos
 function updateArtefatoStatus(artefato, disponivel) {

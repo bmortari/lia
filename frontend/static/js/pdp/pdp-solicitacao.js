@@ -1,11 +1,6 @@
-const BASE_URL = window.location.origin;
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
 
-// Função para extrair project_id da URL
-function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)\//);
-    return match ? match[1] : null;
-}
+const BASE_URL = window.location.origin;
 
 // Estado dos filtros
 let filterState = {

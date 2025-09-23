@@ -1,3 +1,5 @@
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 ETP Curadoria carregado");
 
@@ -36,13 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 
   let currentEtpData = null; // Variável para armazenar os dados do ETP carregados
-
-  // Função para obter o ID do projeto da URL
-  function getProjectIdFromUrl() {
-    const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)/);
-    return match ? match[1] : null;
-  }
 
   // ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
   function obterTokenAutenticacao() {

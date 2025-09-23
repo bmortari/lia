@@ -1,3 +1,5 @@
+    import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
     // ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
     function obterTokenAutenticacao() {
         // Tenta buscar token em várias fontes
@@ -76,18 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
         field.classList.remove('bg-gray-50');
     });
 
-
-    // --- FUNÇÕES DE UTILIDADE ---
-    function getProjectId() {
-        const pathname = window.location.pathname;
-        const matches = pathname.match(/\/projetos\/(\d+)/);
-        if (!matches) {
-            console.error('❌ ID do projeto não encontrado na URL');
-            return null;
-        }
-        return matches[1];
-    }
-    const projectId = getProjectId();
+    const projectId = getProjectIdFromUrl();
 
 
     // --- LÓGICA DO SISTEMA DE REGISTRO DE PREÇOS (SRP) ---

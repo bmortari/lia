@@ -1,3 +1,5 @@
+import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     // ❌ REMOVIDO: Não buscar mais dados do localStorage que podem estar desatualizados
     // const jsonData = JSON.parse(localStorage.getItem("draftDFD"));
@@ -576,13 +578,6 @@ document.addEventListener('DOMContentLoaded', function () {
     window.validarFormulario = validarFormulario;
     window.exibirAlerta = exibirAlerta;
     window.processarAlinhamentoEstrategico = processarAlinhamentoEstrategico;
-
-    // Função para extrair project_id da URL
-    function getProjectIdFromUrl() {
-        const url = window.location.pathname;
-        const match = url.match(/\/projetos\/(\d+)\//);
-        return match ? match[1] : null;
-    }
 
     // Funcionalidade do botão Voltar ao início
     const voltarInicioButton = document.getElementById('voltar-inicio');
