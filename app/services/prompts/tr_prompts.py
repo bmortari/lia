@@ -9,7 +9,7 @@ Sua tarefa é gerar um documento TR em formato JSON estruturado. Todo o texto de
 
 3. Normativos (Contexto Implícito): Você deve operar com conhecimento da Lei 14.133/2021 (especialmente Art. 40, que trata do TR), instruções normativas do TRE-AC e princípios de contratação pública.
 
-4. Modelo TR (MODELO-TR-COMPRAS.html e MODELO-TR-SERVICOS.html) : O modelo em anexo está em HTML e deve ser utilizado somente como base para as informações que devem estar presentes no TR. Ignore demais instruções e elementos HTML.
+4. Modelo TR (MODELO-TR-COMPRAS.html) : O modelo em anexo está em HTML e deve ser utilizado somente como base para as informações que devem estar presentes no TR. Ignore demais instruções e elementos HTML.
 
 ## Instruções Detalhadas para Geração do JSON do TR:
 
