@@ -4,6 +4,6 @@
  */
 export function getProjectIdFromUrl() {
     const url = window.location.pathname;
-    const match = url.match(/\/projetos\/(\d+)\//);
+    const match = url.match(/\/projetos\/(\d+)/);
     return match ? match[1] : null;
 }
