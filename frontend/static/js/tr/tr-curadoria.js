@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const visualizarBtn = document.getElementById('visualizar-resultado');
     if (visualizarBtn && projectId) {
         visualizarBtn.addEventListener('click', function() {
-            window.location.href = `/projetos/${projectId}/tr-resultado`;
+            window.location.href = `/projetos/${projectId}/visualizacao_tr`;
         });
     }
 });

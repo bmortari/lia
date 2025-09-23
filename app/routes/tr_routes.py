@@ -132,7 +132,47 @@ async def conferir_tr(
     })
 
 
-@router.get("/projetos/{project_id}/tr-resultado")
+@router.get("/projetos/{project_id}/tr", response_model=TRRead)
+async def get_tr(
+    project_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: RemoteUser = Depends(get_current_remote_user)
+):
+    """
+    Retorna o TR do projeto
+    """
+    try:
+        # Busca o projeto para verificar existência e permissão
+        stmt_project = select(Projeto).where(Projeto.id_projeto == project_id)
+        result_project = await db.execute(stmt_project)
+        projeto = result_project.scalar_one_or_none()
+
+        if not projeto:
+            raise HTTPException(status_code=404, detail="Projeto não encontrado")
+
+        # Busca o TR do projeto (assume um único ou o mais recente)
+        stmt_tr = (
+            select(TR)
+            .options(selectinload(TR.projeto))
+            .options(selectinload(TR.itens))
+            .where(TR.id_projeto == project_id)
+            .limit(1)
+        )
+        
+        result_tr = await db.execute(stmt_tr)
+        tr = result_tr.scalar_one_or_none()
+
+        if not tr:
+            raise HTTPException(status_code=404, detail="Nenhum TR encontrado para este projeto")
+
+        return TRRead.model_validate(tr)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={str(e)})
+
+
+@router.get("/projetos/{project_id}/visualizacao_tr")
 async def tr_resultado(
     request: Request,
     project_id: int,
