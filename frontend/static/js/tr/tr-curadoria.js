@@ -171,10 +171,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = {
             // Informações Básicas
             orgao_contratante: document.getElementById('orgao-contratante').value || '',
-            tipo_contratacao: document.getElementById('tipo-contratacao').value || '',
+            tipo_contratacao: document.querySelector('input[name="tipo-contratacao"]:checked')?.value || null,
             objeto_contratacao: document.getElementById('objeto-contratacao').value || '',
             descricao_solucao: document.getElementById('descricao-solucao').value || '',
-            modalidade_licitacao: document.getElementById('modalidade-licitacao').value || '',
+            modalidade_licitacao: document.querySelector('input[name="modalidade-licitacao"]:checked')?.value || null,
             fundamentacao_legal: document.getElementById('fundamentacao-legal').value || '',
 
             // Requisitos da Contratação
