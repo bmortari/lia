@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (addItemBtn) {
         addItemBtn.addEventListener('click', function () {
             const newItemRow = document.createElement('div');
-            newItemRow.className = 'p-4 border rounded-md item-row space-y-2';
+            newItemRow.className = 'p-4 border rounded-md item-row space-y-2 border-gray-200';
             // Usa o template HTML corrigido e completo para novos itens
             newItemRow.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -129,9 +129,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <input type="number" value="" placeholder="Valor Unit." class="p-2 border-gray-300 border rounded-md item-valor-unitario focus:ring-primary focus:border-primary" step="0.01">
                     <input type="number" value="" placeholder="Valor Total" class="p-2 border-gray-300 border rounded-md bg-gray-100 item-valor-total" disabled>
                 </div>
-                <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary" rows="3" placeholder="Especificações Técnicas (uma por linha)"></textarea>
+                <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="3" placeholder="Especificações Técnicas (uma por linha)"></textarea>
                 <div class="flex justify-between items-start gap-3">
-                    <textarea class="item-finalidade flex-grow p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary" rows="2" placeholder="Finalidade"></textarea>
+                    <textarea class="item-finalidade flex-grow p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="2" placeholder="Finalidade"></textarea>
                     <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn self-center"><i class="las la-trash-alt text-2xl"></i></button>
                 </div>
             `;
