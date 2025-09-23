@@ -13,7 +13,7 @@
 
         <div class="text-center mb-12">
             <div class="mb-6">
-                <i class="las la-file-contract text-6xl text-primary mb-4"></i>
+                <i class="las la-file-contract text-6xl text-primary "></i>
                 <h1 class="text-4xl font-bold text-gray-900 mb-2">Curadoria de Documento</h1>
                 <p class="text-xl text-gray-600">T.R. Gerado - Termo de Referência</p>
                 {% if projeto %}
@@ -36,10 +36,10 @@
         <div class="max-w-4xl mx-auto space-y-6">
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Informações Básicas</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Informações Básicas</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-building text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Órgão Contratante</label>
@@ -49,7 +49,7 @@
                         <input type="text" id="orgao-contratante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.orgao_contratante or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-cogs text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Tipo de Contratação</label>
@@ -59,27 +59,27 @@
                         <input type="text" id="tipo-contratacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.tipo_contratacao or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-clipboard-list text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Objeto da Contratação</label>
                             </div>
                             <button type="button" class="edit-btn btn-outlined" data-target="objeto-contratacao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                         <textarea id="objeto-contratacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr %}{{ tr.objeto_contratacao or '' }}{% endif %}</textarea>
+                         <textarea id="objeto-contratacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 border-gray-300 resize-none" rows="4" disabled>{% if tr %}{{ tr.objeto_contratacao or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-lightbulb text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Descrição da Solução</label>
                             </div>
                             <button type="button" class="edit-btn btn-outlined" data-target="descricao-solucao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="descricao-solucao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr %}{{ tr.descricao_solucao or '' }}{% endif %}</textarea>
+                        <textarea id="descricao-solucao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="5" disabled>{% if tr %}{{ tr.descricao_solucao or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-gavel text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Modalidade de Licitação</label>
@@ -89,48 +89,48 @@
                         <input type="text" id="modalidade-licitacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.modalidade_licitacao or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
                                 <i class="las la-balance-scale text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Fundamentação Legal</label>
                             </div>
                             <button type="button" class="edit-btn btn-outlined" data-target="fundamentacao-legal"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="fundamentacao-legal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="3" disabled>{% if tr %}{{ tr.fundamentacao_legal or '' }}{% endif %}</textarea>
+                        <textarea id="fundamentacao-legal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 border-gray-300 resize-none" rows="3" disabled>{% if tr %}{{ tr.fundamentacao_legal or '' }}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Requisitos da Contratação</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Requisitos da Contratação</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-leaf text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Sustentabilidade</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="sustentabilidade"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="sustentabilidade" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.sustentabilidade or '' }}{% endif %}</textarea>
+                        <textarea id="sustentabilidade" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.sustentabilidade or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-tag text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Indicação de Marcas</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="indicacao-marcas"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="indicacao-marcas" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.indicacao_marcas or '' }}{% endif %}</textarea>
+                        <textarea id="indicacao-marcas" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.indicacao_marcas or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-ban text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Vedação de Marca/Produto</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="vedacao-marca-produto"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="vedacao-marca-produto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.vedacao_marca_produto or '' }}{% endif %}</textarea>
+                        <textarea id="vedacao-marca-produto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.vedacao_marca_produto or '' }}{% endif %}</textarea>
                     </div>
                      <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-tools text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Garantia do Produto/Serviço</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="garantia-produto-servico"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="garantia-produto-servico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.garantia_produto_servico or '' }}{% endif %}</textarea>
+                        <textarea id="garantia-produto-servico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.garantia_produto_servico or '' }}{% endif %}</textarea>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="flex items-center"><input type="checkbox" id="exige-amostra" class="editable-content" disabled {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_amostra %}checked{% endif %}><label for="exige-amostra" class="ml-2 text-lg font-medium">Exige Amostra</label></div>
@@ -141,197 +141,197 @@
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Modelo de Execução</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Modelo de Execução</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-truck text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Condições de Entrega</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="condicoes-entrega"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="condicoes-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_entrega or '' }}{% endif %}</textarea>
+                        <textarea id="condicoes-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_entrega or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-headset text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Garantia e Manutenção (Assistência Técnica)</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="garantia-manutencao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="garantia-manutencao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.garantia_manutencao or '' }}{% endif %}</textarea>
+                        <textarea id="garantia-manutencao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.garantia_manutencao or '' }}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Prazos e Local</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Prazos e Local</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-clock text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Prazo de Vigência do Contrato</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="prazo-vigencia"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="prazo-vigencia" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr %}{{ tr.prazo_vigencia_contrato or '' }}{% endif %}" disabled>
+                        <input type="text" id="prazo-vigencia" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.prazo_vigencia_contrato or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-calendar text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Prazo de Entrega/Prestação</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="prazo-entrega"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="prazo-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr %}{{ tr.prazo_entrega_prestacao or '' }}{% endif %}" disabled>
+                        <input type="text" id="prazo-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.prazo_entrega_prestacao or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-map-marker-alt text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Local de Entrega/Prestação</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="local-entrega"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="local-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="2" disabled>{% if tr %}{{ tr.local_entrega_prestacao or '' }}{% endif %}</textarea>
+                        <textarea id="local-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="2" disabled>{% if tr %}{{ tr.local_entrega_prestacao or '' }}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Obrigações</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Obrigações</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-handshake text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Obrigações do Contratante</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="obrigacoes-contratante"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="obrigacoes-contratante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="4" disabled>{% if tr %}{% for item in tr.obrigacoes_contratante %}{{ item }}{% if not loop.last %}\n{% endif %}{% endfor %}{% endif %}</textarea>
+                        <textarea id="obrigacoes-contratante" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="4" disabled>{% if tr %}{% for item in tr.obrigacoes_contratante %}{{ item }}{% if not loop.last %}\n{% endif %}{% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-handshake text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Obrigações da Contratada</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="obrigacoes-contratada"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="obrigacoes-contratada" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="4" disabled>{% if tr %}{% for item in tr.obrigacoes_contratada %}{{ item }}{% if not loop.last %}\n{% endif %}{% endfor %}{% endif %}</textarea>
+                        <textarea id="obrigacoes-contratada" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="4" disabled>{% if tr %}{% for item in tr.obrigacoes_contratada %}{{ item }}{% if not loop.last %}\n{% endif %}{% endfor %}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Gestão e Fiscalização do Contrato</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Gestão e Fiscalização do Contrato</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-user-check text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Modelo de Gestão</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="modelo-gestao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="modelo-gestao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.gestao_contrato %}{{ tr.gestao_contrato.modelo_gestao or '' }}{% endif %}</textarea>
+                        <textarea id="modelo-gestao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.gestao_contrato %}{{ tr.gestao_contrato.modelo_gestao or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-users-cog text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Papéis e Responsabilidades (Gestor e Fiscal)</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="papeis-responsabilidades"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="papeis-responsabilidades" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.gestao_contrato %}{{ tr.gestao_contrato.papeis_responsabilidades or '' }}{% endif %}</textarea>
+                        <textarea id="papeis-responsabilidades" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr and tr.gestao_contrato %}{{ tr.gestao_contrato.papeis_responsabilidades or '' }}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Critérios de Pagamento</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Critérios de Pagamento</h3>
                 <div class="p-6 space-y-4">
                      <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-credit-card text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Condições de Pagamento</label></div>
                              <button type="button" class="edit-btn btn-outlined" data-target="condicoes-pagamento"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="condicoes-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr %}{{ tr.condicoes_pagamento or '' }}{% endif %}</textarea>
+                        <textarea id="condicoes-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr %}{{ tr.condicoes_pagamento or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-box-open text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Recebimento do Objeto</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="recebimento-objeto"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="recebimento-objeto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.recebimento_objeto or '' }}{% endif %}</textarea>
+                        <textarea id="recebimento-objeto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.recebimento_objeto or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-file-invoice-dollar text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Liquidação</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="liquidacao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="liquidacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.liquidacao or '' }}{% endif %}</textarea>
+                        <textarea id="liquidacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.liquidacao or '' }}{% endif %}</textarea>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                              <div class="flex items-center"><i class="las la-calendar-check text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Prazo de Pagamento</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="prazo-pagamento"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="prazo-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_pagamento or '' }}{% endif %}" disabled>
+                        <input type="text" id="prazo-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_pagamento or '' }}{% endif %}" disabled>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Seleção do Fornecedor</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Seleção do Fornecedor</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-tasks text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Forma de Seleção</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="forma-selecao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="forma-selecao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.selecao_fornecedor %}{{ tr.selecao_fornecedor.forma_selecao or '' }}{% endif %}" disabled>
+                        <input type="text" id="forma-selecao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.selecao_fornecedor %}{{ tr.selecao_fornecedor.forma_selecao or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-trophy text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Critério de Julgamento</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="criterio-julgamento-selecao"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="criterio-julgamento-selecao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.selecao_fornecedor %}{{ tr.selecao_fornecedor.criterio_julgamento or '' }}{% endif %}" disabled>
+                        <input type="text" id="criterio-julgamento-selecao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.selecao_fornecedor %}{{ tr.selecao_fornecedor.criterio_julgamento or '' }}{% endif %}" disabled>
                     </div>
-                    <h4 class="text-lg font-semibold text-gray-800 pt-4 border-t">Exigências de Habilitação</h4>
+                    <h4 class="text-lg font-semibold text-gray-800 pt-4 border-t border-gray-300">Exigências de Habilitação</h4>
                     <div>
                         <label class="text-md font-medium text-gray-900">Jurídica</label>
-                        <textarea id="habilitacao-juridica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.juridica %}{{ item }}
-{% endfor %}{% endif %}</textarea>
+                        <textarea id="habilitacao-juridica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.juridica %}{{ item }}
+                        {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
                         <label class="text-md font-medium text-gray-900">Fiscal e Trabalhista</label>
-                        <textarea id="habilitacao-fiscal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.fiscal_trabalhista %}{{ item }}
-{% endfor %}{% endif %}</textarea>
+                        <textarea id="habilitacao-fiscal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.fiscal_trabalhista %}{{ item }}
+                        {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
                         <label class="text-md font-medium text-gray-900">Econômico-Financeira</label>
-                        <textarea id="habilitacao-economico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.economico_financeira %}{{ item }}
-{% endfor %}{% endif %}</textarea>
+                        <textarea id="habilitacao-economico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.economico_financeira %}{{ item }}
+                        {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
                         <label class="text-md font-medium text-gray-900">Técnica</label>
-                        <textarea id="habilitacao-tecnica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.tecnica %}{{ item }}
-{% endfor %}{% endif %}</textarea>
+                        <textarea id="habilitacao-tecnica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.tecnica %}{{ item }}
+                        {% endfor %}{% endif %}</textarea>
                     </div>
                 </div>
             </div>
             
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Estimativa de Valor e Adequação Orçamentária</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Estimativa de Valor e Adequação Orçamentária</h3>
                 <div class="p-6 space-y-4">
                      <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-calculator text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Valor Total Estimado</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="valor-total-estimado"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="number" id="valor-total-estimado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.estimativa_valor %}{{ tr.estimativa_valor.valor_total or '' }}{% endif %}" disabled>
+                        <input type="number" id="valor-total-estimado" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.estimativa_valor %}{{ tr.estimativa_valor.valor_total or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-search-dollar text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Metodologia da Pesquisa de Preços</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="metodologia-pesquisa"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="metodologia-pesquisa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.estimativa_valor %}{{ tr.estimativa_valor.metodologia_pesquisa or '' }}{% endif %}</textarea>
+                        <textarea id="metodologia-pesquisa" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.estimativa_valor %}{{ tr.estimativa_valor.metodologia_pesquisa or '' }}{% endif %}</textarea>
                     </div>
-                    <div class="pt-4 border-t">
-                        <div class="flex justify-between items-start">
+                    <div class="pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-wallet text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Fonte de Recursos</label></div>
                              <button type="button" class="edit-btn btn-outlined" data-target="fonte-recursos"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="fonte-recursos" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.adequacao_orcamentaria %}{{ tr.adequacao_orcamentaria.fonte_recursos or '' }}{% endif %}" disabled>
+                        <input type="text" id="fonte-recursos" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.adequacao_orcamentaria %}{{ tr.adequacao_orcamentaria.fonte_recursos or '' }}{% endif %}" disabled>
                     </div>
                      <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-file-alt text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Classificação Orçamentária</label></div>
                              <button type="button" class="edit-btn btn-outlined" data-target="classificacao-orcamentaria"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="classificacao-orcamentaria" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.adequacao_orcamentaria %}{{ tr.adequacao_orcamentaria.classificacao_orcamentaria or '' }}{% endif %}" disabled>
+                        <input type="text" id="classificacao-orcamentaria" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.adequacao_orcamentaria %}{{ tr.adequacao_orcamentaria.classificacao_orcamentaria or '' }}{% endif %}" disabled>
                     </div>
                     <div>
                         <div class="flex items-center"><input type="checkbox" id="previsao-pca" class="editable-content" disabled {% if tr and tr.adequacao_orcamentaria and tr.adequacao_orcamentaria.previsao_pca %}checked{% endif %}><label for="previsao-pca" class="ml-2 text-lg font-medium">Previsão no PCA</label></div>
@@ -340,21 +340,21 @@
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Sistema de Registro de Preços</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Sistema de Registro de Preços</h3>
                 <div class="p-6 space-y-4">
                     <div class="flex items-center"><input type="checkbox" id="adota-srp" class="editable-content" disabled {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.adota_srp %}checked{% endif %}><label for="adota-srp" class="ml-2 text-lg font-medium">Adota SRP</label></div>
                     <div class="srp-fields-container space-y-4">
                         <div>
                             <label class="text-lg font-medium text-gray-900">Tipo e Justificativa SRP</label>
-                            <textarea class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.tipo_srp or '' }}{% endif %}</textarea>
+                            <textarea class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.tipo_srp or '' }}{% endif %}</textarea>
                         </div>
                         <div>
                             <label class="text-lg font-medium text-gray-900">Vigência da Ata</label>
-                            <input type="text" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.vigencia_ata or '' }}{% endif %}" disabled>
+                            <input type="text" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.vigencia_ata or '' }}{% endif %}" disabled>
                         </div>
                          <div>
                             <label class="text-lg font-medium text-gray-900">Critério de Julgamento</label>
-                            <select class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" disabled>
+                            <select class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" disabled>
                                 <option value="item" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'item' %}selected{% endif %}>Item</option>
                                 <option value="grupo" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'grupo' %}selected{% endif %}>Grupo</option>
                             </select>
@@ -364,16 +364,16 @@
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                 <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Disposições Gerais</h3>
+                 <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Disposições Gerais</h3>
                  <div class="p-6 space-y-4">
                      <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-gavel text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Sanções Administrativas</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="sancoes-administrativas"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <textarea id="sancoes-administrativas" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" rows="3" disabled>{% if tr %}{{ tr.sancoes_administrativas or '' }}{% endif %}</textarea>
+                        <textarea id="sancoes-administrativas" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" rows="3" disabled>{% if tr %}{{ tr.sancoes_administrativas or '' }}{% endif %}</textarea>
                     </div>
-                    <div class="flex items-center gap-4 pt-4 border-t">
+                    <div class="flex items-center gap-4 pt-4 border-t border-gray-200">
                         <div class="flex items-center">
                             <input type="checkbox" id="admite-subcontratacao" class="editable-content" disabled {% if tr and tr.admite_subcontratacao %}checked{% endif %}>
                             <label for="admite-subcontratacao" class="ml-2 text-lg font-medium">Admite Subcontratação</label>
@@ -387,16 +387,16 @@
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Itens da Contratação</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Itens da Contratação</h3>
                 <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
+                    <div class="flex justify-between items-start ">
                         <h2 class="text-lg font-medium text-gray-900">Itens</h2>
                         <button id="add-item-btn" type="button" class="btn-primary"><i class="las la-plus mr-1"></i>Adicionar Item</button>
                     </div>
                     <div id="items-container" class="space-y-4">
                         {% if tr and tr.itens %}
                             {% for item in tr.itens %}
-                            <div class="p-4 border rounded-md item-row space-y-2">
+                            <div class="p-4 border border-gray-200 rounded-md item-row space-y-2">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <input type="text" value="{{ item.descricao or '' }}" placeholder="Descrição do item" class="p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
                                     <input type="text" value="{{ item.codigo_catmat_catser or '' }}" placeholder="Código CATMAT/CATSER" class="p-2 border-gray-300 border rounded-md item-codigo focus:ring-primary focus:border-primary">
@@ -420,21 +420,21 @@
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
-                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b">Responsável pela Elaboração</h3>
+                <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Responsável pela Elaboração</h3>
                 <div class="p-6 space-y-4">
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                              <div class="flex items-center"><i class="las la-user-tie text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Responsável</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="responsavel"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="responsavel" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr %}{{ tr.responsavel or '' }}{% endif %}" disabled>
+                        <input type="text" id="responsavel" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.responsavel or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-3">
                              <div class="flex items-center"><i class="las la-briefcase text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Cargo do Responsável</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="cargo-responsavel"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
-                        <input type="text" id="cargo-responsavel" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border" value="{% if tr %}{{ tr.cargo_responsavel or '' }}{% endif %}" disabled>
+                        <input type="text" id="cargo-responsavel" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300" value="{% if tr %}{{ tr.cargo_responsavel or '' }}{% endif %}" disabled>
                     </div>
                 </div>
             </div>
