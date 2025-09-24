@@ -66,25 +66,96 @@ document.addEventListener('DOMContentLoaded', function () {
     const addItemBtn = document.getElementById('add-item-btn');
     const itemsContainer = document.getElementById('items-container');
     const adotaSrpCheckbox = document.getElementById('adota-srp');
-
-    // --- LÓGICA DE HABILITAÇÃO DE EDIÇÃO ---
-    // Habilita todos os campos para edição de uma vez para simplificar a UX
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.style.display = 'none'; // Oculta botões individuais, favorecendo um "modo de edição" global
-    });
-    // Habilita todos os campos de uma vez para edição
-    document.querySelectorAll('.editable-content').forEach(field => {
-        field.removeAttribute('disabled');
-        field.classList.remove('bg-gray-50');
-    });
-
     const projectId = getProjectIdFromUrl();
+
+    // Event listener para botões de edição
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.edit-btn')) {
+            e.preventDefault();
+            const button = e.target.closest('.edit-btn');
+            const targetId = button.getAttribute('data-target');
+
+            // Verificar se está desabilitado
+            let isCurrentlyDisabled;
+            if (targetId === 'items-section') {
+                const firstInput = document.querySelector('#items-container .editable-content');
+                isCurrentlyDisabled = firstInput ? firstInput.disabled : true;
+            } else {
+                const targetElement = document.getElementById(targetId);
+                if (!targetElement) {
+                    console.warn(`Elemento com ID ${targetId} não encontrado`);
+                    return;
+                }
+                isCurrentlyDisabled = targetElement.disabled;
+            }
+
+            if (isCurrentlyDisabled) {
+                // Habilitar edição
+                habilitarEdicao(targetId, button);
+            } else {
+                // Desabilitar edição
+                desabilitarEdicao(targetId, button);
+            }
+        }
+    });
+
+    // Função para habilitar edição
+    function habilitarEdicao(targetId, button) {
+        if (targetId === 'items-section') {
+            // Habilitar seção de itens
+            document.querySelectorAll('#items-container .editable-content').forEach(field => {
+                field.disabled = false;
+            });
+            const addItemBtn = document.getElementById('add-item-btn');
+            if (addItemBtn) addItemBtn.disabled = false;
+            // Mostrar botões de remoção se existirem (já visíveis)
+        } else {
+            // Campo normal ou específico
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.disabled = false;
+                targetElement.focus();
+            }
+            // Para campos SRP, habilitar checkbox se necessário
+            if (targetId.startsWith('srp-')) {
+                const adotaSrp = document.getElementById('adota-srp');
+                if (adotaSrp) adotaSrp.disabled = false;
+            }
+        }
+
+        button.innerHTML = '<i class="las la-save mr-1"></i>Salvar';
+    }
+
+    // Função para desabilitar edição
+    function desabilitarEdicao(targetId, button) {
+        if (targetId === 'items-section') {
+            // Desabilitar seção de itens
+            document.querySelectorAll('#items-container .editable-content').forEach(field => {
+                field.disabled = true;
+            });
+            const addItemBtn = document.getElementById('add-item-btn');
+            if (addItemBtn) addItemBtn.disabled = true;
+        } else {
+            // Campo normal ou específico
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                targetElement.disabled = true;
+            }
+            // Para campos SRP, desabilitar checkbox
+            if (targetId.startsWith('srp-')) {
+                const adotaSrp = document.getElementById('adota-srp');
+                if (adotaSrp) adotaSrp.disabled = true;
+            }
+        }
+
+        button.innerHTML = '<i class="las la-edit mr-1"></i>Editar';
+    }
 
 
     // --- LÓGICA DO SISTEMA DE REGISTRO DE PREÇOS (SRP) ---
     function toggleSrpFields() {
         const srpContainer = document.querySelector('.srp-fields-container');
-        if (srpContainer) {
+        if (adotaSrpCheckbox && srpContainer) {
             srpContainer.style.display = adotaSrpCheckbox.checked ? 'block' : 'none';
         }
     }

@@ -54,7 +54,7 @@
                                 <i class="las la-cogs text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Tipo de Contratação</label>
                             </div>
-                             <button type="button" class="edit-btn btn-outlined" data-target="tipo-contratacao"><i class="las la-edit mr-1"></i>Editar</button>
+                             <!-- No edit button for radio buttons -->
                         </div>
                         <div id="tipo-contratacao" class="editable-content flex space-x-6 items-center">
                             <div class="flex items-center">
@@ -93,7 +93,7 @@
                                 <i class="las la-gavel text-2xl text-gray-600 mr-3"></i>
                                 <label class="text-lg font-medium text-gray-900">Modalidade de Licitação</label>
                             </div>
-                            <button type="button" class="edit-btn btn-outlined" data-target="modalidade-licitacao"><i class="las la-edit mr-1"></i>Editar</button>
+                            <!-- No edit button for radio buttons -->
                         </div>
                         <div id="modalidade-licitacao" class="editable-content flex space-x-6 items-center">
                             <div class="flex items-center">
@@ -152,9 +152,9 @@
                         <textarea id="garantia-produto-servico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.garantia_produto_servico or '' }}{% endif %}</textarea>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="flex items-center"><input type="checkbox" id="exige-amostra" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_amostra %}checked{% endif %}><label for="exige-amostra" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Amostra</label></div>
-                        <div class="flex items-center"><input type="checkbox" id="exige-carta-solidariedade" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_carta_solidariedade %}checked{% endif %}><label for="exige-carta-solidariedade" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Carta de Solidariedade</label></div>
-                        <div class="flex items-center"><input type="checkbox" id="exige-vistoria" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_vistoria %}checked{% endif %}><label for="exige-vistoria" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Vistoria</label></div>
+                        <div class="flex items-center"><input type="checkbox" id="exige-amostra" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_amostra %}checked{% endif %}><label for="exige-amostra" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Amostra</label></div>
+                        <div class="flex items-center"><input type="checkbox" id="exige-carta-solidariedade" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_carta_solidariedade %}checked{% endif %}><label for="exige-carta-solidariedade" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Carta de Solidariedade</label></div>
+                        <div class="flex items-center"><input type="checkbox" id="exige-vistoria" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.requisitos_contratacao and tr.requisitos_contratacao.exige_vistoria %}checked{% endif %}><label for="exige-vistoria" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Vistoria</label></div>
                     </div>
                 </div>
             </div>
@@ -299,22 +299,34 @@
                     </div>
                     <h4 class="text-lg font-semibold text-gray-800 pt-4 border-t border-gray-300">Exigências de Habilitação</h4>
                     <div>
-                        <label class="text-md font-medium text-gray-900">Jurídica</label>
+                        <div class="flex justify-between items-start mb-3">
+                            <label class="text-md font-medium text-gray-900">Jurídica</label>
+                            <button type="button" class="edit-btn btn-outlined" data-target="habilitacao-juridica"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
                         <textarea id="habilitacao-juridica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.juridica %}{{ item }}
                         {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
-                        <label class="text-md font-medium text-gray-900">Fiscal e Trabalhista</label>
+                        <div class="flex justify-between items-start mb-3">
+                            <label class="text-md font-medium text-gray-900">Fiscal e Trabalhista</label>
+                            <button type="button" class="edit-btn btn-outlined" data-target="habilitacao-fiscal"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
                         <textarea id="habilitacao-fiscal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.fiscal_trabalhista %}{{ item }}
                         {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
-                        <label class="text-md font-medium text-gray-900">Econômico-Financeira</label>
+                        <div class="flex justify-between items-start mb-3">
+                            <label class="text-md font-medium text-gray-900">Econômico-Financeira</label>
+                            <button type="button" class="edit-btn btn-outlined" data-target="habilitacao-economico"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
                         <textarea id="habilitacao-economico" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.economico_financeira %}{{ item }}
                         {% endfor %}{% endif %}</textarea>
                     </div>
                     <div>
-                        <label class="text-md font-medium text-gray-900">Técnica</label>
+                        <div class="flex justify-between items-start mb-3">
+                            <label class="text-md font-medium text-gray-900">Técnica</label>
+                            <button type="button" class="edit-btn btn-outlined" data-target="habilitacao-tecnica"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
                         <textarea id="habilitacao-tecnica" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="4" disabled>{% if tr and tr.selecao_fornecedor and tr.selecao_fornecedor.exigencias_habilitacao %}{% for item in tr.selecao_fornecedor.exigencias_habilitacao.tecnica %}{{ item }}
                         {% endfor %}{% endif %}</textarea>
                     </div>
@@ -353,7 +365,7 @@
                         <input type="text" id="classificacao-orcamentaria" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.adequacao_orcamentaria %}{{ tr.adequacao_orcamentaria.classificacao_orcamentaria or '' }}{% endif %}" disabled>
                     </div>
                     <div>
-                        <div class="flex items-center"><input type="checkbox" id="previsao-pca" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.adequacao_orcamentaria and tr.adequacao_orcamentaria.previsao_pca %}checked{% endif %}><label for="previsao-pca" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Previsão no PCA</label></div>
+                        <div class="flex items-center"><input type="checkbox" id="previsao-pca" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.adequacao_orcamentaria and tr.adequacao_orcamentaria.previsao_pca %}checked{% endif %}><label for="previsao-pca" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Previsão no PCA</label></div>
                     </div>
                 </div>
             </div>
@@ -361,19 +373,28 @@
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                 <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Sistema de Registro de Preços</h3>
                 <div class="p-6 space-y-4">
-                    <div class="flex items-center"><input type="checkbox" id="adota-srp" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.adota_srp %}checked{% endif %}><label for="adota-srp" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Adota SRP</label></div>
+                    <div class="flex items-center"><input type="checkbox" id="adota-srp" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.adota_srp %}checked{% endif %}><label for="adota-srp" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Adota SRP</label></div>
                     <div class="srp-fields-container space-y-4">
-                        <div>
+                        <div class="flex justify-between items-start mb-3">
                             <label class="text-lg font-medium text-gray-900">Tipo e Justificativa SRP</label>
-                            <textarea class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.tipo_srp or '' }}{% endif %}</textarea>
+                            <button type="button" class="edit-btn btn-outlined" data-target="srp-tipo"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
                         <div>
-                            <label class="text-lg font-medium text-gray-900">Vigência da Ata</label>
-                            <input type="text" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.vigencia_ata or '' }}{% endif %}" disabled>
+                            <textarea id="srp-tipo" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.tipo_srp or '' }}{% endif %}</textarea>
                         </div>
-                         <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <label class="text-lg font-medium text-gray-900">Prazo de Vigência da Ata</label>
+                            <button type="button" class="edit-btn btn-outlined" data-target="srp-vigencia"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <div>
+                            <input id="srp-vigencia" type="text" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.vigencia_ata or '' }}{% endif %}" disabled>
+                        </div>
+                        <div class="flex justify-between items-start mb-3">
                             <label class="text-lg font-medium text-gray-900">Critério de Julgamento</label>
-                            <select class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" disabled>
+                            <button type="button" class="edit-btn btn-outlined" data-target="srp-criterio"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <div>
+                            <select id="srp-criterio" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" disabled>
                                 <option value="item" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'item' %}selected{% endif %}>Item</option>
                                 <option value="grupo" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'grupo' %}selected{% endif %}>Grupo</option>
                             </select>
@@ -394,11 +415,11 @@
                     </div>
                     <div class="flex items-center gap-4 pt-4 border-t border-gray-200">
                         <div class="flex items-center">
-                            <input type="checkbox" id="admite-subcontratacao" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.admite_subcontratacao %}checked{% endif %}>
+                            <input type="checkbox" id="admite-subcontratacao" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.admite_subcontratacao %}checked{% endif %}>
                             <label for="admite-subcontratacao" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Admite Subcontratação</label>
                         </div>
                         <div class="flex items-center">
-                            <input type="checkbox" id="exige-garantia" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 editable-content" disabled {% if tr and tr.exige_garantia_contratual %}checked{% endif %}>
+                            <input type="checkbox" id="exige-garantia" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.exige_garantia_contratual %}checked{% endif %}>
                             <label for="exige-garantia" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Exige Garantia Contratual</label>
                         </div>
                     </div>
@@ -408,7 +429,7 @@
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
                 <h3 class="p-6 text-xl font-semibold text-gray-900 border-b border-gray-200 ">Itens da Contratação</h3>
                 <div class="p-6">
-                    <div class="flex justify-between items-start mb-2">
+                    <div class="flex justify-between items-center mb-3">
                         <h2 class="text-lg font-medium text-gray-900">Itens</h2>
                         <button id="add-item-btn" type="button" class="btn-primary"><i class="las la-plus"></i>Adicionar Item</button>
                     </div>
@@ -417,18 +438,18 @@
                             {% for item in tr.itens %}
                             <div class="p-4 border border-gray-200 rounded-md item-row space-y-2">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <input type="text" value="{{ item.descricao or '' }}" placeholder="Descrição do item" class="p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
-                                    <input type="text" value="{{ item.codigo_catmat_catser or '' }}" placeholder="Código CATMAT/CATSER" class="p-2 border-gray-300 border rounded-md item-codigo focus:ring-primary focus:border-primary">
+                                    <input type="text" value="{{ item.descricao or '' }}" placeholder="Descrição do item" class="p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary editable-content">
+                                    <input type="text" value="{{ item.codigo_catmat_catser or '' }}" placeholder="Código CATMAT/CATSER" class="p-2 border-gray-300 border rounded-md item-codigo focus:ring-primary focus:border-primary editable-content">
                                 </div>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    <input type="number" value="{{ item.quantidade or '' }}" placeholder="Qtd." class="p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" min="1" step="0.001">
-                                    <input type="text" value="{{ item.unidade_medida or '' }}" placeholder="Unidade" class="p-2 border-gray-300 border rounded-md item-unidade focus:ring-primary focus:border-primary">
-                                    <input type="number" value="{{ item.valor_unitario or '' }}" placeholder="Valor Unit." class="p-2 border-gray-300 border rounded-md item-valor-unitario focus:ring-primary focus:border-primary" step="0.01">
+                                    <input type="number" value="{{ item.quantidade or '' }}" placeholder="Qtd." class="p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary editable-content" min="1" step="0.001">
+                                    <input type="text" value="{{ item.unidade_medida or '' }}" placeholder="Unidade" class="p-2 border-gray-300 border rounded-md item-unidade focus:ring-primary focus:border-primary editable-content">
+                                    <input type="number" value="{{ item.valor_unitario or '' }}" placeholder="Valor Unit." class="p-2 border-gray-300 border rounded-md item-valor-unitario focus:ring-primary focus:border-primary editable-content" step="0.01">
                                     <input type="number" value="{{ item.valor_total or '' }}" placeholder="Valor Total" class="p-2 border-gray-300 border rounded-md bg-gray-100 item-valor-total" disabled>
                                 </div>
-                                 <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="3" placeholder="Especificações Técnicas (uma por linha)">{% for spec in item.especificacoes_tecnicas %}{{ spec }}{% if not loop.last %}\n{% endif %}{% endfor %}</textarea>
+                                 <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none editable-content" rows="3" placeholder="Especificações Técnicas (uma por linha)">{% for spec in item.especificacoes_tecnicas %}{{ spec }}{% if not loop.last %}\n{% endif %}{% endfor %}</textarea>
                                 <div class="flex justify-between items-start gap-3">
-                                    <textarea class="item-finalidade flex-grow p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="2" placeholder="Finalidade">{{ item.finalidade or '' }}</textarea>
+                                    <textarea class="item-finalidade flex-grow p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none editable-content" rows="2" placeholder="Finalidade">{{ item.finalidade or '' }}</textarea>
                                     <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn self-center"><i class="las la-trash-alt text-2xl"></i></button>
                                 </div>
                             </div>
