@@ -383,6 +383,7 @@ function generatePdf(jsonData) {
             
             // Subseção 1.1
             y += addSubsection("1.1", "", jsonData.objeto_contratacao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;   
 
             // Subseção 1.2
             checkPageBreak(30);
@@ -612,43 +613,49 @@ function generatePdf(jsonData) {
             y += addSubsection("4.1", "DA SUSTENTABILIDADE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(30);
             y += addSubsection("4.1.1", "", jsonData.requisitos_contratacao.sustentabilidade, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("4.2", "DA INDICAÇÃO DE MARCAS OU MODELOS", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("4.2.1", "", jsonData.requisitos_contratacao.indicacao_marcas, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("4.3", "DA VEDAÇÃO DE UTILIZAÇÃO DE MARCA/PRODUTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("4.3.1", "", jsonData.requisitos_contratacao.vedacao_marca_produto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += sectionSpacing;   
             
             checkPageBreak(15);
             y += addSubsection("4.4", "DA AMOSTRA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
             y += addSubsection("4.4.1", "", jsonData.requisitos_contratacao.exige_amostra ? 'Será exigida apresentação de amostra.' : 'Não será exigida apresentação de amostra.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("4.5", "DA CARTA DE SOLIDARIEDADE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
             y += addSubsection("4.5.1", "", jsonData.requisitos_contratacao.exige_carta_solidariedade ? 'Será exigida carta de solidariedade.' : 'Não será exigida carta de solidariedade.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("4.6", "DA VISTORIA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
             const vistoriaText = jsonData.requisitos_contratacao.exige_vistoria ? 'Será exigida a realização de vistoria.' : 'Não será exigida a realização de vistoria.';
             y += addSubsection("4.6.1", "", vistoriaText, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += sectionSpacing;   
 
             checkPageBreak(15);
             y += addSubsection("4.7", "DA SUBCONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
             y += addSubsection("4.7.1", "", jsonData.admite_subcontratacao ? 'Admite-se subcontratação.' : 'Não se admite subcontratação.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("4.8", "DA GARANTIA DA CONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("4.8.1", "", jsonData.exige_garantia_contratual ? jsonData.requisitos_contratacao.garantia_produto_servico : 'Não se exige garantia contratual.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-
             y += sectionSpacing;
 
             // Section 5: DO MODELO DE EXECUÇÃO DO OBJETO
@@ -660,8 +667,11 @@ function generatePdf(jsonData) {
             doc.setFontSize(11);
             doc.setFont("times", "normal");
             y += addSubsection("5.1", "DAS CONDIÇÕES DE ENTREGA", jsonData.modelo_execucao.condicoes_entrega, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;   
+
             y += addSubsection("5.2", "DA GARANTIA, MANUTENÇÃO E ASSISTÊNCIA TÉCNICA", jsonData.modelo_execucao.garantia_manutencao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            
+            y += sectionSpacing;   
+
             // Subseção 5.3 com numeração
             checkPageBreak(15);
             y += addSubsection("5.3", "DOS DEVERES E RESPONSABILIDADES DO CONTRATANTE", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
@@ -669,6 +679,7 @@ function generatePdf(jsonData) {
                 checkPageBreak(10);
                 y += addNumberedItem(`5.3.${index + 1}`, item, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             });
+            y += sectionSpacing;   
             
             // Subseção 5.4 com numeração
             checkPageBreak(15);
@@ -690,6 +701,8 @@ function generatePdf(jsonData) {
             
             
             y += addSubsection("6.1", "", jsonData.gestao_contrato.modelo_gestao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;   
+
             y += addSubsection("6.2", "", jsonData.gestao_contrato.papeis_responsabilidades, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
             
@@ -707,21 +720,24 @@ function generatePdf(jsonData) {
             y += addSubsection("7.1", "DAS CONDIÇÕES DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("7.1.1", "", jsonData.condicoes_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);        
+            y += sectionSpacing;   
             checkPageBreak(15);
             y += addSubsection("7.2", "DO RECEBIMENTO DO OBJETO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("7.2.1", "", jsonData.criterios_pagamento.recebimento_objeto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
             checkPageBreak(15);
             y += addSubsection("7.3", "DA LIQUIDAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("7.3.1", "", jsonData.criterios_pagamento.liquidacao, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("7.4", "DO PRAZO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
             y += addSubsection("7.4.1", "", jsonData.criterios_pagamento.prazo_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             checkPageBreak(15);
             y += addSubsection("7.5", "DA FORMA DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
@@ -751,7 +767,8 @@ function generatePdf(jsonData) {
             // ADICIONAR 8.1.1
             y += addSubsection("8.1", "DA FORMA DE SELEÇÃO E CRITÉRIO DE JULGAMENTO DA PROPOSTA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += addSubsection("8.1.1", "", `${jsonData.selecao_fornecedor.forma_selecao} - ${jsonData.selecao_fornecedor.criterio_julgamento}`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += sectionSpacing;   
+
             // Subseção 8.2 com numeração
             checkPageBreak(15);
             y += addSubsection("8.2", "DAS EXIGÊNCIAS DE HABILITAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
@@ -762,6 +779,7 @@ function generatePdf(jsonData) {
                 checkPageBreak(10);
                 y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
             });
+            y += sectionSpacing;   
             
             // 8.2.2 - Fiscal e Trabalhista
             checkPageBreak(15);
@@ -770,6 +788,7 @@ function generatePdf(jsonData) {
                 checkPageBreak(10);
                 y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
             });
+            y += sectionSpacing;   
 
             // 8.2.3 - Econômico-Financeira
             checkPageBreak(15);
@@ -778,6 +797,7 @@ function generatePdf(jsonData) {
                 checkPageBreak(10);
                 y += addWrappedText(`• ${item}`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
             });
+            y += sectionSpacing;   
 
             // 8.2.4 - Técnica
             checkPageBreak(15);
@@ -799,6 +819,8 @@ function generatePdf(jsonData) {
             
             // ADICIONAR 9.1, 9.2, 9.3
             y += addSubsection("9.1", "Valor Total:", `R$ ${jsonData.estimativa_valor.valor_total}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;   
+
             y += addSubsection("9.2", "Metodologia da Pesquisa:", jsonData.estimativa_valor.metodologia_pesquisa, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
@@ -813,6 +835,8 @@ function generatePdf(jsonData) {
             
             // ADICIONAR 10.1, 10.2
             y += addSubsection("10.1", "Fonte de Recursos:", jsonData.adequacao_orcamentaria.fonte_recursos, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += sectionSpacing;   
+
             y += addSubsection("10.2", "Classificação Orçamentária:", jsonData.adequacao_orcamentaria.classificacao_orcamentaria, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
