@@ -275,8 +275,8 @@ function generatePdf(jsonData) {
                 text = String(text);
             }
             const lines = doc.splitTextToSize(text, maxWidth);
-            doc.text(lines, x, y);
-            return (lines.length * 6) + 2; // Approximate height of the text block + margin
+            doc.text(lines, x, y, { align: 'justify', maxWidth: maxWidth });
+            return (doc.getTextDimensions(lines).h) + 2;
         };
         
         // Helper for adding a numbered subsection with an optional title.
@@ -293,9 +293,9 @@ function generatePdf(jsonData) {
 
                 if (content && content.length > 0) {
                     const lines = doc.splitTextToSize(content, maxWidth);
-                    doc.text(lines, x, currentY);
+                    doc.text(lines, x, currentY, { align: 'justify', maxWidth: maxWidth });
                     // Return total height used: title + content + margin
-                    return 6 + (lines.length * 6) + 2;
+                    return 6 + (doc.getTextDimensions(lines).h) + 2;
                 }
                 // Return height for title only + margin
                 return 6 + 2;
@@ -327,9 +327,9 @@ function generatePdf(jsonData) {
             
             doc.setFont("times", "normal");
             const lines = doc.splitTextToSize(content, maxWidth - numberWidth);
-            doc.text(lines, x + numberWidth, y);
+            doc.text(lines, x + numberWidth, y, { align: 'justify', maxWidth: maxWidth - numberWidth });
             
-            return (lines.length * 6) + 2;
+            return (doc.getTextDimensions(lines).h) + 2;
         };
 
         // Function to check for new page
