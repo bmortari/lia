@@ -470,18 +470,28 @@ function generatePdf(jsonData) {
             checkPageBreak(15);
             y += addSubsection("1.3", "", "Os bens objeto desta contratação são caracterizados como comuns, conforme indicado no Estudo Técnico Preliminar.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
+            // // Subseção 1.4
+            // checkPageBreak(15);
+            // y += addSubsection("1.4", "", "Demais regras das condições e especificações da solução: [acrescentar outras se houve alterações em relação às indicada no Estudo Técnico Preliminar]", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+
             // Subseção 1.4
             checkPageBreak(15);
-            y += addSubsection("1.4", "", "Demais regras das condições e especificações da solução: [acrescentar outras se houve alterações em relação às indicada no Estudo Técnico Preliminar]", margin + subsectionIndent, y, contentWidth - subsectionIndent);
-
+            const prazoVigencia = `O prazo de vigência da contratação é de ${jsonData.prazo_vigencia_contrato}`;
+            y += addSubsection("1.4", "", prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            
             // Subseção 1.5
             checkPageBreak(15);
-            const prazoVigencia = `O prazo de vigência da contratação é de ${jsonData.prazo_vigencia_contrato}`;
-            y += addSubsection("1.5", "", prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            const prazoEntrega = `O prazo de entrega/prestação da compra é de ${jsonData.prazo_entrega_prestacao}`;
+            y += addSubsection("1.5", "", prazoEntrega, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
             // Subseção 1.6
             checkPageBreak(15);
-            y += addSubsection("1.6", "", "O contrato oferece maior detalhamento das regras que serão aplicadas em relação à vigência da contratação.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            const localEntrega = `A entrega deve ser realizada no seguinte endereço: ${jsonData.local_entrega_prestacao}`;
+            y += addSubsection("1.6", "", localEntrega, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+
+            // Subseção 1.7
+            checkPageBreak(15);
+            y += addSubsection("1.7", "", "O contrato oferece maior detalhamento das regras que serão aplicadas em relação à vigência da contratação.", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
             y += sectionSpacing;
             
@@ -536,25 +546,25 @@ function generatePdf(jsonData) {
 
                 // IV
                 const precosDiferentesTexto = srpData.permite_precos_diferentes
-                    ? `Será permitida a previsão de preços diferentes. ${srpData.justificativa_precos_diferentes || '[justificativa não informada].'}`
+                    ? `Será permitida a previsão de preços diferentes. Justificativa: ${srpData.justificativa_precos_diferentes || '[justificativa não informada].'}`
                     : 'Não será permitida a previsão de preços diferentes.';
                 y += addWrappedText(`IV - ${precosDiferentesTexto}`, textIndent, y, textWidth);
 
                 // V
                 const propostaInferiorTexto = srpData.permite_proposta_inferior
                     ? 'O licitante poderá oferecer proposta com quantitativo inferior ao máximo previsto.'
-                    : `O licitante não poderá oferecer proposta com quantitativo inferior ao máximo previsto. Justificativa: ${srpData.justificativa_precos_diferentes || '[justificativa não informada].'}`;
+                    : `O licitante não poderá oferecer proposta com quantitativo inferior ao máximo previsto.`;
                 y += addWrappedText(`V - ${propostaInferiorTexto}`, textIndent, y, textWidth);
 
                 // VI
                 const criterioJulgamentoTexto = srpData.criterio_julgamento === 'grupo'
-                    ? 'Menor preço por Grupo de Itens.'
-                    : 'Menor preço por Item.';
+                    ? 'menor preço por grupo de itens, devendo ser observado o critério de aceitabilidade de preços unitários máximos. A contratação posterior de item específico constante de grupo de itens exigirá prévia pesquisa de mercado e demonstração de sua vantagem para o órgão.'
+                    : 'menor preço por item.';
                 y += addWrappedText(`VI - O critério de julgamento a ser adotado será o de ${criterioJulgamentoTexto}`, textIndent, y, textWidth);
 
                 // VII
                 const registroLimitadoTexto = srpData.registro_limitado
-                    ? `Será permitido o registro de preços com indicação limitada a unidades de contratação porque ${srpData.justificativa_precos_diferentes || '[justificativa não informada].'}`
+                    ? `Será permitido o registro de preços com indicação limitada a unidades de contratação.`
                     : 'Não será permitido o registro de preços com indicação limitada a unidades de contratação.';
                 y += addWrappedText(`VII - ${registroLimitadoTexto}`, textIndent, y, textWidth);
 
@@ -624,14 +634,20 @@ function generatePdf(jsonData) {
             y += addSubsection("4.5.1", "", jsonData.requisitos_contratacao.exige_carta_solidariedade ? 'Será exigida carta de solidariedade.' : 'Não será exigida carta de solidariedade.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             checkPageBreak(15);
-            y += addSubsection("4.6", "DA SUBCONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("4.6", "DA VISTORIA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(15);
-            y += addSubsection("4.6.1", "", jsonData.admite_subcontratacao ? 'Admite-se subcontratação.' : 'Não se admite subcontratação.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            const vistoriaText = jsonData.requisitos_contratacao.exige_vistoria ? 'Será exigida a realização de vistoria.' : 'Não será exigida a realização de vistoria.';
+            y += addSubsection("4.6.1", "", vistoriaText, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+
+            checkPageBreak(15);
+            y += addSubsection("4.7", "DA SUBCONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
+            y += addSubsection("4.7.1", "", jsonData.admite_subcontratacao ? 'Admite-se subcontratação.' : 'Não se admite subcontratação.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             checkPageBreak(15);
-            y += addSubsection("4.7", "DA GARANTIA DA CONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("4.8", "DA GARANTIA DA CONTRATAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("4.7.1", "", jsonData.exige_garantia_contratual ? jsonData.requisitos_contratacao.garantia_produto_servico : 'Não se exige garantia contratual.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += addSubsection("4.8.1", "", jsonData.exige_garantia_contratual ? jsonData.requisitos_contratacao.garantia_produto_servico : 'Não se exige garantia contratual.', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
 
             y += sectionSpacing;
 
@@ -663,7 +679,7 @@ function generatePdf(jsonData) {
             });
             y += sectionSpacing;
 
-            // Section 6: DO MODELO DE GESTÃO DO CONTRATO (ADICIONAR 6.1)
+            // Section 6: DO MODELO DE GESTÃO DO CONTRATO
             checkPageBreak(20);
             doc.setFontSize(12);
             doc.setFont("times", "bold");
@@ -672,8 +688,9 @@ function generatePdf(jsonData) {
             doc.setFontSize(11);
             doc.setFont("times", "normal");
             
-            // ADICIONAR 6.1
+            
             y += addSubsection("6.1", "", jsonData.gestao_contrato.modelo_gestao, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("6.2", "", jsonData.gestao_contrato.papeis_responsabilidades, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
             
             // Section 7: DOS CRITÉRIOS DE PAGAMENTO
@@ -687,34 +704,38 @@ function generatePdf(jsonData) {
             
             // ADICIONAR 7.1.1, 7.2.1, etc.
             checkPageBreak(15);
-            y += addSubsection("7.1", "DO RECEBIMENTO DO OBJETO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.1", "DAS CONDIÇÕES DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("7.1.1", "", jsonData.criterios_pagamento.recebimento_objeto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
+            y += addSubsection("7.1.1", "", jsonData.condicoes_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);        
             checkPageBreak(15);
-            y += addSubsection("7.2", "DA LIQUIDAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.2", "DO RECEBIMENTO DO OBJETO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("7.2.1", "", jsonData.criterios_pagamento.liquidacao, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += addSubsection("7.2.1", "", jsonData.criterios_pagamento.recebimento_objeto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             checkPageBreak(15);
-            y += addSubsection("7.3", "DO PRAZO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.3", "DA LIQUIDAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("7.3.1", "", jsonData.criterios_pagamento.prazo_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += addSubsection("7.3.1", "", jsonData.criterios_pagamento.liquidacao, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             checkPageBreak(15);
-            y += addSubsection("7.4", "DA FORMA DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            checkPageBreak(15);
-            y += addSubsection("7.4.1", "", jsonData.criterios_pagamento.forma_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
-            checkPageBreak(15);
-            y += addSubsection("7.5", "DA ANTECIPAÇÃO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            checkPageBreak(15);
-            y += addSubsection("7.5.1", "", jsonData.criterios_pagamento.antecipacao_pagamento ? 'Sim' : 'Não', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            
-            checkPageBreak(15);
-            y += addSubsection("7.6", "DA CESSÃO DE CRÉDITO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("7.4", "DO PRAZO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("7.6.1", "", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += addSubsection("7.4.1", "", jsonData.criterios_pagamento.prazo_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            
+            checkPageBreak(15);
+            y += addSubsection("7.5", "DA FORMA DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            checkPageBreak(15);
+            y += addSubsection("7.5.1", "", jsonData.criterios_pagamento.forma_pagamento, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            
+            // checkPageBreak(15);
+            // y += addSubsection("7.6", "DA ANTECIPAÇÃO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            // checkPageBreak(15);
+            // y += addSubsection("7.6.1", "", jsonData.criterios_pagamento.antecipacao_pagamento ? 'Sim' : 'Não', margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            
+            // checkPageBreak(15);
+            // y += addSubsection("7.7", "DA CESSÃO DE CRÉDITO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            // checkPageBreak(20);
+            // y += addSubsection("7.7.1", "", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             
             y += sectionSpacing;
 
@@ -778,8 +799,7 @@ function generatePdf(jsonData) {
             
             // ADICIONAR 9.1, 9.2, 9.3
             y += addSubsection("9.1", "Valor Total:", `R$ ${jsonData.estimativa_valor.valor_total}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            y += addSubsection("9.2", "Valor Unitário:", `R$ ${jsonData.estimativa_valor.valor_unitario}`, margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            y += addSubsection("9.3", "Metodologia da Pesquisa:", jsonData.estimativa_valor.metodologia_pesquisa, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            y += addSubsection("9.2", "Metodologia da Pesquisa:", jsonData.estimativa_valor.metodologia_pesquisa, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
             // Section 10: DA ADEQUAÇÃO ORÇAMENTÁRIA (ADICIONAR 10.1, 10.2)

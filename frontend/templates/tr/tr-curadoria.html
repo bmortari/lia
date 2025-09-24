@@ -277,6 +277,13 @@
                         </div>
                         <input type="text" id="prazo-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_pagamento or '' }}{% endif %}" disabled>
                     </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center"><i class="las la-money-bill-wave text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Forma de Pagamento</label></div>
+                            <button type="button" class="edit-btn btn-outlined" data-target="forma-pagamento"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <input type="text" id="forma-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.forma_pagamento or '' }}{% endif %}" disabled>
+                    </div>
                 </div>
             </div>
 
@@ -375,13 +382,66 @@
                 <div class="p-6 space-y-4">
                     <div class="flex items-center"><input type="checkbox" id="adota-srp" value="" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.adota_srp %}checked{% endif %}><label for="adota-srp" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Adota SRP</label></div>
                     <div class="srp-fields-container space-y-4">
-                        <div class="flex justify-between items-start mb-3">
+                        <!-- <div class="flex justify-between items-start mb-3">
                             <label class="text-lg font-medium text-gray-900">Tipo e Justificativa SRP</label>
                             <button type="button" class="edit-btn btn-outlined" data-target="srp-tipo"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
                         <div>
                             <textarea id="srp-tipo" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.tipo_srp or '' }}{% endif %}</textarea>
+                        </div> -->
+
+                        <div>
+                            <label class="text-lg font-medium text-gray-900">Haverá uma quantidade máxima a ser adquirida para cada item/grupo?</label>
+                            <div class="flex items-center gap-4 mt-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="quantidade_maxima_sim" name="quantidade_maxima" value="true" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.quantidade_maxima %}checked{% endif %}>
+                                    <label for="quantidade_maxima_sim" class="ml-2 text-sm font-medium text-gray-900">Sim</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="quantidade_maxima_nao" name="quantidade_maxima" value="false" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and not tr.sistema_registro_precos.quantidade_maxima %}checked{% endif %}>
+                                    <label for="quantidade_maxima_nao" class="ml-2 text-sm font-medium text-gray-900">Não</label>
+                                </div>
+                            </div>
                         </div>
+
+                        <div>
+                            <label for="quantidade_minima_cotacao" class="text-lg font-medium text-gray-900">Quantidade mínima a ser cotada (especifique para cada item)</label>
+                            <textarea id="quantidade_minima_cotacao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary mt-2" rows="3">{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.quantidade_minima_cotacao or '' }}{% endif %}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-lg font-medium text-gray-900">Permite preços diferentes?</label>
+                            <div class="flex items-center gap-4 mt-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="permite_precos_diferentes_sim" name="permite_precos_diferentes" value="true" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.permite_precos_diferentes %}checked{% endif %}>
+                                    <label for="permite_precos_diferentes_sim" class="ml-2 text-sm font-medium text-gray-900">Sim</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="permite_precos_diferentes_nao" name="permite_precos_diferentes" value="false" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and not tr.sistema_registro_precos.permite_precos_diferentes %}checked{% endif %}>
+                                    <label for="permite_precos_diferentes_nao" class="ml-2 text-sm font-medium text-gray-900">Não</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="justificativa_precos_diferentes_container" class="{% if not tr or not tr.sistema_registro_precos or not tr.sistema_registro_precos.permite_precos_diferentes %}hidden{% endif %}">
+                            <label for="justificativa_precos_diferentes" class="text-lg font-medium text-gray-900">Justificativa para preços diferentes</label>
+                            <textarea id="justificativa_precos_diferentes" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3">{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.justificativa_precos_diferentes or '' }}{% endif %}</textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-lg font-medium text-gray-900">Permite proposta inferior?</label>
+                            <div class="flex items-center gap-4 mt-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="permite_proposta_inferior_sim" name="permite_proposta_inferior" value="true" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.permite_proposta_inferior %}checked{% endif %}>
+                                    <label for="permite_proposta_inferior_sim" class="ml-2 text-sm font-medium text-gray-900">Sim</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="permite_proposta_inferior_nao" name="permite_proposta_inferior" value="false" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and not tr.sistema_registro_precos.permite_proposta_inferior %}checked{% endif %}>
+                                    <label for="permite_proposta_inferior_nao" class="ml-2 text-sm font-medium text-gray-900">Não</label>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="flex justify-between items-start mb-3">
                             <label class="text-lg font-medium text-gray-900">Prazo de Vigência da Ata</label>
                             <button type="button" class="edit-btn btn-outlined" data-target="srp-vigencia"><i class="las la-edit mr-1"></i>Editar</button>
@@ -390,7 +450,7 @@
                             <input id="srp-vigencia" type="text" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.vigencia_ata or '' }}{% endif %}" disabled>
                         </div>
                         <div class="flex justify-between items-start mb-3">
-                            <label class="text-lg font-medium text-gray-900">Critério de Julgamento</label>
+                            <label class="text-lg font-medium text-gray-900">Critério de Julgamento de menor preço por:</label>
                             <button type="button" class="edit-btn btn-outlined" data-target="srp-criterio"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
                         <div>
@@ -398,6 +458,13 @@
                                 <option value="item" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'item' %}selected{% endif %}>Item</option>
                                 <option value="grupo" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.criterio_julgamento == 'grupo' %}selected{% endif %}>Grupo</option>
                             </select>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <label class="text-lg font-medium text-gray-900">Critérios de reajuste</label>
+                                <button type="button" class="edit-btn btn-outlined" data-target="criterio-reajuste"><i class="las la-edit mr-1"></i>Editar</button>
+                            </div>
+                            <textarea id="criterio-reajuste" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.sistema_registro_precos %}{{ tr.sistema_registro_precos.criterio_reajuste or '' }}{% endif %}</textarea>
                         </div>
                     </div>
                 </div>

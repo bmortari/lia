@@ -52,7 +52,7 @@ class TR(Base):
     # Estrutura esperada:
     # {
     #     "adota_srp": bool,
-    #     "tipo_srp": str,
+    #     "tipo_srp": str, # EXCLUIR?
     #     "quantidade_maxima": bool,
     #     "quantidade_minima_cotacao": str,
     #     "permite_precos_diferentes": bool,
