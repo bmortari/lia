@@ -256,20 +256,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Calcula totais iniciais
     document.querySelectorAll('.item-row').forEach(calculateItemTotal);
 
-    // --- LÓGICA PARA HABILITAÇÃO ---
-    function criarLinhaHabilitacao(container, placeholder, valor = '') {
+    // --- LÓGICA PARA HABILITAÇÃO E OBRIGAÇÕES ---
+    function criarLinhaInput(container, placeholder, valor = '', rowClass, inputClass, removeBtnClass) {
         const div = document.createElement('div');
-        div.className = 'flex items-center gap-3 p-2 border border-gray-200 rounded-md habilitacao-row';
+        div.className = `flex items-center gap-3 p-2 border border-gray-200 rounded-md ${rowClass}`;
 
         const input = document.createElement('input');
         input.type = 'text';
         input.value = valor;
         input.placeholder = placeholder;
-        input.className = 'flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md habilitacao-input';
+        input.className = `flex-grow p-2 border-gray-300 focus:border-primary focus:ring-primary border rounded-md ${inputClass}`;
 
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
-        removeBtn.className = 'text-red-500 hover:text-red-700 remove-habilitacao-btn';
+        removeBtn.className = `text-red-500 hover:text-red-700 ${removeBtnClass}`;
         removeBtn.innerHTML = '<i class="las la-trash-alt text-xl"></i>';
 
         div.appendChild(input);
@@ -278,22 +278,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.getElementById('add-juridica-btn')?.addEventListener('click', () => {
-        criarLinhaHabilitacao(document.getElementById('habilitacao-juridica-container'), 'Habilitação Jurídica');
+        criarLinhaInput(document.getElementById('habilitacao-juridica-container'), 'Habilitação Jurídica', '', 'habilitacao-row', 'habilitacao-input', 'remove-habilitacao-btn');
     });
     document.getElementById('add-fiscal-btn')?.addEventListener('click', () => {
-        criarLinhaHabilitacao(document.getElementById('habilitacao-fiscal-container'), 'Habilitação Fiscal e Trabalhista');
+        criarLinhaInput(document.getElementById('habilitacao-fiscal-container'), 'Habilitação Fiscal e Trabalhista', '', 'habilitacao-row', 'habilitacao-input', 'remove-habilitacao-btn');
     });
     document.getElementById('add-economico-btn')?.addEventListener('click', () => {
-        criarLinhaHabilitacao(document.getElementById('habilitacao-economico-container'), 'Habilitação Econômico-Financeira');
+        criarLinhaInput(document.getElementById('habilitacao-economico-container'), 'Habilitação Econômico-Financeira', '', 'habilitacao-row', 'habilitacao-input', 'remove-habilitacao-btn');
     });
     document.getElementById('add-tecnica-btn')?.addEventListener('click', () => {
-        criarLinhaHabilitacao(document.getElementById('habilitacao-tecnica-container'), 'Habilitação Técnica');
+        criarLinhaInput(document.getElementById('habilitacao-tecnica-container'), 'Habilitação Técnica', '', 'habilitacao-row', 'habilitacao-input', 'remove-habilitacao-btn');
+    });
+    document.getElementById('add-obrigacao-contratante-btn')?.addEventListener('click', () => {
+        criarLinhaInput(document.getElementById('obrigacoes-contratante-container'), 'Obrigação do Contratante', '', 'obrigacao-row', 'obrigacao-input', 'remove-obrigacao-btn');
+    });
+    document.getElementById('add-obrigacao-contratada-btn')?.addEventListener('click', () => {
+        criarLinhaInput(document.getElementById('obrigacoes-contratada-container'), 'Obrigação da Contratada', '', 'obrigacao-row', 'obrigacao-input', 'remove-obrigacao-btn');
     });
 
     // Delegação de evento para remoção
     document.querySelector('.max-w-4xl.mx-auto.space-y-6').addEventListener('click', function(e) {
         if (e.target.closest('.remove-habilitacao-btn')) {
             e.target.closest('.habilitacao-row').remove();
+        }
+        if (e.target.closest('.remove-obrigacao-btn')) {
+            e.target.closest('.obrigacao-row').remove();
         }
     });
 
@@ -309,10 +318,10 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         // Helper para pegar valor de arrays de inputs
-        const getArrayFromInputs = (containerId) => {
+        const getArrayFromInputs = (containerId, inputClass) => {
             const container = document.getElementById(containerId);
             if (!container) return [];
-            const inputs = container.querySelectorAll('.habilitacao-input');
+            const inputs = container.querySelectorAll(`.${inputClass}`);
             return Array.from(inputs).map(input => input.value.trim()).filter(value => value);
         };
 
@@ -350,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function () {
             local_entrega_prestacao: document.getElementById('local-entrega').value || '',
 
             // Obrigações
-            obrigacoes_contratante: document.getElementById('obrigacoes-contratante').value.split('\n').filter(line => line.trim()),
-            obrigacoes_contratada: document.getElementById('obrigacoes-contratada').value.split('\n').filter(line => line.trim()),
+            obrigacoes_contratante: getArrayFromInputs('obrigacoes-contratante-container', 'obrigacao-input'),
+            obrigacoes_contratada: getArrayFromInputs('obrigacoes-contratada-container', 'obrigacao-input'),
 
             // Gestão do Contrato
             gestao_contrato: {
@@ -375,10 +384,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 forma_selecao: document.getElementById('forma-selecao').value || '',
                 criterio_julgamento: document.getElementById('criterio-julgamento-selecao').value || '',
                 exigencias_habilitacao: {
-                    juridica: getArrayFromInputs('habilitacao-juridica-container'),
-                    fiscal_trabalhista: getArrayFromInputs('habilitacao-fiscal-container'),
-                    economico_financeira: getArrayFromInputs('habilitacao-economico-container'),
-                    tecnica: getArrayFromInputs('habilitacao-tecnica-container')
+                    juridica: getArrayFromInputs('habilitacao-juridica-container', 'habilitacao-input'),
+                    fiscal_trabalhista: getArrayFromInputs('habilitacao-fiscal-container', 'habilitacao-input'),
+                    economico_financeira: getArrayFromInputs('habilitacao-economico-container', 'habilitacao-input'),
+                    tecnica: getArrayFromInputs('habilitacao-tecnica-container', 'habilitacao-input')
                 }
             },
 
@@ -470,20 +479,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Erro de Autenticação', 
                         'Você não está autenticado. Por favor, faça login novamente.', 
                         'error'
-                    );
+                    ); 
                 } else if (response.status === 403) {
                     exibirAlerta(
                         'Erro de Permissão', 
                         'Você não tem permissão para editar este TR.', 
                         'error'
-                    );
+                    ); 
                 } else if (response.status == 422) {
                     exibirAlerta(
                         'Erro ao Salvar',
                         '',
                         'error'
                     ); 
-                } 
+                }
             }
         } catch (error) {
             console.error('❌ Erro ao salvar alterações:', error);
