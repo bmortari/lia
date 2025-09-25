@@ -217,21 +217,45 @@ document.addEventListener('DOMContentLoaded', function () {
             newItemRow.className = 'p-4 border rounded-md item-row space-y-2 border-gray-200';
             // Usa o template HTML corrigido e completo para novos itens
             newItemRow.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input type="text" value="" placeholder="Descrição do item" class="p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary">
-                    <input type="text" value="" placeholder="Código CATMAT/CATSER" class="p-2 border-gray-300 border rounded-md item-codigo focus:ring-primary focus:border-primary">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Descrição do item</label>
+                    <input type="text" value="" placeholder="Descrição do item" class="p-2 border-gray-300 border rounded-md item-description focus:ring-primary focus:border-primary editable-content w-full">
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <input type="number" value="" placeholder="Qtd." class="p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary" min="1" step="0.001">
-                    <input type="text" value="" placeholder="Unidade" class="p-2 border-gray-300 border rounded-md item-unidade focus:ring-primary focus:border-primary">
-                    <input type="number" value="" placeholder="Valor Unit." class="p-2 border-gray-300 border rounded-md item-valor-unitario focus:ring-primary focus:border-primary" step="0.01">
-                    <input type="number" value="" placeholder="Valor Total" class="p-2 border-gray-300 border rounded-md bg-gray-100 item-valor-total" disabled>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Código CATMAT/CATSER</label>
+                    <input type="text" value="" placeholder="Código CATMAT/CATSER" class="p-2 border-gray-300 border rounded-md item-codigo focus:ring-primary focus:border-primary editable-content w-full">
                 </div>
-                <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="3" placeholder="Especificações Técnicas (uma por linha)"></textarea>
-                <div class="flex justify-between items-start gap-3">
-                    <textarea class="item-finalidade flex-grow p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none" rows="2" placeholder="Finalidade"></textarea>
-                    <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn self-center"><i class="las la-trash-alt text-2xl"></i></button>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantidade</label>
+                    <input type="number" value="" placeholder="Qtd." class="p-2 border-gray-300 border rounded-md item-quantity focus:ring-primary focus:border-primary editable-content w-full" min="1" step="0.001">
                 </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Unidade de medida</label>
+                    <input type="text" value="" placeholder="Unidade" class="p-2 border-gray-300 border rounded-md item-unidade focus:ring-primary focus:border-primary editable-content w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Valor Unitário</label>
+                    <input type="number" value="" placeholder="Valor Unit." class="p-2 border-gray-300 border rounded-md item-valor-unitario focus:ring-primary focus:border-primary editable-content w-full" step="0.01">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Valor Total</label>
+                    <input type="number" value="" placeholder="Valor Total" class="p-2 border-gray-300 border rounded-md bg-gray-100 item-valor-total w-full" disabled>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Especificações Técnicas</label>
+                <textarea class="item-especificacoes p-2 w-full border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none editable-content" rows="3" placeholder="Especificações Técnicas (uma por linha)"></textarea>
+            </div>
+            <div class="flex justify-between items-center gap-4">
+                <div class="flex-grow">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Finalidade</label>
+                    <textarea class="item-finalidade w-full p-2 border-gray-300 border rounded-md focus:ring-primary focus:border-primary resize-none editable-content" rows="2" placeholder="Finalidade"></textarea>
+                </div>
+                <button type="button" class="text-red-500 hover:text-red-700 remove-item-btn"><i class="las la-trash-alt text-2xl"></i></button>
+            </div>
             `;
             itemsContainer.appendChild(newItemRow);
         });
