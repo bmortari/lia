@@ -1,5 +1,7 @@
 import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
 
+const ORGAO_CONTRATANTE = "Tribunal Regional Eleitoral do Acre";
+
 // ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
 function obterTokenAutenticacao() {
     // Tenta buscar token em várias fontes
@@ -116,19 +118,20 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('📤 Submetendo formulário TR');
 
         // Coleta dados do form
-        const orgaoContratante = document.getElementById('orgao-contratante').value.trim();
         const prompt = document.getElementById('prompt').value.trim();
         const modalidadeLicitacao = document.querySelector('input[name="modalidade_licitacao"]:checked')?.value;
+        const tipoContratacao = document.querySelector('input[name="tipo_contratacao"]:checked')?.value;
 
-        if (!orgaoContratante || !modalidadeLicitacao) {
+        if (!modalidadeLicitacao || !tipoContratacao) {
             alert('Por favor, preencha todos os campos obrigatórios.');
             return;
         }
 
         const postData = {
-            orgao_contratante: orgaoContratante,
+            orgao_contratante: ORGAO_CONTRATANTE,
             prompt: prompt || '',
-            modalidade_licitacao: modalidadeLicitacao
+            modalidade_licitacao: modalidadeLicitacao,
+            tipo_contratacao: tipoContratacao
         };
 
         console.log('📤 Enviando dados:', postData);

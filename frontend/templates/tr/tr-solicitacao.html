@@ -44,11 +44,6 @@
                             </div>
                         </div>
 
-                        <!-- Órgão Contratante Input -->
-                        <div>
-                            <label for="orgao-contratante" class="block mb-2 text-sm font-medium text-gray-900">Órgão Contratante</label>
-                            <input type="text" id="orgao-contratante" name="orgao_contratante" required class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" placeholder="Digite o Órgão Contratante">
-                        </div>
 
                         <!-- Solicitation Text Area (Prompt) -->
                         <div>
@@ -79,6 +74,21 @@
                                 <div class="flex items-center">
                                     <input id="registro_precos" type="radio" name="modalidade_licitacao" value="registro_precos" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary">
                                     <label for="registro_precos" class="ml-2 block text-sm font-medium text-gray-900">Registro de preços</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tipo da Contratação Radio Buttons -->
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900">Tipo da contratação</label>
+                            <div class="flex space-x-8">
+                                <div class="flex items-center">
+                                    <input id="compras" type="radio" name="tipo_contratacao" value="compras" required class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary">
+                                    <label for="compras" class="ml-2 block text-sm font-medium text-gray-900">Compras</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="servicos" type="radio" name="tipo_contratacao" value="servicos" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary">
+                                    <label for="servicos" class="ml-2 block text-sm font-medium text-gray-900">Serviços</label>
                                 </div>
                             </div>
                         </div>
