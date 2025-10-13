@@ -180,3 +180,118 @@ Antes de retornar o JSON, certifique-se de que:
 
 Retorne apenas o JSON estruturado, sem texto adicional antes ou depois. O JSON deve ser válido e formatado adequadamente para importação direta no sistema.
 '''
+
+prompt_tr_servicos = '''
+O JSON deve seguir esta estrutura:
+
+```json
+{
+  "orgao_contratante": "string", // OK
+  "tipo_contratacao": "compras" | "servicos", // ok
+  "objeto_contratacao": "string detalhada do objeto", // ok
+  "modalidade_licitacao": "aquisicao_direta" | "registro_precos", // ok
+  "fundamentacao_legal": "texto com base legal na Lei 14.133/2021",
+  "prazo_vigencia_contrato": "string (ex: '90 dias', '12 meses')",
+  "obrigacoes_contratante": ["array de obrigações"],
+  "obrigacoes_contratada": ["array de obrigações"],
+  "admite_subcontratacao": boolean,
+  "exige_garantia_contratual": boolean,
+  "local_entrega_prestacao": "string com endereço completo",
+  "prazo_entrega_prestacao": "string (ex: '30 dias')",
+  "condicoes_pagamento": "texto descritivo",
+  "sancoes_administrativas": "texto sobre sanções aplicáveis",
+  "responsavel": "nome do responsável ou equipe",
+  "cargo_responsavel": "cargo do responsável",
+  
+  "sistema_registro_precos": {
+    "adota_srp": boolean,
+    "tipo_srp": "string com justificativa",
+    "quantidade_maxima": boolean,
+    "quantidade_minima_cotacao": "string ou null",
+    "permite_precos_diferentes": boolean,
+    "justificativa_precos_diferentes": "string ou null",
+    "permite_proposta_inferior": boolean,
+    "criterio_julgamento": "item" | "grupo",
+    "registro_limitado": boolean,
+    "criterio_reajuste": "IPCA" | "INCC" | "outro índice" | null,
+    "vigencia_ata": "12 meses" | "outro prazo"
+  },
+
+  "descricao_solucao": "texto sobre a descrição da solução a ser adotada. por exemplo:
+  (Texto exemplar abaixo)
+  A solução consiste na aquisição de (item) para atender às necessidades (local a ser atendido).
+  Deverá ser entregue (condições de entrega) e em conformidade com as especificações técnicas
+  detalhadas no item 1.2 deste Termo de Referência.
+  (Fim do texto)
+  As informações devem ser extraídas do DFD e PGR informados.
+  ",
+  
+  "requisitos_contratacao": {
+    "sustentabilidade": "texto sobre requisitos de sustentabilidade",
+    "indicacao_marcas": "texto sobre marcas/modelos",
+    "vedacao_marca_produto": "texto sobre vedações",
+    "exige_amostra": boolean,
+    "exige_carta_solidariedade": boolean,
+    "garantia_produto_servico": "texto sobre garantia",
+    "exige_vistoria": boolean
+  },
+  
+  "modelo_execucao": {
+    "condicoes_entrega": "texto detalhado",
+    "garantia_manutencao": "texto sobre assistência técnica",
+    "materiais_fornecidos": "texto ou null",
+    "informacoes_proposta": "texto com requisitos para proposta"
+  },
+  
+  "gestao_contrato": {
+    "modelo_gestao": "texto sobre gestão e fiscalização",
+    "papeis_responsabilidades": "texto sobre gestor e fiscal"
+  },
+  
+  "criterios_pagamento": {
+    "recebimento_objeto": "texto sobre recebimento provisório e definitivo",
+    "liquidacao": "texto sobre liquidação",
+    "prazo_pagamento": "string (ex: '5 dias úteis')",
+    "forma_pagamento": "Ordem Bancária/SIAFI" | "outra forma",
+    "antecipacao_pagamento": boolean,
+    "cessao_credito": "texto sobre cessão"
+  },
+  
+  "selecao_fornecedor": {
+    "forma_selecao": "Pregão Eletrônico" | "outra modalidade",
+    "criterio_julgamento": "Menor Preço por Item" | "Menor Preço por Grupo" | "outro",
+    "exigencias_habilitacao": {
+      "juridica": ["array de documentos exigidos"],
+      "fiscal_trabalhista": ["array de documentos exigidos"],
+      "economico_financeira": ["array de documentos exigidos"],
+      "tecnica": ["array de documentos exigidos ou null"]
+    }
+  },
+  
+  "estimativa_valor": {
+    "valor_total": número ou null,
+    "valor_unitario": número ou null (para itens únicos),
+    "metodologia_pesquisa": "texto sobre pesquisa de preços"
+  },
+  
+  "adequacao_orcamentaria": {
+    "fonte_recursos": "string",
+    "classificacao_orcamentaria": "string",
+    "previsao_pca": boolean,
+    "codigo_pca": string ou null
+  },
+  
+  "itens": [
+    {
+      "descricao": "string detalhada",
+      "especificacoes_tecnicas": ["array de especificações"],
+      "quantidade": número,
+      "valor_unitario": número ou null,
+      "valor_total": número ou null,
+      "unidade_medida": "Unidade" | "Metro" | "Quilograma" | etc,
+      "codigo_catmat_catser": "string ou null",
+      "finalidade": "texto sobre uso/finalidade"
+    }
+  ]
+}
+'''

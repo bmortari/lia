@@ -979,7 +979,7 @@ async function carregarDadosTR() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔄 tr-resultado.js carregado');
+    console.log('🔄 tr-resultado-compras.js carregado');
 
     carregarDadosTR();
 
