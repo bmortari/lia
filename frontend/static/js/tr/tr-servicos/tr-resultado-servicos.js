@@ -354,7 +354,7 @@ function generatePdf(jsonData) {
 
             // Tabela de Itens
             checkPageBreak(30);
-            const tableHeaders = ["Item/grupo", "Especificação de Serviço", tabelaHeaderCodigo, "Unidade de medida", "Quantidade", "Valor unitário", "Valor total"];
+            const tableHeaders = ["Item", "Descrição", tabelaHeaderCodigo, "Unidade", "Qtd", "V. Unit.", "V. Total"];
             const colWidths = [20, 50, 20, 20, 20, 25, 25]; // Total width = 180
             const tableStartX = margin;
 
@@ -388,7 +388,7 @@ function generatePdf(jsonData) {
 
                 let maxLines = 0;
                 const cellPadding = 2;
-                const lineHeight = 5;
+                const lineHeight = 6;
 
                 rowData.forEach((text, i) => {
                     const lines = doc.splitTextToSize(String(text), colWidths[i] - (cellPadding * 2));
@@ -406,9 +406,9 @@ function generatePdf(jsonData) {
                 rowData.forEach((text, i) => {
                     doc.rect(currentX, y, colWidths[i], rowHeight);
                     const lines = doc.splitTextToSize(String(text), colWidths[i] - (cellPadding * 2));
-                    const textY = y + cellPadding + (lineHeight/2);
-                    
-                    if (i >= 5) { // Colunas de valores
+        
+                    const textY = y + cellPadding + lineHeight;
+                    if (i >= 5) { 
                         lines.forEach((line, lineIndex) => {
                             const textWidth = doc.getStringUnitWidth(line) * doc.internal.getFontSize() / doc.internal.scaleFactor;
                             const textX = currentX + colWidths[i] - cellPadding - textWidth;
