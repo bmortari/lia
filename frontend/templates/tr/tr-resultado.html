@@ -79,6 +79,10 @@
 </div>
 
     <script src="/static/js/flowbite.min.js" defer></script>
+    {% if tr.tipo_contratacao == 'servicos' %}
+    <script type="module" src="/static/js/tr/tr-servicos/tr-resultado-servicos.js"></script>
+    {% else %}
     <script type="module" src="/static/js/tr/tr-compras/tr-resultado-compras.js"></script>
+    {% endif %}
 </body>
 </html>

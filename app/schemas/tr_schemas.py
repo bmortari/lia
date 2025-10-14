@@ -242,6 +242,7 @@ class TRCreate(BaseModel):
     orgao_contratante: str = Field(..., description="Órgão contratante")
     prompt: Optional[str] = Field(None, description="Prompt/solicitação do usuário")
     modalidade_licitacao: str = Field(..., description="Termo de referência referente à aquisição ou formação de registro de preços")
+    tipo_contratacao: str = Field(..., description="Indica se a contratação é de uma compra ou serviço")
     #itens: List[TRItemCreate] = Field(..., min_items=1, description="Lista de itens do TR")
     
     # @field_validator('sistema_registro_precos')

@@ -16,7 +16,7 @@ from app.models.dfd_models import DFD
 from app.models.pgr_models import PGR
 from app.models.etp_models import ETP
 from app.schemas.tr_schemas import TRCreate, TRRead, TRUpdate
-from app.services.prompts.tr_prompts import prompt_tr
+from app.services.prompts.tr_prompts import prompt_tr, prompt_tr_servicos
 from app.config import acre_tz
 from app.models.tr_models import TRItem
 from sqlalchemy import delete
@@ -199,12 +199,17 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     Gera um JSON estruturado para o TR usando o modelo Gemini.
     """
     client = get_genai_client()
-    model = "gemini-2.5-flash"  # Modelo de IA
-
+    model = "gemini-2.5-flash"
+    
+    # Escolhe o prompt com base no tipo de contratação
+    if tr_in.tipo_contratacao == "servicos":
+        prompt_base = prompt_tr_servicos
+    else:  # Default para "compras"
+        prompt_base = prompt_tr
 
     # Monta o prompt final com as instruções e os dados dos artefatos
     prompt_completo = f"""
-    {prompt_tr}
+    {prompt_base}
 
     **Artefatos Fornecidos (JSON):**
 
@@ -213,6 +218,7 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     **Dados fornecidos pelo usuário:**
     Órgão contratante: {tr_in.orgao_contratante}
     Modalidade licitação: {tr_in.modalidade_licitacao}
+    Tipo de Contratação: {tr_in.tipo_contratacao}
     """
 
     files = [

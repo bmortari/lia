@@ -915,23 +915,23 @@ VI - eventual destaque do valor de retenções tributárias cabíveis.`;
             brasaoImg.src = "/static/assets/img/brasao_oficial_republica.png";
 
             const drawContentAndResolve = () => {
-                doc.setFontSize(11);
-                doc.setFont("times", "normal");
-                doc.text("Anexo", margin, y);
-                y += 10;
-
                 doc.setFontSize(9);
+                doc.setFont("times", "normal");
                 doc.text("TRIBUNAL REGIONAL ELEITORAL DO ACRE", pageWidth / 2, y, { align: "center" });
                 y += 10;
 
-                doc.setFontSize(11);
-                doc.text(anexo, pageWidth / 2, y, { align: "center" });
+                doc.setFontSize(8);
+                doc.text("Alameda Ministro Miguel Ferrante, 224 - Bairro Portal da Amazônia - CEP 69915-632 - Rio Branco - AC", pageWidth / 2, y, { align: "center" });
                 y += 10;
 
                 doc.setFontSize(11);
+                doc.text("ANEXO VIII", pageWidth / 2, y, { align: "center" });
+                y += 15;
+
+                doc.setFontSize(11);
                 doc.setFont("times", "bold");
-                doc.text(tituloAnexo, pageWidth / 2, y, { align: "center" });
-                y += 10;
+                doc.text("TERMO DE REFERÊNCIA (TR) PARA SERVIÇOS", pageWidth / 2, y, { align: "center" });
+                y += 15;
 
                 doc.setFontSize(11);
                 doc.setFont("times", "bold");
