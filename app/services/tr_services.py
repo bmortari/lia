@@ -221,32 +221,32 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     Tipo de Contratação: {tr_in.tipo_contratacao}
     """
 
-    files = [
-        client.files.upload(file=os.path.join(temp_dir, f"MODELO-TR-COMPRAS.html")),
-        client.files.upload(file=os.path.join(temp_dir, f"MODELO-TR-SERVICOS.html"))    
+    file_map = {
+        "servicos": ["SEI_0619980_Anexo_IX___TERMO_DE_REFERENCIA_PARA_SERVICOS-1.pdf"],
+        "compras": ["MODELO-TR-COMPRAS.html"],
+    }
+
+    filenames = file_map.get(tr_in.tipo_contratacao, "MODELO-TR-COMPRAS.html")
+
+    uploaded_files = []
+    for filename in filenames:
+        uploaded = client.files.upload(file=os.path.join(temp_dir, filename))
+        if isinstance(uploaded, list):
+            uploaded_files.extend(uploaded)
+        else:
+            uploaded_files.append(uploaded)
+
+    parts = [
+        types.Part.from_uri(file_uri=f.uri, mime_type=f.mime_type)
+        for f in uploaded_files
     ]
+    parts.append(types.Part.from_text(text=prompt_completo))
+
+    contents = [types.Content(role="user", parts=parts)]
 
     generate_content_config = types.GenerateContentConfig(
         response_mime_type="application/json"
     )
-    contents = [
-        types.Content(
-            role="user",
-            parts=[
-                types.Part.from_uri(
-                    file_uri=files[0].uri,
-                    mime_type=files[0].mime_type
-                ),
-                types.Part.from_uri(
-                    file_uri=files[1].uri,
-                    mime_type=files[1].mime_type
-                ),
-                types.Part.from_text(
-                    text=prompt_completo
-                )
-            ]
-        )
-    ]
  
     try:
         response = client.models.generate_content(

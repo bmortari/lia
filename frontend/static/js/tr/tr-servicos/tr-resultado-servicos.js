@@ -348,7 +348,7 @@ function generatePdf(jsonData) {
             doc.setFont("times", "normal");
             
             // Subseção 1.1
-            const tipoContratacaoTexto = `$Contratação de serviços de ${jsonData.objeto_contratacao}, conforme condições e exigências estabelecidas neste instrumento.`;
+            const tipoContratacaoTexto = `${jsonData.objeto_contratacao}, conforme condições e exigências estabelecidas neste instrumento.`;
             y += addSubsection("1.1", "", tipoContratacaoTexto, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += sectionSpacing;
 
@@ -558,8 +558,21 @@ function generatePdf(jsonData) {
             checkPageBreak(15);
             y += addSubsection("4.3", "DA VEDAÇÃO DE UTILIZAÇÃO DE MARCA OU PRODUTO NA EXECUÇÃO DO SERVIÇO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             checkPageBreak(20);
-            y += addSubsection("4.3.1", "", jsonData.requisitos_contratacao.vedacao_marca_produto, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            y += sectionSpacing;   
+         
+            const vedacao = jsonData.requisitos_contratacao.vedacao_marca_produto?.trim();
+
+            const vedacaoTexto = vedacao && vedacao !== ""
+            ? `A Administração não aceitará o fornecimento dos seguintes produtos/marcas: ${vedacao}.`
+            : "Não há vedação de utilização de marcas ou produtos na execução do serviço referido neste termo.";
+
+            y += addSubsection(
+            "4.3.1",
+            "",
+            vedacaoTexto,
+            margin + subsectionIndent + 5,
+            y,
+            contentWidth - subsectionIndent - 5
+            );
             
             // checkPageBreak(15);
             // y += addSubsection("4.4", "DA AMOSTRA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
@@ -761,13 +774,9 @@ function generatePdf(jsonData) {
             y += addSubsection("7.3.1", "", `Recebida a Nota Fiscal ou documento de cobrança equivalente, correrá o prazo de dez dias úteis para fins de liquidação, na forma desta seção, prorrogáveis por igual período, nos termos do art. 7º, §2º da Instrução Normativa SEGES/ME nº 77/2022.`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             checkPageBreak(20);
             y += addSubsection("7.3.1.1", "", `O prazo de que trata o item anterior será reduzido à metade, mantendo-se a possibilidade de prorrogação, no caso de contratações decorrentes de despesas cujos valores não ultrapassem o limite de que trata o inciso II do art. 75 da Lei nº 14.133, de 2021.`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
-            const texto7_3_2 = `Para fins de liquidação, o setor competente deve verificar se a Nota Fiscal ou Fatura apresentada expressa os elementos necessários e essenciais do documento, tais como:
-I - o prazo de validade;
-II - a data da emissão;
-III - os dados do contrato e do órgão contratante;
-IV - o período respectivo de execução do contrato;
-V - o valor a pagar; e
-VI - eventual destaque do valor de retenções tributárias cabíveis.`;
+
+            const texto7_3_2 = `Para fins de liquidação, o setor competente deve verificar se a Nota Fiscal ou Fatura apresentada expressa os elementos necessários e essenciais do documento, tais como: o prazo de validade; a data de emissão; os dados do contrato e do órgão contratante; o período respectivo de execução do contrato; o valor a pagar; e eventual destaque do valor de retenções tributárias cabíveis.`;
+
             y += addSubsection("7.3.2", "", texto7_3_2, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             checkPageBreak(20);
             y += addSubsection("7.3.3", "", `Havendo erro na apresentação da nota fiscal ou instrumento de cobrança equivalente, ou circunstância que impeça a liquidação da despesa, esta ficará sobrestada até que o contratado providencie as medidas saneadoras, reiniciando-se o prazo após a comprovação da regularização da situação, sem ônus ao contratante;`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
@@ -812,7 +821,7 @@ VI - eventual destaque do valor de retenções tributárias cabíveis.`;
             
             y += addSubsection("7.6", "DA ANTECIPAÇÃO DE PAGAMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             doc.setFont("times", "normal");
-            const antecipacaoTxt = jsonData.criterios_pagamento.antecipacao_pagamento ? 'Sim' : 'Não';
+            const antecipacaoTxt = jsonData.criterios_pagamento.antecipacao_pagamento ? 'Será permitido a antecipação do pagamento para o serviço referido.' : 'Não será permitido a antecipação de pagamento para o serviço referido.';
             y += addSubsection("7.6.1", "", antecipacaoTxt, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             y += sectionSpacing;
             
