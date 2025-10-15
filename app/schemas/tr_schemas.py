@@ -70,6 +70,9 @@ class RequisitosContratacao(BaseModel):
 class ModeloExecucao(BaseModel):
     """Schema para Modelo de Execução"""
     model_config = ConfigDict(from_attributes=True)
+    condicoes_execucao: Optional[str] = Field(None, description="Condições para a execução do serviço")
+    informacoes_relevantes: Optional[str] = Field(None, description="Características relevantes para o dimensionamento da proposta")
+    materiais_disponibilizados: Optional[str] = Field(None, description="Materiais que devem ser fornecidos para a execução do serviço")
     condicoes_entrega: Optional[str] = Field(None, description="Condições de entrega detalhadas")
     garantia_manutencao: Optional[str] = Field(None, description="Garantia e assistência técnica")
     materiais_fornecidos: Optional[str] = Field(None, description="Materiais fornecidos")
@@ -89,6 +92,8 @@ class CriteriosPagamento(BaseModel):
     recebimento_objeto: Optional[str] = Field(None, description="Recebimento provisório e definitivo")
     liquidacao: Optional[str] = Field(None, description="Processo de liquidação")
     prazo_pagamento: Optional[str] = Field(None, description="Prazo para pagamento")
+    prazo_provisorio_recebimento: Optional[str] = Field(None, description="Prazo provisorio para recebimento do objeto do contrato")
+    prazo_definitivo_recebimento: Optional[str] = Field(None, description="Prazo definitivo para recebimento do objeto do contrato")
     forma_pagamento: Optional[str] = Field(None, description="Forma de pagamento")
     antecipacao_pagamento: bool = Field(False, description="Se permite antecipação")
     cessao_credito: Optional[str] = Field(None, description="Regras sobre cessão de crédito")

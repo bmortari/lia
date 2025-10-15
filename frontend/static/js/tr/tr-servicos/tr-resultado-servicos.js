@@ -573,6 +573,7 @@ function generatePdf(jsonData) {
             y,
             contentWidth - subsectionIndent - 5
             );
+            y += sectionSpacing;                
             
             // checkPageBreak(15);
             // y += addSubsection("4.4", "DA AMOSTRA", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
@@ -717,7 +718,7 @@ function generatePdf(jsonData) {
             y += addSubsection("7.2", "DO RECEBIMENTO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             doc.setFont("times", "normal");
 
-            y += addSubsection("7.2.1", "", `Os serviços serão recebidos provisoriamente, no prazo de ${jsonData.criterios_pagamento.prazo_provisiorio_recebimento} dias, pelos fiscais técnico e administrativo, mediante termos detalhados, quando verificado o cumprimento das exigências de caráter técnico e administrativo. (Art. 140, I, a , da Lei nº 14.133 e Arts. 22, X e 23, X do Decreto nº 11.246, de 2022).`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            y += addSubsection("7.2.1", "", `Os serviços serão recebidos provisoriamente, no prazo de ${jsonData.criterios_pagamento.prazo_provisorio_recebimento} dias, pelos fiscais técnico e administrativo, mediante termos detalhados, quando verificado o cumprimento das exigências de caráter técnico e administrativo. (Art. 140, I, a , da Lei nº 14.133 e Arts. 22, X e 23, X do Decreto nº 11.246, de 2022).`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             checkPageBreak(20);
 
             y += addSubsection("7.2.1.1", "", `O prazo da disposição acima será contado do recebimento de comunicação de cobrança oriunda do contratado com a comprovação da prestação dos serviços a que se referem a parcela a ser paga.`, margin + subsectionIndent + 10, y, contentWidth - subsectionIndent - 10);
@@ -824,11 +825,12 @@ function generatePdf(jsonData) {
             const antecipacaoTxt = jsonData.criterios_pagamento.antecipacao_pagamento ? 'Será permitido a antecipação do pagamento para o serviço referido.' : 'Não será permitido a antecipação de pagamento para o serviço referido.';
             y += addSubsection("7.6.1", "", antecipacaoTxt, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             y += sectionSpacing;
+            checkPageBreak(20);
             
-            y += addSubsection("7.7", "DA CESSÃO DE CRÉDITO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
-            doc.setFont("times", "normal");
-            y += addSubsection("7.7.1", "", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
-            y += sectionSpacing;
+            // y += addSubsection("7.7", "DA CESSÃO DE CRÉDITO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            // doc.setFont("times", "normal");
+            // y += addSubsection("7.7.1", "", jsonData.criterios_pagamento.cessao_credito, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
+            // y += sectionSpacing;
 
             // Section 8: DA FORMA E CRITÉRIO DE SELEÇÃO DO FORNECEDOR
             checkPageBreak(20);
@@ -906,7 +908,6 @@ function generatePdf(jsonData) {
             y += 7;
             doc.setFontSize(11);
             doc.setFont("times", "normal");
-            
             y += addSubsection("11.1", "SANÇÕES:", jsonData.sancoes_administrativas, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             y += 20;
 

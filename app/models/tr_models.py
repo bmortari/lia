@@ -83,6 +83,9 @@ class TR(Base):
     modelo_execucao = Column(JSON, nullable=True)
     # Estrutura esperada:
     # {
+    #     "condicoes_execucao": str,
+    #     "informacoes_relevantes": str,
+    #     "materiais_disponibilizados": str,
     #     "condicoes_entrega": str,
     #     "garantia_manutencao": str,
     #     "materiais_fornecidos": str,
@@ -104,6 +107,8 @@ class TR(Base):
     #     "recebimento_objeto": str,
     #     "liquidacao": str,
     #     "prazo_pagamento": str,
+    #     "prazo_provisorio_recebimento": str,
+    #     "prazo_definitivo_recebimento": str,
     #     "forma_pagamento": str,
     #     "antecipacao_pagamento": bool,
     #     "cessao_credito": str

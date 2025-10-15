@@ -101,6 +101,8 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
         # Mapeia o JSON para o modelo SQLAlchemy
         itens_data = dados_tr_json.pop("itens", [])
 
+        logger.info(f"JSON a ser inserido no banco: {dados_tr_json}")
+
         # Cria a instância do TR com os dados do JSON
         # O operador ** desempacota o dicionário nos argumentos do construtor
         novo_tr = TR(
@@ -207,6 +209,8 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
     else:  # Default para "compras"
         prompt_base = prompt_tr
 
+    logger.info(f"Prompt utilizado: {prompt_base}")
+
     # Monta o prompt final com as instruções e os dados dos artefatos
     prompt_completo = f"""
     {prompt_base}
@@ -254,6 +258,7 @@ async def gerar_dados_tr(artefatos: Dict, tr_in: TRCreate) -> Dict:
             contents=contents,
             config=generate_content_config
         )
+        logger.info(f"Resposta da IA para o TR: {response.text}")
         return json.loads(response.text)
     except Exception as e:
         logger.error(f"Erro ao gerar dados para o TR com IA: {e}", exc_info=True)

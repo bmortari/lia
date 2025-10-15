@@ -41,7 +41,7 @@ O JSON deve seguir esta estrutura:
 ```json
 {
   "orgao_contratante": "string",
-  "tipo_contratacao": "compras" | "servicos",
+  "tipo_contratacao": "compras",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",
   "fundamentacao_legal": "texto com base legal na Lei 14.133/2021",
@@ -223,7 +223,7 @@ O JSON deve seguir esta estrutura:
 ```json
 {
   "orgao_contratante": "string",
-  "tipo_contratacao": "compras" | "servicos",
+  "tipo_contratacao": "servicos",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",
   "fundamentacao_legal": "texto com base legal na Lei 14.133/2021",
@@ -273,9 +273,9 @@ O JSON deve seguir esta estrutura:
   },
   
   "modelo_execucao": {
-    "condicoes_execucao": "Início da execução do objeto: [INSERIR] dias após [a assinatura do contrato OU a emissão da ordem de serviço]. "
-    "informacoes_relevantes": "Descrever características relevantes para o dimensionamento da proposta."
-    "materiais_disponibilizados": "Indicar materiais, equipamentos e ferramentas que devem ser disponibilizados para a prestação do serviço."
+    "condicoes_execucao": "Início da execução do objeto: [INSERIR] dias após [a assinatura do contrato OU a emissão da ordem de serviço]. ",
+    "informacoes_relevantes": "Descrever características relevantes para o dimensionamento da proposta.",
+    "materiais_disponibilizados": "Indicar materiais, equipamentos e ferramentas que devem ser disponibilizados para a prestação do serviço.",
     "condicoes_entrega": "texto detalhado",
     "garantia_manutencao": "texto sobre assistência técnica",
     "materiais_fornecidos": "texto ou null",
@@ -291,6 +291,8 @@ O JSON deve seguir esta estrutura:
     "recebimento_objeto": "texto sobre recebimento provisório e definitivo",
     "liquidacao": "texto sobre liquidação",
     "prazo_pagamento": "string (ex: '5 dias úteis')",
+    "prazo_provisorio_recebimento": "string (ex: 30 (trinta))" (prazo para recebimento do objeto do contrato)
+    "prazo_definitivo_recebimento": "string (ex: 60 (sessenta))" (prazo para recebimento do objeto do contrato)
     "forma_pagamento": "OBPIX" | "outra forma",
     "antecipacao_pagamento": boolean,
     "cessao_credito": "texto sobre cessão"
