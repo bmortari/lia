@@ -432,7 +432,7 @@ function generatePdf(jsonData) {
             
             // Subseção 1.3
             checkPageBreak(15);
-            const prazoVigencia = `O prazo de vigência da contratação é de ${jsonData.prazo_vigencia_contrato || '[não definido]'}.`;
+            const prazoVigencia = `${jsonData.prazo_vigencia_contrato || '[não definido]'}.`;
             y += addSubsection("1.3", "", prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
             y += sectionSpacing;
