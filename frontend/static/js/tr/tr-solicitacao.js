@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingOverlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         let progress = 0;
-        const totalDuration = 1.5 * 60 * 1000; // 90 segundos em milissegundos
+        const totalDuration = 1 * 60 * 1000; // 60 segundos em milissegundos
         const intervalTime = 1000; // Atualiza a cada segundo
         const progressIncrement = (100 / (totalDuration / intervalTime)) * 0.95; // Incrementar para atingir 95% em 4 minutos
 

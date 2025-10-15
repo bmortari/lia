@@ -275,7 +275,7 @@ O JSON deve seguir esta estrutura:
   "modelo_execucao": {
     "condicoes_execucao": "Início da execução do objeto: [INSERIR] dias após [a assinatura do contrato OU a emissão da ordem de serviço]. ",
     "informacoes_relevantes": "Descrever características relevantes para o dimensionamento da proposta.",
-    "materiais_disponibilizados": "Indicar materiais, equipamentos e ferramentas que devem ser disponibilizados para a prestação do serviço.",
+    "materiais_disponibilizados": string (Indicar materiais, equipamentos e ferramentas que devem ser disponibilizados para a prestação do serviço),
     "condicoes_entrega": "texto detalhado",
     "garantia_manutencao": "texto sobre assistência técnica",
     "materiais_fornecidos": "texto ou null",
