@@ -3792,6 +3792,18 @@
   }
 }
 @layer components {
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .animate-spin-icon {
+    display: inline-block;
+    animation: spin 1.5s linear infinite;
+  }
   .btn-primary {
     cursor: pointer;
     border-radius: var(--radius-lg);

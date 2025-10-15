@@ -94,21 +94,29 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingOverlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
         let progress = 0;
+        const totalDuration = 1.5 * 60 * 1000; // 90 segundos em milissegundos
+        const intervalTime = 1000; // Atualiza a cada segundo
+        const progressIncrement = (100 / (totalDuration / intervalTime)) * 0.95; // Incrementar para atingir 95% em 4 minutos
+
         const interval = setInterval(() => {
-            progress += Math.random() * 15;
-            if (progress > 90) progress = 90;
+            progress += progressIncrement;
+            if (progress > 95) {
+                progress = 95;
+            }
             progressBar.style.width = progress + '%';
-        }, 200);
+        }, intervalTime);
+
         return interval;
     }
 
     // Função para esconder loading
     function hideLoading(interval) {
-        if (interval) clearInterval(interval);
+        clearInterval(interval);
         progressBar.style.width = '100%';
         setTimeout(() => {
             loadingOverlay.classList.add('hidden');
             document.body.style.overflow = '';
+            progressBar.style.width = '0%';
         }, 500);
     }
 
