@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "/static/*": ["frontend/static/*"]
+    },
+    "lib": ["es2020", "dom"] 
+  },
+  "include": ["frontend/static/**/*.js"]
+}
