@@ -359,6 +359,25 @@
                         <input type="text" id="forma-pagamento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.forma_pagamento or '' }}{% endif %}" disabled>
                     </div>
                 </div>
+
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center">
+                            <i class="las la-money-bill-wave text-2xl text-gray-600 mr-3"></i>
+                            <label class="text-lg font-medium text-gray-900">Permite antecipação de pagamento?</label>
+                        </div>
+                    </div>
+                    <div id="antecipacao-pagamento" class="editable-content flex space-x-6 items-center">
+                        <div class="flex items-center">
+                            <input id="permite-antecipacao" type="radio" value="true" name="antecipacao-pagamento" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" {% if tr and tr.criterios_pagamento.antecipacao_pagamento == true %}checked{% endif %}>
+                            <label for="permite-antecipacao" class="ml-2 block text-sm font-medium text-gray-900">Sim</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="nao-permite-antecipacao" type="radio" value="false" name="antecipacao-pagamento" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" {% if tr and tr.criterios_pagamento.antecipacao_pagamento == false %}checked{% endif %}>
+                            <label for="nao-permite-antecipacao" class="ml-2 block text-sm font-medium text-gray-900">Não</label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="bg-white border border-gray-200 rounded-lg shadow-sm">

@@ -455,7 +455,7 @@ document.addEventListener('DOMContentLoaded', function () {
                  liquidacao: document.getElementById('liquidacao').value || '',
                  prazo_pagamento: document.getElementById('prazo-pagamento').value || '',
                  forma_pagamento: document.getElementById('forma-pagamento').value || '',
-                 antecipacao_pagamento: false, // Adicionar checkbox se necessário
+                 antecipacao_pagamento: document.querySelector('input[name="antecipacao-pagamento"]:checked').value === 'true', // Adicionar checkbox se necessário
                  cessao_credito: '' // Adicionar campo se necessário
             },
             condicoes_pagamento: document.getElementById('condicoes-pagamento').value || '',
