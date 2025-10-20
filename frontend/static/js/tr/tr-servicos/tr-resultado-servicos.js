@@ -711,7 +711,11 @@ function generatePdf(jsonData) {
             y += addSubsection("7.1", "DA AVALIAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             doc.setFont("times", "normal");
 
-            y += addSubsection("7.1.1", "", "A avaliação da execução do objeto utilizará " + (jsonData.criterios_pagamento.avaliacao.anexo || jsonData.criterios_pagamento.avaliacao.instrumento || jsonData.criterios_pagamento.avaliacao.descricao_item || "A avaliação da execução do objeto utilizará o Instrumento de Medição de Resultado (IMR) ou outro instrumento substituto."), margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);        
+            const avaliacao = jsonData.criterios_pagamento.avaliacao;
+            const avaliacaoText = avaliacao 
+                ? (avaliacao.anexo || avaliacao.instrumento || avaliacao.descricao_item || "o Instrumento de Medição de Resultado (IMR) ou outro instrumento substituto.")
+                : "o Instrumento de Medição de Resultado (IMR) ou outro instrumento substituto.";
+            y += addSubsection("7.1.1", "", `A avaliação da execução do objeto utilizará ${avaliacaoText}`, margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);
             y += sectionSpacing;
             checkPageBreak(20);   
 

@@ -188,6 +188,13 @@
                     </div>
                     <div>
                         <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center"><i class="las la-box-open text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Materiais a serem disponibilizados pela Contratada</label></div>
+                            <button type="button" class="edit-btn btn-outlined" data-target="materiais-disponibilizados"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <textarea id="materiais-disponibilizados" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.materiais_disponibilizados or '' }}{% endif %}</textarea>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-info-circle text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Informações Relevantes</label></div>
                             <button type="button" class="edit-btn btn-outlined" data-target="informacoes-relevantes"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
@@ -375,6 +382,24 @@
                         <div class="flex items-center">
                             <input id="nao-permite-antecipacao" type="radio" value="false" name="antecipacao-pagamento" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary focus:ring-2" {% if tr and tr.criterios_pagamento.antecipacao_pagamento == false %}checked{% endif %}>
                             <label for="nao-permite-antecipacao" class="ml-2 block text-sm font-medium text-gray-900">Não</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center"><i class="las la-calendar-check text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Prazo provisório (dias)</label></div>
+                                <button type="button" class="edit-btn btn-outlined" data-target="prazo-provisorio-recebimento"><i class="las la-edit mr-1"></i>Editar</button>
+                            </div>
+                            <input type="number" id="prazo-provisorio-recebimento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_provisorio_recebimento or '' }}{% endif %}" disabled>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="flex items-center"><i class="las la-calendar-check text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Prazo definitivo (dias)</label></div>
+                                <button type="button" class="edit-btn btn-outlined" data-target="prazo-definitivo-recebimento"><i class="las la-edit mr-1"></i>Editar</button>
+                            </div>
+                            <input type="number" id="prazo-definitivo-recebimento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_definitivo_recebimento or '' }}{% endif %}" disabled>
                         </div>
                     </div>
                 </div>

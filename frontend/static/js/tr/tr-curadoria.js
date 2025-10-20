@@ -404,6 +404,7 @@ document.addEventListener('DOMContentLoaded', function () {
             modelo_execucao: {
                 condicoes_entrega: document.getElementById('condicoes-entrega').value || '',
                 condicoes_execucao: document.getElementById('condicoes-execucao').value || '',
+                materiais_disponibilizados: document.getElementById('materiais-disponibilizados').value || '',
                 informacoes_relevantes: document.getElementById('informacoes-relevantes').value || '',
                 garantia_manutencao: document.getElementById('garantia-manutencao').value || '',
                 materiais_fornecidos: null, // Campo não presente no HTML, pode ser adicionado se necessário
@@ -456,7 +457,9 @@ document.addEventListener('DOMContentLoaded', function () {
                  prazo_pagamento: document.getElementById('prazo-pagamento').value || '',
                  forma_pagamento: document.getElementById('forma-pagamento').value || '',
                  antecipacao_pagamento: document.querySelector('input[name="antecipacao-pagamento"]:checked').value === 'true', // Adicionar checkbox se necessário
-                 cessao_credito: '' // Adicionar campo se necessário
+                 cessao_credito: '', // Adicionar campo se necessário
+                 prazo_provisorio_recebimento: document.getElementById('prazo-provisorio-recebimento').value || '',
+                 prazo_definitivo_recebimento: document.getElementById('prazo-definitivo-recebimento').value || ''
             },
             condicoes_pagamento: document.getElementById('condicoes-pagamento').value || '',
 
