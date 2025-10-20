@@ -106,6 +106,12 @@ class TR(Base):
     # {
     #     "recebimento_objeto": str,
     #     "liquidacao": str,
+    #     "avaliacao": {
+    #       "criterio": str (IMR, outro instrumento ou o disposto no item),
+    #       "anexo": str,
+    #       "instrumento": str,
+    #       "descricao_item": str        
+    #     }
     #     "prazo_pagamento": str,
     #     "prazo_provisorio_recebimento": str,
     #     "prazo_definitivo_recebimento": str,

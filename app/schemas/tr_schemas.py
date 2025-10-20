@@ -18,6 +18,12 @@ class ModalidadeLicitacao(str, Enum):
     registro_precos = "registro_precos"
 
 
+class CriterioAvaliacao(str, Enum):
+    instrumento_medicao_resultado = "instrumento_medicao_resultado"
+    outro_instrumento = "outro_instrumento"
+    disposto_item = "disposto_item"
+
+
 class CriterioJulgamento(str, Enum):
     item = "item"
     grupo = "grupo"
@@ -85,19 +91,26 @@ class GestaoContrato(BaseModel):
     modelo_gestao: Optional[str] = Field(None, description="Modelo de gestão e fiscalização")
     papeis_responsabilidades: Optional[str] = Field(None, description="Papéis do gestor e fiscal")
 
+class Avaliacao(BaseModel):
+    """Sub-schema para o campo avaliacao"""
+    criterio: Optional[CriterioAvaliacao] = Field(None, description="IMR, outro instrumento ou o disposto no item")
+    anexo: Optional[str] = Field(None, description="Nome e número do anexo")
+    instrumento: Optional[str] = Field(None, description="Descrição do instrumento a ser utilizado para avaliação")
+    descricao_item: Optional[str] = Field(None, description="Descrição do item")
+
 
 class CriteriosPagamento(BaseModel):
     """Schema para Critérios de Pagamento"""
     model_config = ConfigDict(from_attributes=True)
     recebimento_objeto: Optional[str] = Field(None, description="Recebimento provisório e definitivo")
     liquidacao: Optional[str] = Field(None, description="Processo de liquidação")
+    avaliacao: Optional[Avaliacao] = Field(None, description="Instrumento a ser utilizado para avaliação da exeecução do objeto")
     prazo_pagamento: Optional[str] = Field(None, description="Prazo para pagamento")
     prazo_provisorio_recebimento: Optional[str] = Field(None, description="Prazo provisorio para recebimento do objeto do contrato")
     prazo_definitivo_recebimento: Optional[str] = Field(None, description="Prazo definitivo para recebimento do objeto do contrato")
     forma_pagamento: Optional[str] = Field(None, description="Forma de pagamento")
     antecipacao_pagamento: bool = Field(False, description="Se permite antecipação")
     cessao_credito: Optional[str] = Field(None, description="Regras sobre cessão de crédito")
-
 
 class ExigenciasHabilitacao(BaseModel):
     """Schema para Exigências de Habilitação"""

@@ -432,8 +432,8 @@ function generatePdf(jsonData) {
             
             // Subseção 1.3
             checkPageBreak(15);
-            const prazoVigencia = `${jsonData.prazo_vigencia_contrato || '[não definido]'}.`;
-            y += addSubsection("1.3", "", prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
+            const prazoVigencia = `${jsonData.prazo_vigencia_contrato || '[não definido]'}`;
+            y += addSubsection("1.3", "", "O prazo de vigência da contratação é de " + prazoVigencia, margin + subsectionIndent, y, contentWidth - subsectionIndent);
             
             y += sectionSpacing;
             
@@ -711,7 +711,7 @@ function generatePdf(jsonData) {
             y += addSubsection("7.1", "DA AVALIAÇÃO", "", margin + subsectionIndent, y, contentWidth - subsectionIndent);
             doc.setFont("times", "normal");
 
-            y += addSubsection("7.1.1", "", jsonData.criterios_pagamento.avaliacao || "A avaliação da execução do objeto utilizará o Instrumento de Medição de Resultado (IMR) ou outro instrumento substituto.", margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);        
+            y += addSubsection("7.1.1", "", "A avaliação da execução do objeto utilizará " + (jsonData.criterios_pagamento.avaliacao.anexo || jsonData.criterios_pagamento.avaliacao.instrumento || jsonData.criterios_pagamento.avaliacao.descricao_item || "A avaliação da execução do objeto utilizará o Instrumento de Medição de Resultado (IMR) ou outro instrumento substituto."), margin + subsectionIndent + 5, y, contentWidth - subsectionIndent - 5);        
             y += sectionSpacing;
             checkPageBreak(20);   
 

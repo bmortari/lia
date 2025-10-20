@@ -226,7 +226,6 @@ O JSON deve seguir esta estrutura:
   "tipo_contratacao": "servicos",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",
-  "fundamentacao_legal": "texto com base legal na Lei 14.133/2021",
   "prazo_vigencia_contrato": "string (ex: '90 dias', '12 meses')",
   "obrigacoes_contratante": ["array de obrigações"],
   "obrigacoes_contratada": ["array de obrigações"],
@@ -265,7 +264,7 @@ O JSON deve seguir esta estrutura:
   "requisitos_contratacao": {
     "sustentabilidade": "texto sobre requisitos de sustentabilidade",
     "indicacao_marcas": "texto sobre marcas/modelos",
-    "vedacao_marca_produto": "texto sobre vedações",
+    "vedacao_marca_produto": null,
     "exige_amostra": boolean,
     "exige_carta_solidariedade": boolean,
     "garantia_produto_servico": "texto sobre garantia",

@@ -324,6 +324,40 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // --- LÓGICA PARA AVALIAÇÃO ---
+    const avaliacaoGroup = document.getElementById('avaliacao-group');
+    if (avaliacaoGroup) {
+        const radios = avaliacaoGroup.querySelectorAll('input[type="radio"]');
+        const textInputs = {
+            instrumento_medicao_resultado: avaliacaoGroup.querySelector('input[name="avaliacao_anexo"]'),
+            outro_instrumento: avaliacaoGroup.querySelector('input[name="avaliacao_instrumento"]'),
+            disposto_item: avaliacaoGroup.querySelector('input[name="avaliacao_descricao_item"]'),
+        };
+
+        function handleAvaliacaoChange() {
+            const selectedRadio = avaliacaoGroup.querySelector('input[type="radio"]:checked');
+            
+            // Desabilita todos
+            Object.values(textInputs).forEach(input => {
+                if(input) input.disabled = true;
+            });
+
+            // Habilita o correto
+            if (selectedRadio) {
+                const inputToEnable = textInputs[selectedRadio.value];
+                if (inputToEnable) {
+                    inputToEnable.disabled = false;
+                }
+            }
+        }
+
+        radios.forEach(radio => radio.addEventListener('change', handleAvaliacaoChange));
+        
+        // Estado inicial
+        handleAvaliacaoChange();
+    }
+
+
     // --- LÓGICA PRINCIPAL DE SALVAR ---
     async function saveChanges() {
         if (!projectId) return;
@@ -343,6 +377,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return Array.from(inputs).map(input => input.value.trim()).filter(value => value);
         };
 
+        const fundamentacaoLegalInput = document.getElementById('fundamentacao-legal');
+        const fundamentacaoLegal = fundamentacaoLegalInput ? fundamentacaoLegalInput.value : '';
+
         const formData = {
             // Informações Básicas
             orgao_contratante: document.getElementById('orgao-contratante').value || '',
@@ -350,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
             objeto_contratacao: document.getElementById('objeto-contratacao').value || '',
             descricao_solucao: document.getElementById('descricao-solucao').value || '',
             modalidade_licitacao: document.querySelector('input[name="modalidade-licitacao"]:checked')?.value || null,
-            fundamentacao_legal: document.getElementById('fundamentacao-legal').value || '',
+            fundamentacao_legal: fundamentacaoLegal,
 
             // Requisitos da Contratação
             requisitos_contratacao: {
@@ -366,6 +403,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Modelo de Execução
             modelo_execucao: {
                 condicoes_entrega: document.getElementById('condicoes-entrega').value || '',
+                condicoes_execucao: document.getElementById('condicoes-execucao').value || '',
+                informacoes_relevantes: document.getElementById('informacoes-relevantes').value || '',
                 garantia_manutencao: document.getElementById('garantia-manutencao').value || '',
                 materiais_fornecidos: null, // Campo não presente no HTML, pode ser adicionado se necessário
                 informacoes_proposta: null // Campo não presente no HTML, pode ser adicionado se necessário
@@ -389,6 +428,30 @@ document.addEventListener('DOMContentLoaded', function () {
             // Critérios de Pagamento
             criterios_pagamento: {
                  recebimento_objeto: document.getElementById('recebimento-objeto').value || '',
+                 avaliacao: (() => {
+                    const selectedRadio = document.querySelector('input[name="avaliacao-opcao"]:checked');
+                    if (!selectedRadio) return null;
+
+                    const criterio = selectedRadio.value;
+                    let anexo = null;
+                    let instrumento = null;
+                    let descricao_item = null;
+
+                    if (criterio === 'instrumento_medicao_resultado') {
+                        anexo = document.querySelector('input[name="avaliacao_anexo"]').value;
+                    } else if (criterio === 'outro_instrumento') {
+                        instrumento = document.querySelector('input[name="avaliacao_instrumento"]').value;
+                    } else if (criterio === 'disposto_item') {
+                        descricao_item = document.querySelector('input[name="avaliacao_descricao_item"]').value;
+                    }
+
+                    return {
+                        criterio: criterio,
+                        anexo: anexo,
+                        instrumento: instrumento,
+                        descricao_item: descricao_item
+                    };
+                })(),
                  liquidacao: document.getElementById('liquidacao').value || '',
                  prazo_pagamento: document.getElementById('prazo-pagamento').value || '',
                  forma_pagamento: document.getElementById('forma-pagamento').value || '',
@@ -449,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 justificativa_precos_diferentes: document.getElementById('justificativa_precos_diferentes').value || '',
                 permite_proposta_inferior: document.querySelector('input[name="permite_proposta_inferior"]:checked')?.value === 'true',
                 criterio_julgamento: document.getElementById('srp-criterio')?.value || 'item',
-                registro_limitado: false, // Adicionar checkbox se necessário
+                registro_limitado: document.querySelector('input[name="registro_limitado"]:checked')?.value === 'true',
                 criterio_reajuste: document.getElementById('criterio-reajuste').value || '',
                 vigencia_ata: document.getElementById('srp-vigencia')?.value || ''
             };

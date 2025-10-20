@@ -107,6 +107,7 @@
                         </div>
                     </div>
                     
+                    {% if tr.fundamentacao_legal %}
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
@@ -117,6 +118,7 @@
                         </div>
                         <textarea id="fundamentacao-legal" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr %}{{ tr.fundamentacao_legal or '' }}{% endif %}</textarea>
                     </div>
+                    {% endif %} 
                 </div>
             </div>
 
@@ -176,6 +178,20 @@
                             <button type="button" class="edit-btn btn-outlined" data-target="condicoes-entrega"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
                         <textarea id="condicoes-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_entrega or '' }}{% endif %}</textarea>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center"><i class="las la-file-alt text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Condições da Execução</label></div>
+                            <button type="button" class="edit-btn btn-outlined" data-target="condicoes-execucao"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <textarea id="condicoes-execucao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_execucao or '' }}{% endif %}</textarea>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center"><i class="las la-info-circle text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Informações Relevantes</label></div>
+                            <button type="button" class="edit-btn btn-outlined" data-target="informacoes-relevantes"><i class="las la-edit mr-1"></i>Editar</button>
+                        </div>
+                        <textarea id="informacoes-relevantes" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.informacoes_relevantes or '' }}{% endif %}</textarea>
                     </div>
                     <div>
                         <div class="flex justify-between items-start mb-3">
@@ -291,6 +307,35 @@
                             <button type="button" class="edit-btn btn-outlined" data-target="recebimento-objeto"><i class="las la-edit mr-1"></i>Editar</button>
                         </div>
                         <textarea id="recebimento-objeto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.recebimento_objeto or '' }}{% endif %}</textarea>
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center">
+                                <i class="las la-tasks text-2xl text-gray-600 mr-3"></i>
+                                <label class="text-lg font-medium text-gray-900">Instrumento a ser utilizado para avaliação da execução do objeto</label>
+                            </div>
+                        </div>
+                        {% set avaliacao = tr.criterios_pagamento.avaliacao if tr and tr.criterios_pagamento and tr.criterios_pagamento.avaliacao else None %}
+                        <div id="avaliacao-group" class="space-y-3">
+                            <div class="flex items-center">
+                                <input id="avaliacao-opcao-1" name="avaliacao-opcao" type="radio" class="h-4 w-4 border-gray-300 text-primary focus:ring-primary" value="instrumento_medicao_resultado" {% if not avaliacao or not avaliacao.criterio or avaliacao.criterio == 'instrumento_medicao_resultado' %}checked{% endif %}>
+                                <label for="avaliacao-opcao-1" class="ml-3 flex-1">
+                                    <input type="text" name="avaliacao_anexo" class="block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{{ avaliacao.anexo if avaliacao and avaliacao.anexo else 'o Instrumento de Medição de Resultado (IMR), conforme previsto no Anexo [INSERIR NÚMERO E NOME DO ANEXO]' }}">
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="avaliacao-opcao-2" name="avaliacao-opcao" type="radio" class="h-4 w-4 border-gray-300 text-primary focus:ring-primary" value="outro_instrumento" {% if avaliacao and avaliacao.criterio == 'outro_instrumento' %}checked{% endif %}>
+                                <label for="avaliacao-opcao-2" class="ml-3 flex-1">
+                                    <input type="text" name="avaliacao_instrumento" class="block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{{ avaliacao.instrumento if avaliacao and avaliacao.instrumento else 'outro instrumento substituto para aferição da qualidade da prestação dos serviços: [DESCREVER INSTRUMENTO]' }}">
+                                </label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="avaliacao-opcao-3" name="avaliacao-opcao" type="radio" class="h-4 w-4 border-gray-300 text-primary focus:ring-primary" value="disposto_item" {% if avaliacao and avaliacao.criterio == 'disposto_item' %}checked{% endif %}>
+                                <label for="avaliacao-opcao-3" class="ml-3 flex-1">
+                                    <input type="text" name="avaliacao_descricao_item" class="block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{{ avaliacao.descricao_item if avaliacao and avaliacao.descricao_item else 'o disposto neste item: [DESCREVER ITEM]' }}">
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <div class="flex justify-between items-start mb-3">
@@ -513,6 +558,20 @@
                                 <div class="flex items-center">
                                     <input type="radio" id="permite_proposta_inferior_nao" name="permite_proposta_inferior" value="false" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and not tr.sistema_registro_precos.permite_proposta_inferior %}checked{% endif %}>
                                     <label for="permite_proposta_inferior_nao" class="ml-2 text-sm font-medium text-gray-900">Não</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-lg font-medium text-gray-900">Registro de preços com indicação limitada a unidades de contratação</label>
+                            <div class="flex items-center gap-4 mt-2">
+                                <div class="flex items-center">
+                                    <input type="radio" id="registro_limitado_permitido" name="registro_limitado" value="true" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and tr.sistema_registro_precos.registro_limitado %}checked{% endif %}>
+                                    <label for="registro_limitado_permitido" class="ml-2 text-sm font-medium text-gray-900">Permitido</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input type="radio" id="registro_limitado_nao_permitido" name="registro_limitado" value="false" class="w-4 h-4 text-primary bg-gray-100 border-gray-300 focus:ring-primary" {% if tr and tr.sistema_registro_precos and not tr.sistema_registro_precos.registro_limitado %}checked{% endif %}>
+                                    <label for="registro_limitado_nao_permitido" class="ml-2 text-sm font-medium text-gray-900">Não permitido</label>
                                 </div>
                             </div>
                         </div>
