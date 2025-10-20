@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 from enum import Enum
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from typing import Optional, List, Dict, Any
@@ -153,12 +153,26 @@ class TRItemBase(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     descricao: str = Field(..., description="Descrição detalhada do item")
     especificacoes_tecnicas: Optional[List[str]] = Field(None, description="Lista de especificações técnicas")
-    quantidade: Decimal = Field(..., decimal_places=3, gt=0, description="Quantidade do item")
-    valor_unitario: Optional[Decimal] = Field(None, decimal_places=2, description="Valor unitário")
-    valor_total: Optional[Decimal] = Field(None, decimal_places=2, description="Valor total")
+    quantidade: Decimal = Field(..., gt=0, description="Quantidade do item")
+    valor_unitario: Optional[Decimal] = Field(None, description="Valor unitário")
+    valor_total: Optional[Decimal] = Field(None, description="Valor total")
     unidade_medida: str = Field(..., description="Unidade de medida")
     codigo_catmat_catser: Optional[str] = Field(None, description="Código CATMAT/CATSER")
     finalidade: Optional[str] = Field(None, description="Finalidade/uso do item")
+
+    @field_validator('quantidade', mode='before')
+    @classmethod
+    def round_quantidade(cls, v):
+        if v is not None:
+            return Decimal(str(v)).quantize(Decimal('0.001'), rounding=ROUND_HALF_UP)
+        return v
+
+    @field_validator('valor_unitario', 'valor_total', mode='before')
+    @classmethod
+    def round_valores(cls, v):
+        if v is not None:
+            return Decimal(str(v)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        return v
 
 
 # class TRItemCreate(TRItemBase):
