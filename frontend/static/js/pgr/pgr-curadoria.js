@@ -1,7 +1,10 @@
+import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
+
+const projectId = getProjectIdFromUrl();
+
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 Inicializando PGR Curadoria");
   console.log("Dados PGR recebidos:", window.pgrData);
-  console.log("Project ID:", window.projectId);
 
   let currentPgrData = null;
   let currentPgrIndex = 0;
@@ -662,11 +665,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const dados = extrairDadosAtuais();
       console.log("Dados para salvar:", dados);
 
-      if (!window.projectId) {
-        exibirAlerta("Erro", "ID do projeto não encontrado.", "error");
-        return;
-      }
-
       // Mostrar loading
       botaoSalvarAlteracoes.disabled = true;
       botaoSalvarAlteracoes.innerHTML =
@@ -674,7 +672,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         const response = await fazerRequisicaoAutenticada(
-          `/projetos/${window.projectId}/pgr/${currentPgrData.id_pgr}`,
+          `/projetos/${projectId}/pgr/${currentPgrData.id_pgr}`,
           {
             method: "PATCH",
             body: JSON.stringify(dados),

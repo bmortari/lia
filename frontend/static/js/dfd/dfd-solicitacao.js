@@ -1,6 +1,7 @@
+import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
+
 const URL = window.location.origin;
-const pathParts = window.location.pathname.split('/'); // divide a URL em partes
-const idProjeto = parseInt(pathParts[2]); // index 2 corresponde ao "2" em /projetos/2/curar_dfd
+const idProjeto = getProjectIdFromUrl(); 
 let pcaAllOptions = []; // Armazena as opções do PCA para referência posterior
 
 // Função para popular as opções no DOM

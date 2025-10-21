@@ -1,3 +1,5 @@
+import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
+
 /**
  * Tenta recuperar uma string JSON malformada.
  * @param {string} text - A string JSON potencialmente malformada.
@@ -320,7 +322,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         console.log('Variáveis globais possíveis:');
-        console.log('window.projectId:', window.projectId);
         console.log('window.pdpId:', window.pdpId);
         console.log('window.currentProject:', window.currentProject);
         console.log('window.currentPdp:', window.currentPdp);
@@ -335,7 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const contract = contractsData.find(c => c.id === contractId);
         if (contract) {
             // Usar o id_projeto diretamente do JSON
-            currentProjectId = contract.id_projeto || window.projectId || null;
+            currentProjectId = getProjectIdFromUrl();
             // O PDP ID é o próprio ID do contrato/PDP
             currentPdpId = contract.id || null;
             
@@ -390,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentContractId = firstContract.id;
             
             // Usar campos diretamente do JSON
-            currentProjectId = firstContract.id_projeto || window.projectId || null;
+            currentProjectId = getProjectIdFromUrl();
             currentPdpId = firstContract.id || null;
             
             console.log('Valores iniciais definidos:');
@@ -555,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (contract) {
                             console.log('Tentando extrair IDs do contrato atual:', contract);
                             
-                            currentProjectId = contract.id_projeto || window.projectId || null;
+                            currentProjectId = getProjectIdFromUrl();
                             currentPdpId = contract.id || null;
                             
                             console.log('IDs extraídos - ProjectId:', currentProjectId, 'PdpId:', currentPdpId);

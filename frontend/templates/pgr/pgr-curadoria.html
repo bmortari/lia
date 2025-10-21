@@ -240,8 +240,7 @@
     <script>
         // Dados do servidor passados via template
         window.pgrData = {{ pgr_data_json|safe }};
-        window.projectId = {{ projeto.id_projeto if projeto else 'null' }};
     </script>
-    <script src="/static/js/pgr/pgr-curadoria.js"></script>
+    <script type="module" src="/static/js/pgr/pgr-curadoria.js"></script>
 </body>
 </html>
