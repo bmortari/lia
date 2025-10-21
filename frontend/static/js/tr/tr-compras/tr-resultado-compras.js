@@ -1,29 +1,11 @@
 import { getProjectIdFromUrl } from "../../utils/projeto/getProject.js";
+import { obterTokenAutenticacao } from "../../utils/auth/auth.js";
 
 // Inicializar jsPDF
 const { jsPDF } = window.jspdf;
 
 // Configuração do endpoint
 const BASE_URL = window.location.origin;
-
-// ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
-function obterTokenAutenticacao() {
-    // Tenta buscar token em várias fontes
-    const tokenLocalStorage = localStorage.getItem('access_token') || localStorage.getItem('token');
-    const tokenSessionStorage = sessionStorage.getItem('access_token') || sessionStorage.getItem('token');
-    
-    // Função para buscar cookie por nome
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-        return null;
-    }
-    
-    const tokenCookie = getCookie('access_token') || getCookie('token') || getCookie('auth_token');
-    
-    return tokenLocalStorage || tokenSessionStorage || tokenCookie;
-}
 
 // Função para fazer requisição com autenticação
 async function fazerRequisicaoAutenticada(url, options = {}) {

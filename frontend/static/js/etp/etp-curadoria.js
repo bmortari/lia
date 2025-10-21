@@ -1,4 +1,5 @@
 import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
+import { obterTokenAutenticacao } from "../utils/auth/auth.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 ETP Curadoria carregado");
@@ -38,28 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 
   let currentEtpData = null; // Variável para armazenar os dados do ETP carregados
-
-  // ✅ FUNÇÃO AUXILIAR: Obter token de autenticação
-  function obterTokenAutenticacao() {
-    const tokenLocalStorage =
-      localStorage.getItem("access_token") || localStorage.getItem("token");
-    const tokenSessionStorage =
-      sessionStorage.getItem("access_token") || sessionStorage.getItem("token");
-
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(";").shift();
-      return null;
-    }
-
-    const tokenCookie =
-      getCookie("access_token") ||
-      getCookie("token") ||
-      getCookie("auth_token");
-
-    return tokenLocalStorage || tokenSessionStorage || tokenCookie;
-  }
 
   // ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
   async function fazerRequisicaoAutenticada(url, options = {}) {
