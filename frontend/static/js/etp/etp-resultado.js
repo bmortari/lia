@@ -1,4 +1,4 @@
-import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
 
 // Inicializar jsPDF
 const { jsPDF } = window.jspdf;

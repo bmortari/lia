@@ -1,4 +1,4 @@
-import { getProjectIdFromUrl } from "/static/js/utils/getProject.js";
+import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     // ❌ REMOVIDO: Não buscar mais dados do localStorage que podem estar desatualizados
