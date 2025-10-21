@@ -41,7 +41,6 @@ O JSON deve seguir esta estrutura:
 ```json
 {
   "orgao_contratante": "string",
-  "tipo_contratacao": "compras",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",
   "fundamentacao_legal": "texto com base legal na Lei 14.133/2021",
@@ -223,7 +222,6 @@ O JSON deve seguir esta estrutura:
 ```json
 {
   "orgao_contratante": "string",
-  "tipo_contratacao": "servicos",
   "objeto_contratacao": "string detalhada do objeto",
   "modalidade_licitacao": "aquisicao_direta" | "registro_precos",
   "prazo_vigencia_contrato": "string (ex: '90 dias', '12 meses')",
@@ -264,7 +262,7 @@ O JSON deve seguir esta estrutura:
   "requisitos_contratacao": {
     "sustentabilidade": "texto sobre requisitos de sustentabilidade",
     "indicacao_marcas": "texto sobre marcas/modelos",
-    "vedacao_marca_produto": null,
+    "vedacao_marca_produto": str vazia "",
     "exige_amostra": boolean,
     "exige_carta_solidariedade": boolean,
     "garantia_produto_servico": "texto sobre garantia",
@@ -288,6 +286,7 @@ O JSON deve seguir esta estrutura:
   
   "criterios_pagamento": {
     "recebimento_objeto": "texto sobre recebimento provisório e definitivo",
+    "avaliacao": str vazia ""
     "liquidacao": "texto sobre liquidação",
     "prazo_pagamento": "string (ex: '5 dias úteis')",
     "prazo_provisorio_recebimento": "string (ex: 30 (trinta))" (prazo para recebimento do objeto do contrato)

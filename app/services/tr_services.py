@@ -97,6 +97,8 @@ async def create_tr_service(tr_in: TRCreate, db: AsyncSession, current_user: Rem
         logger.info(f"Gerando dados do TR para o projeto {project_id}...")
         dados_tr_json = await gerar_dados_tr(artefatos, tr_in)
         logger.info("Dados do TR gerados com sucesso.")
+        dados_tr_json['tipo_contratacao'] = tr_in.tipo_contratacao
+        
 
         # Mapeia o JSON para o modelo SQLAlchemy
         itens_data = dados_tr_json.pop("itens", [])

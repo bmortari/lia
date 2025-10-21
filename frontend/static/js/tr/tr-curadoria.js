@@ -378,7 +378,20 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         const fundamentacaoLegalInput = document.getElementById('fundamentacao-legal');
+        const vedacaoMarcaProdutoEl = document.getElementById('vedacao-marca-produto');
+        const condicoesExecucaoEl = document.getElementById('condicoes-execucao');
+        const materiaisDisponibilizadosEl = document.getElementById('materiais-disponibilizados');
+        const informacoesRelevantesEl = document.getElementById('informacoes-relevantes');
+        const prazoProvisorioRecebimentoEl = document.getElementById('prazo-provisorio-recebimento');
+        const prazoDefinitivoRecebimentoEl = document.getElementById('prazo-definitivo-recebimento'); 
+
         const fundamentacaoLegal = fundamentacaoLegalInput ? fundamentacaoLegalInput.value : '';
+        const vedacaoMarcaProduto = vedacaoMarcaProdutoEl ? vedacaoMarcaProdutoEl.value : '';
+        const condicoesExecucao = condicoesExecucaoEl ? condicoesExecucaoEl.value : '';
+        const materiaisDisponibilizados = materiaisDisponibilizadosEl ? materiaisDisponibilizadosEl.value : '';
+        const informacoesRelevantes = informacoesRelevantesEl ? informacoesRelevantesEl.value : '';
+        const prazoProvisorioRecebimento = prazoProvisorioRecebimentoEl ? prazoProvisorioRecebimentoEl.value : '';
+        const prazoDefinitivoRecebimento = prazoDefinitivoRecebimentoEl ? prazoDefinitivoRecebimentoEl.value : '';
 
         const formData = {
             // Informações Básicas
@@ -393,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
             requisitos_contratacao: {
                 sustentabilidade: document.getElementById('sustentabilidade').value || '',
                 indicacao_marcas: document.getElementById('indicacao-marcas').value || '',
-                vedacao_marca_produto: document.getElementById('vedacao-marca-produto').value || '',
+                vedacao_marca_produto: vedacaoMarcaProduto,
                 garantia_produto_servico: document.getElementById('garantia-produto-servico').value || '',
                 exige_amostra: document.getElementById('exige-amostra').checked,
                 exige_carta_solidariedade: document.getElementById('exige-carta-solidariedade').checked,
@@ -403,9 +416,9 @@ document.addEventListener('DOMContentLoaded', function () {
             // Modelo de Execução
             modelo_execucao: {
                 condicoes_entrega: document.getElementById('condicoes-entrega').value || '',
-                condicoes_execucao: document.getElementById('condicoes-execucao').value || '',
-                materiais_disponibilizados: document.getElementById('materiais-disponibilizados').value || '',
-                informacoes_relevantes: document.getElementById('informacoes-relevantes').value || '',
+                condicoes_execucao: condicoesExecucao,
+                materiais_disponibilizados: materiaisDisponibilizados,
+                informacoes_relevantes: informacoesRelevantes,
                 garantia_manutencao: document.getElementById('garantia-manutencao').value || '',
                 materiais_fornecidos: null, // Campo não presente no HTML, pode ser adicionado se necessário
                 informacoes_proposta: null // Campo não presente no HTML, pode ser adicionado se necessário
@@ -458,8 +471,8 @@ document.addEventListener('DOMContentLoaded', function () {
                  forma_pagamento: document.getElementById('forma-pagamento').value || '',
                  antecipacao_pagamento: document.querySelector('input[name="antecipacao-pagamento"]:checked').value === 'true', // Adicionar checkbox se necessário
                  cessao_credito: '', // Adicionar campo se necessário
-                 prazo_provisorio_recebimento: document.getElementById('prazo-provisorio-recebimento').value || '',
-                 prazo_definitivo_recebimento: document.getElementById('prazo-definitivo-recebimento').value || ''
+                 prazo_provisorio_recebimento: prazoProvisorioRecebimento,
+                 prazo_definitivo_recebimento: prazoDefinitivoRecebimento
             },
             condicoes_pagamento: document.getElementById('condicoes-pagamento').value || '',
 

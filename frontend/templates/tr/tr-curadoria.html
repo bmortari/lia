@@ -139,6 +139,7 @@
                         </div>
                         <textarea id="indicacao-marcas" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.indicacao_marcas or '' }}{% endif %}</textarea>
                     </div>
+                    {% if tr.requisitos_contratacao.vedacao_marca_produto %} 
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-ban text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Vedação de Marca/Produto</label></div>
@@ -146,6 +147,7 @@
                         </div>
                         <textarea id="vedacao-marca-produto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.requisitos_contratacao %}{{ tr.requisitos_contratacao.vedacao_marca_produto or '' }}{% endif %}</textarea>
                     </div>
+                    {% endif %}                    
                      <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-tools text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Garantia do Produto/Serviço</label></div>
@@ -179,6 +181,7 @@
                         </div>
                         <textarea id="condicoes-entrega" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_entrega or '' }}{% endif %}</textarea>
                     </div>
+                    {% if tr.modelo_execucao.condicoes_execucao %}
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-file-alt text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Condições da Execução</label></div>
@@ -186,6 +189,8 @@
                         </div>
                         <textarea id="condicoes-execucao" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.condicoes_execucao or '' }}{% endif %}</textarea>
                     </div>
+                    {% endif %}
+                    {% if tr.modelo_execucao.materiais_disponibilizados %}  
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-box-open text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Materiais a serem disponibilizados pela Contratada</label></div>
@@ -193,6 +198,8 @@
                         </div>
                         <textarea id="materiais-disponibilizados" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.materiais_disponibilizados or '' }}{% endif %}</textarea>
                     </div>
+                    {% endif %}
+                    {% if tr.modelo_execucao.informacoes_relevantes %}  
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-info-circle text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Informações Relevantes</label></div>
@@ -200,6 +207,7 @@
                         </div>
                         <textarea id="informacoes-relevantes" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.modelo_execucao %}{{ tr.modelo_execucao.informacoes_relevantes or '' }}{% endif %}</textarea>
                     </div>
+                    {% endif %}
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-headset text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Garantia e Manutenção (Assistência Técnica)</label></div>
@@ -315,6 +323,7 @@
                         </div>
                         <textarea id="recebimento-objeto" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 resize-none focus:ring-primary focus:border-primary" rows="3" disabled>{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.recebimento_objeto or '' }}{% endif %}</textarea>
                     </div>
+                    {% if tr.criterios_pagamento.avaliacao %}
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center">
@@ -344,6 +353,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                     <div>
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center"><i class="las la-file-invoice-dollar text-2xl text-gray-600 mr-3"></i><label class="text-lg font-medium text-gray-900">Liquidação</label></div>
@@ -386,6 +396,7 @@
                     </div>
                 </div>
                 <div class="p-6">
+                    {% if tr.criterios_pagamento.prazo_provisorio_recebimento and tr.criterios_pagamento.prazo_definitivo_recebimento %}
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <div class="flex justify-between items-start mb-3">
@@ -402,6 +413,7 @@
                             <input type="number" id="prazo-definitivo-recebimento" class="editable-content block w-full p-3 text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary focus:border-primary" value="{% if tr and tr.criterios_pagamento %}{{ tr.criterios_pagamento.prazo_definitivo_recebimento or '' }}{% endif %}" disabled>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
             </div>
 
