@@ -1,5 +1,5 @@
 import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
-import { obterTokenAutenticacao } from "../utils/auth/auth.js";
+import { fazerRequisicaoAutenticada } from "../utils/auth/auth.js";
 
 const projectId = getProjectIdFromUrl();
 
@@ -21,44 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const icone = icones[tipo] || icones["info"];
     alert(`${icone} ${titulo}\n\n${mensagem}`);
-  }
-
-  // Função para fazer requisição com autenticação
-  async function fazerRequisicaoAutenticada(url, options = {}) {
-    const token = obterTokenAutenticacao();
-
-    const requestConfig = {
-      ...options,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        "remote-user": "user.test",
-        "remote-groups": "TI,OUTROS",
-        ...options.headers,
-      },
-    };
-
-    if (token) {
-      requestConfig.headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    console.log("Fazendo requisição para:", url, requestConfig);
-
-    try {
-      const response = await fetch(url, requestConfig);
-
-      if (response.status === 401 && token) {
-        console.log("Tentativa com token falhou, tentando só com cookies...");
-        delete requestConfig.headers["Authorization"];
-        return await fetch(url, requestConfig);
-      }
-
-      return response;
-    } catch (error) {
-      console.error("Erro na requisição:", error);
-      throw error;
-    }
   }
 
   // Função para inicializar o seletor de PGR

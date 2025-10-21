@@ -1,5 +1,5 @@
 import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
-import { obterTokenAutenticacao } from "../utils/auth/auth.js";
+import { fazerRequisicaoAutenticada } from "../utils/auth/auth.js";
 
 // Inicializar jsPDF
 const { jsPDF } = window.jspdf;
@@ -11,34 +11,6 @@ const BASE_URL = window.location.origin;
 let pgrDataStore = [];
 let generatedPdfs = {};
 let activeSolutionId = null;
-
-// ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
-async function fazerRequisicaoAutenticada(url, options = {}) {
-  const token = obterTokenAutenticacao();
-  const requestConfig = {
-    ...options,
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      ...options.headers,
-    },
-  };
-  if (token) {
-    requestConfig.headers["Authorization"] = `Bearer ${token}`;
-  }
-  try {
-    const response = await fetch(url, requestConfig);
-    if (response.status === 401 && token) {
-      delete requestConfig.headers["Authorization"];
-      return await fetch(url, requestConfig);
-    }
-    return response;
-  } catch (error) {
-    console.error("Erro na requisição:", error);
-    throw error;
-  }
-}
 
 // ✅ FUNÇÃO: Buscar dados do PGR no banco de dados
 async function buscarDadosPGR() {

@@ -1,5 +1,5 @@
 import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
-import { obterTokenAutenticacao } from "../utils/auth/auth.js";
+import { fazerRequisicaoAutenticada } from "../utils/auth/auth.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("🚀 ETP Curadoria carregado");
@@ -39,42 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
   );
 
   let currentEtpData = null; // Variável para armazenar os dados do ETP carregados
-
-  // ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
-  async function fazerRequisicaoAutenticada(url, options = {}) {
-    const token = obterTokenAutenticacao();
-
-    const requestConfig = {
-      ...options,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...options.headers,
-      },
-    };
-
-    if (token) {
-      requestConfig.headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    console.log("Fazendo requisição ETP com config:", requestConfig);
-
-    try {
-      const response = await fetch(url, requestConfig);
-
-      if (response.status === 401 && token) {
-        console.log("Tentativa com token falhou, tentando só com cookies...");
-        delete requestConfig.headers["Authorization"];
-        return await fetch(url, requestConfig);
-      }
-
-      return response;
-    } catch (error) {
-      console.error("Erro na requisição ETP:", error);
-      throw error;
-    }
-  }
 
   // Função para mostrar status
   function showStatus(message, type = "info") {

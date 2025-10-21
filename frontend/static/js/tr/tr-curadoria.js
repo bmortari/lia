@@ -1,45 +1,5 @@
 import { getProjectIdFromUrl } from "../utils/projeto/getProject.js";
-import { obterTokenAutenticacao } from "../utils/auth/auth.js";
-
-// ✅ FUNÇÃO AUXILIAR: Fazer requisição com autenticação
-async function fazerRequisicaoAutenticada(url, options = {}) {
-    const token = obterTokenAutenticacao();
-    
-    // Configuração base da requisição
-    const requestConfig = {
-        ...options,
-        credentials: 'include', // Inclui cookies automaticamente
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            ...options.headers
-        }
-    };
-    
-    // Se tiver token, adiciona ao header Authorization
-    if (token) {
-        requestConfig.headers['Authorization'] = `Bearer ${token}`;
-    }
-    
-    console.log('Fazendo requisição com config:', requestConfig);
-    
-    try {
-        const response = await fetch(url, requestConfig);
-        
-        // Se retornar 401, tenta sem token (talvez use só cookies)
-        if (response.status === 401 && token) {
-            console.log('Tentativa com token falhou, tentando só com cookies...');
-            delete requestConfig.headers['Authorization'];
-            return await fetch(url, requestConfig);
-        }
-        
-        return response;
-        
-    } catch (error) {
-        console.error('Erro na requisição:', error);
-        throw error;
-    }
-}
+import { fazerRequisicaoAutenticada } from "../utils/auth/auth.js";
 
 document.addEventListener('DOMContentLoaded', function () {
 
