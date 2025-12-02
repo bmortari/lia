@@ -20,11 +20,11 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASS
-      - POSTGRES_DB
-      - DATABASE_URL
-      - GENAI_API_KEY
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASS: ${POSTGRES_PASS}
+      POSTGRES_DB: ${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL}
+      GENAI_API_KEY: ${GENAI_API_KEY}
     depends_on:
       db:
         condition: service_healthy
@@ -38,9 +38,9 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD=${POSTGRES_PASS}
-      - POSTGRES_DB
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASS}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - lia_postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -58,7 +58,7 @@ services:
     volumes:
       - ./seed:/seed
     environment:
-      - PGPASSWORD=${POSTGRES_PASS}
+      PGPASSWORD: ${POSTGRES_PASS}
     entrypoint: ["bash", "/seed/seed.sh"]
 
 volumes:
